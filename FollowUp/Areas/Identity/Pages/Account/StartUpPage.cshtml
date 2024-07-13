@@ -1,0 +1,133 @@
+﻿@page
+@model FollowUp.Areas.Identity.Pages.Account.StartUpPageModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبانات المتدربين</title>
+    <style>
+        body {
+            background-color: #4682B4;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .header {
+            background-color: #4682B4;
+            color: white;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px; /* إضافة مسافة أسفل الحاوية */
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .option {
+            margin: 5px;
+            text-align: center;
+            flex: 1 1 200px;
+            box-sizing: border-box;
+            transition: transform 0.3s;
+        }
+
+            .option img {
+                border-radius: 50%;
+                display: block;
+                margin: 0 auto 10px;
+                transition: box-shadow 0.3s ease;
+                width: 120px;
+                height: 120px;
+            }
+
+            .option:hover img {
+                box-shadow: 0 0 15px rgba(0, 0, 255, 0.5);
+            }
+
+            .option span {
+                display: block;
+            }
+
+        .logo-img {
+            width: 300px;
+            height: auto;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>استبانات المتدربين كلية الاتصالات والالكترونيات بجده</h1>
+    </div>
+    <div class="container">
+        <h2>حدد طريقة الدخول</h2>
+        <div class="d-flex justify-content-center mb-2">
+            <img src="~/img/logo-1.png" class="img-thumbnail logo-img" />
+        </div>
+        <div class="options">
+            <a href="/Identity/Account/Login" class="option" onclick="redirectToLoginPage()">
+                <img src="~/img/manager.png" alt="مدير النظام">
+                <span>مدير النظام</span>
+            </a>
+            <a href="/Identity/Account/LoginTrainer" class="option" onclick="redirectToLoginTrainerPage()">
+                <img src="~/img/teacher.png" alt="مدرب">
+                <span>مدرب</span>
+            </a>
+            <a href="/Vistor/Home/Index" class="option" onclick="redirectToLoginVistorPage()">
+                <img src="~/img/vistor.png" alt="زائر">
+                <span>زائر</span>
+            </a>
+            <a href="/Identity/Account/LoginTrainee" class="option" onclick="redirectToLoginTraineePage()">
+                <img src="~/img/student.png" alt="متدرب">
+                <span>متدرب</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function redirectToLoginPage() {
+            window.location.href = '/Identity/Account/Login';
+        }
+        function redirectToLoginTrainerPage() {
+            window.location.href = '/Identity/Account/LoginTrainer';
+        }
+        function redirectToLoginTraineePage() {
+            window.location.href = '/Identity/Account/LoginTrainee';
+        }
+        function redirectToLoginVistorPage() {
+            window.location.href = '/Vistor/Home/Index';
+        }
+    </script>
+</body>
+</html>

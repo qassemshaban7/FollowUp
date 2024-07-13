@@ -1,0 +1,116 @@
+﻿@page
+@model LoginTraineeModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="rtl" class="rtl">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Meta -->
+    <meta name="description" content="Archieving System">
+    <meta name="author" content="Ehab">
+
+    <title>نظام استبانات المتدربين</title>
+
+    <!-- vendor css -->
+    <link href="~/lib/%40fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    @*<link href="~/lib/ionicons/css/ionicons.min.css" rel="stylesheet">*@
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link href="~/lib/rickshaw/rickshaw.min.css" rel="stylesheet">
+
+    <!-- Bracket CSS -->
+    <link rel="stylesheet" href="~/css/bracket.css">
+
+    <link href="~/lib/%40fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+    <!-- Rickshaw CSS -->
+    <link href="~/lib/rickshaw/rickshaw.min.css" rel="stylesheet">
+
+    <!-- Bracket CSS -->
+    <link rel="stylesheet" href="~/css/bracket.css">
+
+</head>
+
+<body>
+
+    <div class="row no-gutters flex-row-reverse ht-100v">
+        <div class="col-md-6 bg-gray-200 d-flex align-items-center justify-content-center">
+            <div class="login-wrapper wd-250 wd-xl-350 mg-y-30">
+                <div class=" d-flex justify-content-center mb-2">
+                    <img src="~/img/logo-1.png" class="img-thumbnail" />
+                </div>
+                
+                <h3 class="tx-inverse tx-center">تسجيل الدخول</h3>
+                <p class="tx-center mg-b-20">مرحبا بك في نظام استبانات المتدربين</p>
+
+                <form class="text-left" id="account" method="post">
+                    <div class="form-group">
+                        <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="الرقم التدريبي" required />
+                        <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                    </div><!-- form-group -->
+
+                    <div class="form-group">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="كلمة المرور" required />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div><!-- form-group -->
+
+                    <div class="form-group">
+                        <input class="form-check-input " asp-for="Input.RememberMe" />
+                        <label asp-for="Input.RememberMe " class="form-label mr-3">
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <a asp-page="/Account/StartUpPage" asp-area="Identity" class="btn btn-danger btn-lg">
+                            <i class="ion-log-out"></i> رجوع
+                        </a>
+                       
+                        <button id="login-submit" type="submit" class="btn btn-primary btn-lg">
+                            دخول <i class="ion-android-arrow-back"></i>
+                        </button>
+
+                    </div>
+                </form>
+            </div><!-- login-wrapper -->
+        </div><!-- col -->
+        <div class="col-md-6 bg-br-primary d-flex align-items-center justify-content-center">
+            <div class="wd-250 wd-xl-450 mg-y-30">
+                <div class="signin-logo tx-28 tx-bold tx-white"><span class="tx-normal"> نظام استبانات المتدربين</span></div>
+
+
+
+                <h5 class="tx-white">عن البرنامج</h5>
+                <p class="tx-white-6">
+                    نظام الاستبانات هو أداة متقدمة تتيح لك تصميم وتوزيع وتحليل الاستبانات بفعالية وسهولة.
+                    يهدف البرنامج إلى تسهيل جمع الآراء والملاحظات من المستخدمين والمستفيدين وتحليلها بشكل دقيق
+                    لاتخاذ قرارات مستنيرة. يوفر البرنامج واجهة مستخدم بديهية وتقارير مفصلة لتقديم رؤى شاملة حول البيانات المجمعة.
+                </p>
+
+            </div><!-- wd-500 -->
+        </div>
+    </div><!-- row -->
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/jquery-ui/ui/widgets/datepicker.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- END PAGE LEVEL SCRIPTS -->
+</body>
+
+</html>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

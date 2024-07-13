@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html lang="en" dir="rtl" class="rtl">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Meta -->
+    <meta name="description" content="Basstahalak Management System">
+    <meta name="author" content="">
+
+    <title>استبانات المتدربين كلية الاتصالات والالكترونيات بجده</title>
+
+    <!-- vendor css -->
+    <link href="~/lib/fontawesome/css/all.min.css" rel="stylesheet">
+    @*<link rel="stylesheet" href="~/lib/ionicons/css/ionicons.min.css">*@
+    @*<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">*@
+
+    <!-- Bracket CSS -->
+    <link rel="stylesheet" href="~/css/bracket.css">
+    <script src="https://cdn.tiny.cloud/1/7c6ary05manxlt32d3zdisgrypyg3tlg03jjvjss6nko71di/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    @RenderSection("head",false)
+</head>
+
+<body>
+
+    <!-- ########## START: LEFT PANEL ########## -->
+    
+        <div class="br-logo d-flex justify-content-center"><a  asp-action="Index" asp-controller="Home" asp-area="SuperAdmin"> <img src="~/img/logo-1.png" class="img-thumbnail" /></a></div>
+
+    
+    <div class="br-sideleft sideleft-scrollbar">
+        <label class="sidebar-label pd-x-10 mg-t-20 op-3"></label>
+
+        <ul class="br-sideleft-menu">
+            <li class="br-menu-item">
+                <a asp-action="Index" asp-controller="Home" class="br-menu-link">
+                    <i class="menu-item-icon icon fas fa-home"></i>
+                    <span class="menu-item-label">الرئيسية</span>
+                </a><!-- br-menu-link -->
+            </li><!-- br-menu-item -->
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-users tx-20"></i>
+                    <span class="menu-item-label">قائمة المتدربين</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Trainee" class="sub-link">عرض المتدربين</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Trainee" class="sub-link">اضافة متدرب جديد</a></li>
+                </ul>
+            </li>
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-chalkboard-teacher tx-20"></i>
+                    <span class="menu-item-label">قائمة المدربين</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Trainer" class="sub-link">عرض المدربين</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Trainer" class="sub-link">اضافة مدرب جديد</a></li>
+                </ul>
+            </li>
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-book tx-20"></i>
+                    <span class="menu-item-label">قائمة المقررات</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Course" class="sub-link">عرض المقررات</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Course" class="sub-link">اضافة مقرر جديد</a></li>
+                </ul>
+            </li>
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-user-graduate tx-20"></i>
+                    <span class="menu-item-label">اضافة المقررات للمتدربين</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="TraineeCourse" class="sub-link">عرض المقررات والمتدربين</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="TraineeCourse" class="sub-link">اضافة مقرر الى متدرب</a></li>
+                </ul>
+            </li>
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-table tx-20"></i>
+                    <span class="menu-item-label">الجدول الشامل</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Comprehensive" class="sub-link">عرض البيانات الجداول</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Comprehensive" class="sub-link">اضافة جدول شامل</a></li>
+                </ul>
+            </li>
+
+            
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-poll tx-20"></i>
+                    <span class="menu-item-label">قائمة الاستبيانات</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Surveys" class="sub-link">عرض الاستبيانات</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Surveys" class="sub-link">اضافة استبيان جديد</a></li>
+                </ul>
+            </li>
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-poll-h tx-20"></i>
+                    <span class="menu-item-label">نتائج استبيانات الخدمات</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="ServiceResult" class="sub-link">عرض الاستبيانات</a></li>
+                </ul>
+            </li>
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-chart-bar tx-20"></i>
+                    <span class="menu-item-label">نتائج استبيانات الزوار</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="VistorResult" class="sub-link">عرض الاستبيانات</a></li>
+                </ul>
+            </li>
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-building tx-20"></i>
+                    <span class="menu-item-label">قائمة الاقسام</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Department" class="sub-link">عرض الاقسام</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Department" class="sub-link">اضافة قسم جديد</a></li>
+                </ul>
+            </li>
+
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-book tx-20"></i>
+                    <span class="menu-item-label">قائمة التخصصات</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Specialization" class="sub-link">عرض التخصصات</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Specialization" class="sub-link">اضافة تخصص جديد</a></li>
+                </ul>
+            </li>
+
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-users tx-20"></i>
+                    <span class="menu-item-label">انواع الشعب</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="TypeDivition" class="sub-link">عرض الشعب</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="TypeDivition" class="sub-link">اضافة شعبة جديد</a></li>
+                </ul>
+            </li>
+
+
+        </ul>
+        <!-- br-sideleft-menu -->
+
+        <br>
+    </div><!-- br-sideleft -->
+    <!-- ########## END: LEFT PANEL ########## -->
+    <!-- ########## START: HEAD PANEL ########## -->
+    <div class="br-header">
+        <div class="br-header-left">
+            <div class="navicon-left hidden-md-down"><a id="btnLeftMenu" href="#"><i class="icon fas fa-light fa-bars"></i></a></div>
+            <div class="navicon-left hidden-lg-up"><a id="btnLeftMenuMobile" href="#"><i class="icon fas fa-light fa-bars"></i></a></div>
+            
+        </div><!-- br-header-left -->
+        <div class="br-header-right">
+            <nav class="nav">
+               
+                <div class="dropdown">
+                    <a href="#" class="nav-link nav-link-profile" data-toggle="dropdown">
+                        <span class="logged-name hidden-md-down">@User.Identity.Name </span>
+                        <img src="~/img/avatar.png" class="wd-32 rounded-circle" alt="">
+                        <span class="square-10 bg-success"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-header wd-250">
+                        <div class="tx-center">
+                            <a href="#"><img src="~/img/avatar.png" class="wd-80 rounded-circle" alt=""></a>
+                            <h6 class="logged-fullname">@User.Identity.Name </h6>
+                            <p> المدير  </p>
+                        </div>
+                        <hr>
+                        
+                        <ul class="list-unstyled user-profile-nav">
+
+                            <li>
+                                <form asp-action="ChangePassword" asp-controller="Home" method="post">
+                                    <i class="fas fa-lock"></i>
+                                    <button type="submit" class="btn btn-link text-dark">
+                                        تغيير كلمة المرور
+                                    </button>
+                                </form>
+                            </li>
+
+                            <li>
+                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout">
+                                    <i class="icon fas fa-light fa-right-from-bracket"></i>
+                                    <button type="submit" class=" btn btn-link text-dark">تسجيل خروج</button>
+                                </form>
+
+                            </li>
+                        </ul>
+                    </div><!-- dropdown-menu -->
+                </div><!-- dropdown -->
+            </nav>
+          
+        </div><!-- br-header-right -->
+    </div><!-- br-header -->
+    <!-- ########## END: HEAD PANEL ########## -->
+   
+    <!-- ########## START: MAIN PANEL ########## -->
+    <div class="br-mainpanel">
+        @RenderBody()
+       
+    </div><!-- br-mainpanel -->
+    <!-- ########## END: MAIN PANEL ########## -->
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+   
+
+    <script src="~/js/bracket.js"></script>
+    <script src="~/js/dashboard.js"></script>
+    @RenderSection("scripts",false)
+</body>
+
+</html>
