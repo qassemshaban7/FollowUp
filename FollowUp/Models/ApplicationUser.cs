@@ -11,10 +11,11 @@ namespace FollowUp.Models
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        public string UserFullName { get; set; } = null!; // اسم المتدرب
-        public string? EnglishFullName { get; set; }
+        public string UserFullName { get; set; } = null!; // اسم المدرب
 
-        public long? RegisterNum { get; set; } // رقم السجل
-        public string? Status { get; set; } //  المرحلة
+        [ForeignKey("DepartmentId")]
+        public int? DepartmentId { get; set; }
+        public Department? Department { get; set; }  
+
     }
 }

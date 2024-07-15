@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en" dir="rtl" class="rtl">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Meta -->
+    <meta name="description" content="Basstahalak Management System">
+    <meta name="author" content="">
+
+    <title> تقرير المتابعة بكلية الاتصالات والالكترونيات بجده</title>
+
+    <!-- vendor css -->
+    <link href="~/lib/fontawesome/css/all.min.css" rel="stylesheet">
+    @*<link rel="stylesheet" href="~/lib/ionicons/css/ionicons.min.css">*@
+    @*<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">*@
+
+    <!-- Bracket CSS -->
+    <link rel="stylesheet" href="~/css/bracket.css">
+    @RenderSection("head", false)
+</head>
+
+<body>
+
+    <!-- ########## START: LEFT PANEL ########## -->
+
+    <div class="br-logo d-flex justify-content-center"><a asp-action="Index" asp-controller="Home" asp-area="Media"> <img src="~/img/logo-1.png" class="img-thumbnail" /></a></div>
+
+
+    <div class="br-sideleft sideleft-scrollbar">
+        <label class="sidebar-label pd-x-10 mg-t-20 op-3"></label>
+
+        <ul class="br-sideleft-menu">
+            <li class="br-menu-item">
+                <a asp-action="Index" asp-controller="Home" class="br-menu-link ">
+                    <i class="menu-item-icon icon fas fa-light fa-house "></i>
+                    <span class="menu-item-label">الرئيسية</span>
+                </a><!-- br-menu-link -->
+            </li><!-- br-menu-item -->
+            <li class="br-menu-item">
+                <a asp-action="Service" asp-controller="Home" class="br-menu-link ">
+                    <i class="menu-item-icon icon fas fa-poll tx-20"></i>
+                    <span class="menu-item-label">استبيانات الخدمات</span>
+                </a><!-- br-menu-link -->
+            </li><!-- br-menu-item -->
+
+        </ul>
+
+        <!-- br-sideleft-menu -->
+
+
+        <br>
+    </div><!-- br-sideleft -->
+    <!-- ########## END: LEFT PANEL ########## -->
+    <!-- ########## START: HEAD PANEL ########## -->
+    <div class="br-header">
+        <div class="br-header-left">
+            <div class="navicon-left hidden-md-down"><a id="btnLeftMenu" href="#"><i class="icon fas fa-light fa-bars"></i></a></div>
+            <div class="navicon-left hidden-lg-up"><a id="btnLeftMenuMobile" href="#"><i class="icon fas fa-light fa-bars"></i></a></div>
+
+        </div><!-- br-header-left -->
+        <div class="br-header-right">
+            <nav class="nav">
+
+                <div class="dropdown">
+                    <a href="#" class="nav-link nav-link-profile" data-toggle="dropdown">
+                        @* <span class="logged-name hidden-md-down">@User.Identity.Name </span> *@
+                        <img src="~/img/avatar.png" class="wd-32 rounded-circle" alt="">
+                        <span class="square-10 bg-success"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-header wd-250">
+                        <div class="tx-center">
+                            <a href="#"><img src="~/img/avatar.png" class="wd-80 rounded-circle" alt=""></a>
+                            @* <h6 class="logged-fullname">@User.Identity.Name</h6> *@
+                            <p> مشرف </p>
+                        </div>
+                        <hr>
+
+                        <ul class="list-unstyled user-profile-nav">
+                            <li>
+                                <form asp-action="ChangePassword" asp-controller="Home" method="post">
+                                    <i class="fas fa-lock"></i>
+                                    <button type="submit" class="btn btn-link text-dark">
+                                        تغيير كلمة المرور
+                                    </button>
+                                </form>
+                            </li>
+                            <li>
+                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout">
+                                    <i class="icon fas fa-light fa-right-from-bracket"></i>
+                                    <button type="submit" class=" btn btn-link text-dark">تسجيل خروج</button>
+                                </form>
+
+                            </li>
+                        </ul>
+                    </div><!-- dropdown-menu -->
+                </div><!-- dropdown -->
+            </nav>
+
+        </div><!-- br-header-right -->
+    </div><!-- br-header -->
+    <!-- ########## END: HEAD PANEL ########## -->
+    <!-- ########## START: MAIN PANEL ########## -->
+    <div class="br-mainpanel">
+        @RenderBody()
+
+    </div><!-- br-mainpanel -->
+    <!-- ########## END: MAIN PANEL ########## -->
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
+
+    <script src="~/js/bracket.js"></script>
+    <script src="~/js/dashboard.js"></script>
+    @RenderSection("scripts", false)
+</body>
+
+</html>

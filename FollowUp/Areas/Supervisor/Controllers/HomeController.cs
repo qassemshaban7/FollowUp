@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using System.Data;
 using System.Security.Claims;
 
-namespace FollowUp.Areas.Admin.Controllers
+namespace FollowUp.Areas.Supervisor.Controllers
 {
-    [Authorize(Roles = StaticDetails.Admin)]
-    [Area(nameof(Admin))]
-    [Route(nameof(Admin) + "/[controller]/[action]")]
+    [Authorize(Roles = StaticDetails.Supervisor)]
+    [Area(nameof(Supervisor))]
+    [Route(nameof(Supervisor) + "/[controller]/[action]")]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,47 +27,21 @@ namespace FollowUp.Areas.Admin.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
         public async Task<IActionResult> Index()
         {
-            var Supervisors = await (from user in _context.ApplicationUsers
-                                  join userRole in _context.UserRoles
-                                  on user.Id equals userRole.UserId
-                                  join role in _context.Roles
-                                  on userRole.RoleId equals role.Id
-                                  where role.Name == StaticDetails.Supervisor
-                                  select user).CountAsync();
-
-            ViewBag.Supervisors = Supervisors;
-
-            var trainers = await (from user in _context.ApplicationUsers
-                                  join userRole in _context.UserRoles
-                                  on user.Id equals userRole.UserId
-                                  join role in _context.Roles
-                                  on userRole.RoleId equals role.Id
-                                  where role.Name == StaticDetails.Trainer
-                                  select user).CountAsync();
-
-            ViewBag.Trainers = trainers;
-
-            var Courses = await _context.Courses.CountAsync();
-            ViewBag.Course = Courses;
-
-            var Building = await _context.Builds.CountAsync();
-            ViewBag.Building = Building;
-
-            var Tables = await _context.Tables.CountAsync();
-            ViewBag.Tables = Tables;
-
-            var Departments = await _context.Departments.CountAsync();
-            ViewBag.Departments = Departments;
-
-            SuperAdminHomeVM homeVM = new SuperAdminHomeVM
+            if (HttpContext.Session.GetString("created") != null)
             {
-                
-            };
+                ViewBag.created = true;
+                HttpContext.Session.Remove("created");
+            }
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            return View(homeVM);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return NotFound();
+            }
+
+            return View();
         }
 
         public async Task<IActionResult> ChangePassword()
@@ -82,12 +57,10 @@ namespace FollowUp.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(userId);
 
             int x = 0;
-            if (oldPassword == null && newPassword == null)
+            if (newPassword == null)
             {
-                {
-                    x = 2;
-                    return View("ChangePassword", new ChangePasswordViewModel { X = x });
-                }
+                x = 2;
+                return View("ChangePassword", new ChangePasswordViewModel { X = x });
             }
 
             var passwordVerificationResult = await _userManager.CheckPasswordAsync(user, oldPassword);

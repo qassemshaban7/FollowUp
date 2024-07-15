@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استبانات المتدربين</title>
+    <title>تقرير المتابعة</title>
     <style>
         body {
             background-color: #4682B4;
@@ -44,7 +44,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 20px; /* إضافة مسافة أسفل الحاوية */
+            margin-bottom: 20px;
         }
 
         .options {
@@ -88,7 +88,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>استبانات المتدربين كلية الاتصالات والالكترونيات بجده</h1>
+        <h1>تقرير المتابعة بكلية الاتصالات والالكترونيات بجده</h1>
     </div>
     <div class="container">
         <h2>حدد طريقة الدخول</h2>
@@ -96,37 +96,30 @@
             <img src="~/img/logo-1.png" class="img-thumbnail logo-img" />
         </div>
         <div class="options">
-            <a href="/Identity/Account/Login" class="option" onclick="redirectToLoginPage()">
-                <img src="~/img/manager.png" alt="مدير النظام">
-                <span>مدير النظام</span>
-            </a>
             <a href="/Identity/Account/LoginTrainer" class="option" onclick="redirectToLoginTrainerPage()">
-                <img src="~/img/teacher.png" alt="مدرب">
+                <img src="~/img/مدرب.png" alt="مدرب">
                 <span>مدرب</span>
             </a>
-            <a href="/Vistor/Home/Index" class="option" onclick="redirectToLoginVistorPage()">
-                <img src="~/img/vistor.png" alt="زائر">
-                <span>زائر</span>
+            <a href="/Identity/Account/Loginsupervisor" class="option" onclick="redirectToLoginTraineePage()">
+                <img src="~/img/متابع1.jpg" alt="مشرف">
+                <span>مشرف</span>
             </a>
-            <a href="/Identity/Account/LoginTrainee" class="option" onclick="redirectToLoginTraineePage()">
-                <img src="~/img/student.png" alt="متدرب">
-                <span>متدرب</span>
+            <a href="/Identity/Account/LoginAdmin" class="option" onclick="redirectToLoginPage()">
+                <img src="~/img/manager.png" alt="مدير النظام">
+                <span>مدير النظام</span>
             </a>
         </div>
     </div>
 
     <script>
         function redirectToLoginPage() {
-            window.location.href = '/Identity/Account/Login';
+            window.location.href = '/Identity/Account/LoginAdmin';
         }
         function redirectToLoginTrainerPage() {
             window.location.href = '/Identity/Account/LoginTrainer';
         }
         function redirectToLoginTraineePage() {
-            window.location.href = '/Identity/Account/LoginTrainee';
-        }
-        function redirectToLoginVistorPage() {
-            window.location.href = '/Vistor/Home/Index';
+            window.location.href = '/Identity/Account/Loginsupervisor';
         }
     </script>
 </body>

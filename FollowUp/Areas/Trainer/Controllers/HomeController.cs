@@ -10,11 +10,11 @@ using NuGet.Protocol;
 using System.Data;
 using System.Security.Claims;
 
-namespace FollowUp.Areas.Trainee.Controllers
+namespace FollowUp.Areas.Trainer.Controllers
 {
-    [Authorize(Roles = StaticDetails.Trainee)]
-    [Area(nameof(Trainee))]
-    [Route(nameof(Trainee) + "/[controller]/[action]")]
+    [Authorize(Roles = StaticDetails.Trainer)]
+    [Area(nameof(Trainer))]
+    [Route(nameof(Trainer) + "/[controller]/[action]")]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;

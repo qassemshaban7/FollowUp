@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FollowUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240713140009_init")]
+    [Migration("20240715222943_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -24,6 +24,140 @@ namespace FollowUp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("FollowUp.Models.Build", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Building")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Classroom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Hall")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrainingUnit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Builds");
+                });
+
+            modelBuilder.Entity("FollowUp.Models.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClassPart")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Coursecode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ReferenceNumber")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("FollowUp.Models.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("FollowUp.Models.Table", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountingHours")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("BuildId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ContactHours")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Day")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Registered")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Stay")
+                        .HasColumnType("float");
+
+                    b.Property<string>("TrainerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeDivition")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("BuildId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("Tables");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -273,9 +407,9 @@ namespace FollowUp.Migrations
                         {
                             Id = "9eebd485-2a1d-45c6-9c00-68099eebd485",
                             ConcurrencyStamp = "9eebd485-2a1d-45c6-9c00-68099eebd485",
-                            Name = "Trainee",
-                            NormalizedName = "TRAINEE",
-                            ArabicRoleName = "المتدرب"
+                            Name = "Supervisor",
+                            NormalizedName = "SUPERVISOR",
+                            ArabicRoleName = "المشرف"
                         },
                         new
                         {
@@ -291,18 +425,14 @@ namespace FollowUp.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("EnglishFullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("RegisterNum")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserFullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
 
@@ -311,17 +441,50 @@ namespace FollowUp.Migrations
                         {
                             Id = "ecc07b18-f55e-4f6b-95bd-0e84f556135f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b650749b-6449-40d4-abb0-6b1761c60ffc",
+                            ConcurrencyStamp = "16d88757-5d58-4f3b-be9a-df64b00390d0",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHUQ3hTnTNDeCdjdHEMDFnxPysjoNZYrtupEHrt7d1GMNUuPaXnB1iKKXJVa4g7isg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOVpt5wlhDROsLvYuMIxNxEmI6Wrffbkee8p235/Afto2m1U7ZvWcM//UVKNOGdvfw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8108da9f-9cc3-4776-b8ab-757495482b5a",
+                            SecurityStamp = "957747ff-c597-4817-a6fe-6b39a746d975",
                             TwoFactorEnabled = false,
                             UserName = "Admin",
                             UserFullName = "الادمن"
                         });
+                });
+
+            modelBuilder.Entity("FollowUp.Models.Table", b =>
+                {
+                    b.HasOne("FollowUp.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("FollowUp.Models.Build", "Build")
+                        .WithMany()
+                        .HasForeignKey("BuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FollowUp.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FollowUp.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Build");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -373,6 +536,15 @@ namespace FollowUp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FollowUp.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("FollowUp.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId");
+
+                    b.Navigation("Department");
                 });
 #pragma warning restore 612, 618
         }

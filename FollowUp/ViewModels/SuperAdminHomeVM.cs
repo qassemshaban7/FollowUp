@@ -4,7 +4,7 @@ namespace FollowUp.ViewModels
 {
     public class SuperAdminHomeVM
     {
-        public IEnumerable<ApplicationUser>? Trainer { get; set; }
-        public IEnumerable<ApplicationUser>? Trainee { get; set; }
+        public IEnumerable<ApplicationUser>? Trainers { get; set; }
+        public IEnumerable<ApplicationUser>? Supervisors { get; set; }
     }
 }

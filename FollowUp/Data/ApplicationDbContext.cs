@@ -14,6 +14,10 @@ namespace FollowUp.Data
         }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<ApplicationRole> ApplicationRoles { get; set; }
+        public DbSet<Department> Departments { get; set; } 
+        public DbSet<Build> Builds { get; set; } 
+        public DbSet<Course> Courses { get; set; } 
+        public DbSet<Table> Tables { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,11 +39,11 @@ namespace FollowUp.Data
 
             builder.Entity<ApplicationRole>().HasData(new ApplicationRole
             {
-                Name = "Trainee",
-                NormalizedName = "TRAINEE",
+                Name = "Supervisor",
+                NormalizedName = "SUPERVISOR",
                 Id = TRAINEE_ROLE_ID,
                 ConcurrencyStamp = TRAINEE_ROLE_ID,
-                ArabicRoleName = "المتدرب"
+                ArabicRoleName = "المشرف"
             });
 
             builder.Entity<ApplicationRole>().HasData(new ApplicationRole

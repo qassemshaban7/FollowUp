@@ -1,0 +1,48 @@
+﻿@using FollowUp.Models
+@model ApplicationUser
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="br-pagetitle">
+    <h3 class="text-info mr-3">إضافة مشرف جديد</h3>
+</div><!-- d-flex -->
+
+<div class="br-pagebody">
+    <div class="br-section-wrapper">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="form-layout form-layout-4">
+                    <form method="post" asp-action="Create" asp-controller="Supervisor" asp-route-returnurl="@ViewData["ReturnUrl"]">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم المشرف: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="UserFullName" type="text" class="form-control" placeholder="اسم المشرف" required>
+                                <span class="text-danger" asp-validation-for="UserFullName"></span>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم المستخدم: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="UserName" type="text" class="form-control" placeholder="اسم المستخدم" required>
+                                <span class="text-danger" asp-validation-for="UserName"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="form-layout-footer mg-t-30 text-center">
+                            <input type="submit" value="إضافة" class="btn btn-info">
+                            <a asp-action="Index" class="btn btn-secondary">الرجوع</a>
+                        </div><!-- form-layout-footer -->
+                    </form>
+                </div><!-- form-layout -->
+            </div>
+        </div><!-- row -->
+    </div><!-- br-section-wrapper -->
+</div><!-- br-pagebody -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

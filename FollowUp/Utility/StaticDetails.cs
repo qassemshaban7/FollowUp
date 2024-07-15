@@ -8,7 +8,7 @@ namespace FollowUp.Utility
     public class StaticDetails
     {
         public const string Admin = "Admin";
-        public const string Trainee = "Trainee";
+        public const string Supervisor = "Supervisor";
         public const string Trainer = "Trainer";
 
     }

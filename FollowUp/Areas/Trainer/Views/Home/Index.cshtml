@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Trainer/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .custom-table th, .custom-table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .custom-table .section-title {
+        background-color: #007b5e;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .custom-table th {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .custom-table td {
+        background-color: #f8f9fa;
+    }
+
+    .student-info, .course-info {
+        margin-bottom: 30px;
+    }
+</style>
+
+<div class="br-pagetitle">
+    <i class="icon fas fa-light fa-house"></i>
+    <div>
+        <h4>الرئيسية</h4>
+        <p class="mg-b-0">نظام تقرير المتابعة</p>
+    </div>
+</div><!-- d-flex -->
+
+<div class="br-pagebody">
+    <div class="br-section-wrapper">
+    </div><!-- br-section-wrapper -->
+</div><!-- br-pagebody -->
+
+@section scripts {
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+
+    <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+    <script src="~/lib/toaster/toaster.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var created = $("#created").data("value");
+            if (created == "True") {
+                toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-left",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "12000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                }
+                toastr.success("تم التقييم بنجاح");
+            }
+        });
+    </script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+}

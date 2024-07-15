@@ -19,13 +19,13 @@ using System.Security.Policy;
 
 namespace FollowUp.Areas.Identity.Pages.Account
 {
-    public class LoginTraineeModel : PageModel
+    public class LoginTrainerModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginTraineeModel(SignInManager<IdentityUser> signInManager,
+        public LoginTrainerModel(SignInManager<IdentityUser> signInManager,
             ILogger<LoginModel> logger,
             UserManager<IdentityUser> userManager)
         {
@@ -71,8 +71,8 @@ namespace FollowUp.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required(ErrorMessage = "الرقم التدريبي  مطلوب")]
-            [Display(Name = " الرقم التدريبي ")]
+            [Required(ErrorMessage = "رقم الحاسب  مطلوب")]
+            [Display(Name = " رقم الحاسب ")]
 
             public string UserName { get; set; }
 
@@ -117,10 +117,10 @@ namespace FollowUp.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     var user = await _userManager.FindByNameAsync(Input.UserName);
                     var roles = await _signInManager.UserManager.GetRolesAsync(user);
-                    if (roles.First() == StaticDetails.Trainee)
-                        return RedirectToAction(nameof(Trainee.Controllers.HomeController.Index),
-                           nameof(Trainee.Controllers.HomeController).Replace("Controller", ""),
-                           new { area = nameof(Trainee) });
+                    if (roles.First() == StaticDetails.Trainer)
+                        return RedirectToAction(nameof(Trainer.Controllers.HomeController.Index),
+                           nameof(Trainer.Controllers.HomeController).Replace("Controller", ""),
+                           new { area = nameof(Trainer) });
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -134,7 +134,7 @@ namespace FollowUp.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "خطأ في الرقم التدريبي او كلمة المرور");
+                    ModelState.AddModelError(string.Empty, "خطأ في رقم الحاسب او كلمة المرور");
                     return Page();
                 }
             }

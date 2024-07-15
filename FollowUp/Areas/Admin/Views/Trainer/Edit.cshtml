@@ -1,0 +1,59 @@
+﻿@using FollowUp.ViewModels
+@model EditTrainerVM
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="br-pagetitle">
+    <h3 class="text-info mr-3">تعديل بيانات المدرب </h3>
+</div><!-- d-flex -->
+
+<div class="br-pagebody">
+    <div class="br-section-wrapper">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="form-layout form-layout-4">
+                    <form method="post" asp-action="Edit" asp-controller="Trainer" enctype="multipart/form-data">
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم المدرب: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="FullName" type="text" class="form-control" placeholder="اسم المدرب" required>
+                                <span class="text-danger" asp-validation-for="FullName"></span>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">رقم الحاسب: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="UserName" type="number" class="form-control" placeholder="رقم الحاسب" required>
+                                <span class="text-danger" asp-validation-for="UserName"></span>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم القسم</label>
+                            <select class="col-sm-7 form-control" required asp-for="DepartmentId">
+                                <option value="">اختر القسم...</option>
+                                @foreach (var user in ViewBag.Department)
+                                {
+                                    <option value="@user.Id">@user.Name</option>
+                                }
+                            </select>
+                        </div><!-- row -->
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="form-layout-footer mg-t-30 text-center">
+                            <input type="submit" value="حفظ التعديلات" class="btn btn-info">
+                            <a asp-action="Index" class="btn btn-secondary">الرجوع</a>
+                        </div><!-- form-layout-footer -->
+                    </form>
+                </div><!-- form-layout -->
+            </div>
+        </div><!-- row -->
+    </div><!-- br-section-wrapper -->
+</div><!-- br-pagebody -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

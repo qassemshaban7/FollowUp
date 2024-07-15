@@ -1,0 +1,157 @@
+﻿@using FollowUp.Models
+@model Table
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="br-pagetitle">
+    <h3 class="text-info mr-3">إضافة جدول جديد</h3>
+</div><!-- d-flex -->
+
+<div class="br-pagebody">
+    <div class="br-section-wrapper">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="form-layout form-layout-4">
+                    <form method="post" asp-action="Create" asp-controller="Table" asp-route-returnurl="@ViewData["ReturnUrl"]">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">ساعات الاتصال: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="ContactHours" type="number" class="form-control" placeholder="ساعات الاتصال" required>
+                                <span class="text-danger" asp-validation-for="ContactHours"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">ساعات المحاسبة: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="AccountingHours" type="number" class="form-control" placeholder="ساعات المحاسبة" required>
+                                <span class="text-danger" asp-validation-for="AccountingHours"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">نوع الشعبة: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="TypeDivition" type="text" class="form-control" placeholder="نوع الشعبة" required>
+                                <span class="text-danger" asp-validation-for="TypeDivition"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اختر اليوم: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <select asp-for="Day" class="form-control" required>
+                                    <option value="">-- اختر يوم --</option>
+                                    <option value="السبت">السبت</option>
+                                    <option value="الأحد">الأحد</option>
+                                    <option value="الاثنين">الاثنين</option>
+                                    <option value="الثلاثاء">الثلاثاء</option>
+                                    <option value="الأربعاء">الأربعاء</option>
+                                    <option value="الخميس">الخميس</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="Day"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">الوقت: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="Time" type="time" class="form-control" placeholder="الوقت" required>
+                                <span class="text-danger" asp-validation-for="Time"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">سعة: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="Capacity" type="number" class="form-control" placeholder="سعة" required>
+                                <span class="text-danger" asp-validation-for="Capacity"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">مسجلين: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="Registered" type="number" class="form-control" placeholder="مسجلين" required>
+                                <span class="text-danger" asp-validation-for="Registered"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">متبقي: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="Stay" type="number" class="form-control" placeholder="متبقي" required>
+                                <span class="text-danger" asp-validation-for="Stay"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم المدرب: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <select asp-for="TrainerId" class="form-control" required>
+                                    <option value="">اختر المدرب...</option>
+                                    @foreach (var user in ViewBag.Trainers)
+                                    {
+                                        <option value="@user.Id">@user.UserFullName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم القسم: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <select asp-for="DepartmentId" class="form-control" required>
+                                    <option value="">اختر القسم...</option>
+                                    @foreach (var user in ViewBag.Department)
+                                    {
+                                        <option value="@user.Id">@user.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم المقرر: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <select asp-for="CourseId" class="form-control" required>
+                                    <option value="">اختر المقرر...</option>
+                                    @foreach (var user in ViewBag.Course)
+                                    {
+                                        <option value="@user.Id">@user.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم القاعة: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <select asp-for="BuildId" class="form-control" required>
+                                    <option value="">اختر القاعة...</option>
+                                    @foreach (var user in ViewBag.Build)
+                                    {
+                                        <option value="@user.Id">@user.Hall</option>
+                                    }
+                                </select>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="form-layout-footer mg-t-30 text-center">
+                            <input type="submit" value="إضافة" class="btn btn-info">
+                            <a asp-action="Index" class="btn btn-secondary">الرجوع</a>
+                        </div><!-- form-layout-footer -->
+                    </form>
+                </div><!-- form-layout -->
+            </div>
+        </div><!-- row -->
+    </div><!-- br-section-wrapper -->
+</div><!-- br-pagebody -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
