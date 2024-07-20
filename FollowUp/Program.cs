@@ -2,6 +2,7 @@ using FollowUp.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FollowUp.Data.Services;
 
 internal class Program
 {
@@ -18,6 +19,9 @@ internal class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        builder.Services.AddScoped<IEmailProvider, EmailProvider>();
+
         builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
         {
             options.Conventions.AddAreaPageRoute("Identity", "/Account/StartUpPage", "");

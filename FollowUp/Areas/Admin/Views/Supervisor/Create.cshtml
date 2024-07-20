@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-xl-12">
                 <div class="form-layout form-layout-4">
-                    <form method="post" asp-action="Create" asp-controller="Supervisor" asp-route-returnurl="@ViewData["ReturnUrl"]">
+                    <form method="post" asp-action="Create" asp-controller="Supervisor" enctype="multipart/form-data" asp-route-returnurl="@ViewData["ReturnUrl"]">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم المشرف: <span class="tx-danger">*</span></label>
@@ -27,6 +27,28 @@
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
                                 <input asp-for="UserName" type="text" class="form-control" placeholder="اسم المستخدم" required>
                                 <span class="text-danger" asp-validation-for="UserName"></span>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">البريد الالكتروني : <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="Email" type="email" class="form-control" placeholder="البريد الالكتروني" required>
+                                <span class="text-danger" asp-validation-for="Email"></span>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label"> رقم الجوال : <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="PhoneNumber" type="number" class="form-control" placeholder="رقم الجوال" required>
+                                <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">الصورة الشخصية: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="Image" type="file" class="form-control-file" required>
+                                <span class="text-danger" asp-validation-for="Image"></span>
                             </div>
                         </div><!-- row -->
 

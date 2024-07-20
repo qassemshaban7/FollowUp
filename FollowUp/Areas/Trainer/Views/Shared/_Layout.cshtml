@@ -40,11 +40,14 @@
                 </a><!-- br-menu-link -->
             </li><!-- br-menu-item -->
             <li class="br-menu-item">
-                <a asp-action="Service" asp-controller="Home" class="br-menu-link ">
-                    <i class="menu-item-icon icon fas fa-poll tx-20"></i>
-                    <span class="menu-item-label">استبيانات الخدمات</span>
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-book tx-20"></i>
+                    <span class="menu-item-label">قائمة التقارير</span>
                 </a><!-- br-menu-link -->
-            </li><!-- br-menu-item -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Report" class="sub-link">عرض التقارير</a></li>
+                </ul>
+            </li>
 
         </ul>
 

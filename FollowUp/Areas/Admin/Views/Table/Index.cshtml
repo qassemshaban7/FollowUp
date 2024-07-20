@@ -14,19 +14,19 @@
 }
 
 <div class="br-pagetitle">
-    <i class="fas fa-users fa-6x text-info"></i>
+    <i class="fas fa-chalkboard-teacher fa-6x text-info"></i>
     <div class="row">
         <div class="col-lg-10 col-10">
-            <h3 class="text-info">قائمة الجداول</h3>
+            <h3 class="text-info">قائمة المحاضرات</h3>
         </div>
         <div class="col-lg-2 col-7 mb-2">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                <i class="fas fa-plus-circle"></i> اضافة جداول
+                <i class="fas fa-plus-circle"></i> اضافة محاضرات
             </button>
         </div>
         <div class="col-lg-2 col-4">
             <a asp-action="Create" asp-controller="Table" class="btn btn-success">
-                <i class="fas fa-user-plus"></i> اضافة جدول
+                <i class="fas fa-user-plus"></i> اضافة محاضرة
             </a>
         </div>
     </div>
@@ -38,9 +38,10 @@
             <table id="deptsTable" class="table display responsive nowrap">
                 <thead>
                     <tr>
+                        <th>صورة</th>
+                        <th>المدرب</th>
                         <th>اليوم</th>
                         <th>الوقت</th>
-                        <th>المدرب</th>
                         <th>المبنى</th>
                         <th>القاعة</th>
                         <th>التفاصيل</th>
@@ -52,9 +53,21 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ApplicationUser.Image))
+                                {
+                                    <a class="image-receipt" href="~/images/@item.ApplicationUser.Image">
+                                        <img src="~/images/@item.ApplicationUser.Image" alt="صورة شخصية" width="50" height="50" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>لا توجد</span>
+                                }
+                            </td>
+                            <td>@item.ApplicationUser.UserFullName</td>
                             <td>@item.Day</td>
                             <td>@item.Time</td>
-                            <td>@item.ApplicationUser.UserFullName</td>
                             <td>@item.Build.Building</td>
                             <td>@item.Build.Hall</td>
                             <td>
@@ -89,8 +102,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel"> اضافة جدول عن طريق ملف EXCEL</h5>
-
+                <h5 class="modal-title" id="exampleModalLabel">اضافة جدول عن طريق ملف EXCEL</h5>
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning text-center" role="alert">
@@ -108,7 +120,20 @@
                         </div>
                     </form>
                     <hr />
-                    <form method="post" asp-action="Add" asp-controller="Table" enctype="multipart/form-data">
+                    <form id="addTableForm" method="post" asp-action="Add" asp-controller="Table" enctype="multipart/form-data">
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم جدول: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <select id="tableSelect" name="AcId" class="form-control" required>
+                                    <option value="">اختر جدول...</option>
+                                    @foreach (var user in ViewBag.Actvations)
+                                    {
+                                        <option value="@user.Id">@user.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div><!-- row -->
+
                         <div class="row mg-t-20">
                             <label class="col-sm-4 form-control-label">اختر ملف: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
@@ -116,8 +141,8 @@
                             </div>
                         </div>
                         <div class="form-layout-footer mg-t-30 text-center">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-upload"></i> اضافة الجدول
+                            <button type="button" class="btn btn-success" onclick="submitForm()">
+                                <i class="fa fa-upload"></i> اضافة المحاضرات
                             </button>
                         </div>
                     </form>
@@ -129,6 +154,9 @@
         </div>
     </div>
 </div>
+
+
+
 @if (Model.Count() > 0)
 {
     foreach (var item in Model)
@@ -137,7 +165,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel"> تفاصيل الجدول :</h5>
+                        <h5 class="modal-title" id="exampleModalLabel"> تفاصيل المحاضرة :</h5>
                     </div>
                     <div class="modal-body">
                         <div class="row mb-2">
@@ -160,7 +188,7 @@
                         <hr />
                         <div class="row mb-2">
                             <div class="col">
-                                <span>سعة :</span> <span class="text-info">   @item.Capacity.</span>
+                                <span>سعة :</span> <span class="text-info">   @item.Capacity</span>
                             </div>
                             <div class="col">
                                 <span>مسجلين :</span> <span class="text-info">   @item.Registered</span>
@@ -191,6 +219,12 @@
                             </div>
                             <div class="col">
                                 <span>القاعة :</span> <span class="text-info">   @item.Build.Hall</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-1">
+                            <div class="col">
+                                <span>اسم الجدول :</span> <span class="text-info">  @item.Activation.Name</span>
                             </div>
                         </div>
                         <hr />
@@ -269,7 +303,7 @@
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 }
-                toastr.success("تم تعديل الجدول بنجاح");
+                toastr.success("تم تعديل المحاضرة بنجاح");
             }
 
             var deleted = $("#deleted").data("value");
@@ -291,10 +325,25 @@
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 }
-                toastr.success("تم حذف الجدول بنجاح");
+                toastr.success("تم حذف المحاضرة بنجاح");
             }
         });
     </script>
     <!-- END PAGE LEVEL SCRIPTS -->
+
+    <script>
+        function submitForm() {
+            var tableSelect = document.getElementById('tableSelect');
+            var selectedValue = tableSelect.value;
+
+            if (selectedValue === '') {
+                alert('يرجى اختيار جدول قبل الإرسال.');
+                return;
+            }
+
+            var form = document.getElementById('addTableForm');
+            form.submit();
+        }
+    </script>
 }
 

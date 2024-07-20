@@ -22,6 +22,64 @@ namespace FollowUp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("FollowUp.Models.Activation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Activations");
+                });
+
+            modelBuilder.Entity("FollowUp.Models.Attendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Minutes")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TrainerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("TableId");
+
+                    b.ToTable("Attendances");
+                });
+
             modelBuilder.Entity("FollowUp.Models.Build", b =>
                 {
                     b.Property<int>("Id")
@@ -107,6 +165,9 @@ namespace FollowUp.Migrations
                     b.Property<int>("AccountingHours")
                         .HasColumnType("int");
 
+                    b.Property<int>("ActivationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -135,6 +196,10 @@ namespace FollowUp.Migrations
                     b.Property<double>("Stay")
                         .HasColumnType("float");
 
+                    b.Property<string>("Time")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TrainerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -144,6 +209,8 @@ namespace FollowUp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActivationId");
 
                     b.HasIndex("ApplicationUserId");
 
@@ -425,6 +492,9 @@ namespace FollowUp.Migrations
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserFullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -438,21 +508,44 @@ namespace FollowUp.Migrations
                         {
                             Id = "ecc07b18-f55e-4f6b-95bd-0e84f556135f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "16d88757-5d58-4f3b-be9a-df64b00390d0",
+                            ConcurrencyStamp = "d91c01e0-01e2-48dd-af4b-a3c0f2989b59",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOVpt5wlhDROsLvYuMIxNxEmI6Wrffbkee8p235/Afto2m1U7ZvWcM//UVKNOGdvfw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAjIxEsokmEsm0MurvgFqgvdm/AEoiqz6LCQ1+4yyZa52xKQt960wp/kD9/vpeERiw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "957747ff-c597-4817-a6fe-6b39a746d975",
+                            SecurityStamp = "a6d4aa94-f8f7-47ba-b6a7-47d8326c73b0",
                             TwoFactorEnabled = false,
                             UserName = "Admin",
                             UserFullName = "الادمن"
                         });
                 });
 
+            modelBuilder.Entity("FollowUp.Models.Attendance", b =>
+                {
+                    b.HasOne("FollowUp.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("FollowUp.Models.Table", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Table");
+                });
+
             modelBuilder.Entity("FollowUp.Models.Table", b =>
                 {
+                    b.HasOne("FollowUp.Models.Activation", "Activation")
+                        .WithMany()
+                        .HasForeignKey("ActivationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FollowUp.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId");
@@ -474,6 +567,8 @@ namespace FollowUp.Migrations
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Activation");
 
                     b.Navigation("ApplicationUser");
 

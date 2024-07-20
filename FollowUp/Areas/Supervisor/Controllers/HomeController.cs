@@ -29,17 +29,18 @@ namespace FollowUp.Areas.Supervisor.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("created") != null)
-            {
-                ViewBag.created = true;
-                HttpContext.Session.Remove("created");
-            }
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             if (string.IsNullOrEmpty(userId))
             {
                 return NotFound();
             }
+
+            var Tables = await _context.Tables.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري صباحي" || r.TypeDivition == "عملي صباحي")).CountAsync();
+            ViewBag.Tables = Tables;
+
+            var Evening = await _context.Tables.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري مسائي" || r.TypeDivition == "عملي مسائي")).CountAsync();
+            ViewBag.Evening = Evening;
 
             return View();
         }

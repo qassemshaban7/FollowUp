@@ -10,7 +10,7 @@ namespace FollowUp.ViewModels
         public int AccountingHours { get; set; }
         public string TypeDivition { get; set; }
         public string Day { get; set; }
-        public TimeOnly Time { get; set; }
+        public string Time { get; set; }
         public int Capacity { get; set; }
         public int Registered { get; set; }
         public double Stay { get; set; }
@@ -18,5 +18,6 @@ namespace FollowUp.ViewModels
         public int CourseId { get; set; }
         public string TrainerId { get; set; }
         public int BuildId { get; set; }
+        public int ActivationId { get; set; }
     }
 }

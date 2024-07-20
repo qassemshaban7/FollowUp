@@ -55,11 +55,17 @@ namespace FollowUp.Areas.Admin.Controllers
             var Building = await _context.Builds.CountAsync();
             ViewBag.Building = Building;
 
-            var Tables = await _context.Tables.CountAsync();
+            var Tables = await _context.Tables.Where(r => r.Activation.Status == "نشط").CountAsync();
             ViewBag.Tables = Tables;
 
             var Departments = await _context.Departments.CountAsync();
             ViewBag.Departments = Departments;
+
+            var Report = await _context.Attendances.CountAsync();
+            ViewBag.Report = Report;
+
+            var Activation = await _context.Activations.CountAsync();
+            ViewBag.Activation = Activation;
 
             SuperAdminHomeVM homeVM = new SuperAdminHomeVM
             {

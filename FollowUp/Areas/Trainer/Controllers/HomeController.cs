@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
+using System.Composition;
 using System.Data;
 using System.Security.Claims;
 
@@ -40,6 +41,9 @@ namespace FollowUp.Areas.Trainer.Controllers
             {
                 return NotFound();
             }
+
+            var Report = await _context.Attendances.Where(c => c.ApplicationUser.Id == userId).CountAsync();
+            ViewBag.Report = Report;
 
             return View();
         }

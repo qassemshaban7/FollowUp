@@ -1,4 +1,6 @@
-﻿namespace FollowUp.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FollowUp.ViewModels
 {
     public class EditTrainerVM
     {
@@ -6,5 +8,9 @@
         public string FullName { get; set; }
         public string UserName { get; set; }
         public int DepartmentId { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
+
+        public IFormFile? Image { get; set; }
     }
 }

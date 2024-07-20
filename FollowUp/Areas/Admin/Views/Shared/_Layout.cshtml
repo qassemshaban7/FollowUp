@@ -42,7 +42,7 @@
             </li><!-- br-menu-item -->
             <li class="br-menu-item">
                 <a href="#" class="br-menu-link with-sub">
-                    <i class="menu-item-icon icon fas fa-chalkboard-teacher tx-20"></i>
+                    <i class="menu-item-icon icon fas fa-user-tie tx-20"></i>
                     <span class="menu-item-label">قائمة المدربين</span>
                 </a><!-- br-menu-link -->
                 <ul class="br-menu-sub">
@@ -50,6 +50,7 @@
                     <li class="sub-item"><a asp-action="Create" asp-controller="Trainer" class="sub-link">اضافة مدرب جديد</a></li>
                 </ul>
             </li>
+
             <li class="br-menu-item">
                 <a href="#" class="br-menu-link with-sub">
                     <i class="menu-item-icon icon fas fa-users tx-20"></i>
@@ -57,12 +58,13 @@
                 </a><!-- br-menu-link -->
                 <ul class="br-menu-sub">
                     <li class="sub-item"><a asp-action="Index" asp-controller="Supervisor" class="sub-link">عرض المشرفين</a></li>
-                    <li class="sub-item"><a asp-action="Create" asp-controller="Supervisors" class="sub-link">اضافة مشرف جديد</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Supervisor" class="sub-link">اضافة مشرف جديد</a></li>
                 </ul>
             </li>
+
             <li class="br-menu-item">
                 <a href="#" class="br-menu-link with-sub">
-                    <i class="menu-item-icon icon fas fa-book tx-20"></i>
+                    <i class="menu-item-icon icon fas fa-book-open tx-20"></i>
                     <span class="menu-item-label">قائمة المقررات</span>
                 </a><!-- br-menu-link -->
                 <ul class="br-menu-sub">
@@ -70,36 +72,61 @@
                     <li class="sub-item"><a asp-action="Create" asp-controller="Course" class="sub-link">اضافة مقرر جديد</a></li>
                 </ul>
             </li>
+
             <li class="br-menu-item">
                 <a href="#" class="br-menu-link with-sub">
-                    <i class="menu-item-icon icon fas fa-book tx-20"></i>
+                    <i class="menu-item-icon icon fas fa-calendar-alt tx-20"></i>
                     <span class="menu-item-label">قائمة الجداول</span>
                 </a><!-- br-menu-link -->
                 <ul class="br-menu-sub">
-                    <li class="sub-item"><a asp-action="Index" asp-controller="Table" class="sub-link">عرض الجداول</a></li>
-                    <li class="sub-item"><a asp-action="Create" asp-controller="Table" class="sub-link">اضافة جدول جديد</a></li>
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Activation" class="sub-link">عرض الجداول</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Activation" class="sub-link">اضافة جدول جديد</a></li>
                 </ul>
             </li>
+
             <li class="br-menu-item">
                 <a href="#" class="br-menu-link with-sub">
-                    <i class="menu-item-icon icon fas fa-book tx-20"></i>
+                    <i class="menu-item-icon icon fas fa-chalkboard-teacher tx-20"></i>
+                    <span class="menu-item-label">قائمة المحاضرات</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Table" class="sub-link">عرض المحاضرات</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Table" class="sub-link">اضافة محاضرة جديدة</a></li>
+                </ul>
+            </li>
+
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-file-alt tx-20"></i>
+                    <span class="menu-item-label">قائمة التقارير</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Report" class="sub-link">عرض التقارير</a></li>
+                </ul>
+            </li>
+
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-building tx-20"></i>
                     <span class="menu-item-label">قائمة القاعات</span>
                 </a><!-- br-menu-link -->
                 <ul class="br-menu-sub">
                     <li class="sub-item"><a asp-action="Index" asp-controller="Build" class="sub-link">عرض القاعات</a></li>
-                    <li class="sub-item"><a asp-action="Create" asp-controller="Build" class="sub-link">اضافة قاعة جديد</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Build" class="sub-link">اضافة قاعة جديدة</a></li>
                 </ul>
             </li>
+
             <li class="br-menu-item">
                 <a href="#" class="br-menu-link with-sub">
-                    <i class="menu-item-icon icon fas fa-building tx-20"></i>
-                    <span class="menu-item-label">قائمة الاقسام</span>
+                    <i class="menu-item-icon icon fas fa-sitemap tx-20"></i>
+                    <span class="menu-item-label">قائمة الأقسام</span>
                 </a><!-- br-menu-link -->
                 <ul class="br-menu-sub">
-                    <li class="sub-item"><a asp-action="Index" asp-controller="Department" class="sub-link">عرض الاقسام</a></li>
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Department" class="sub-link">عرض الأقسام</a></li>
                     <li class="sub-item"><a asp-action="Create" asp-controller="Department" class="sub-link">اضافة قسم جديد</a></li>
                 </ul>
             </li>
+
 
 
         </ul>

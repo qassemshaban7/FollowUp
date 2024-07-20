@@ -42,10 +42,28 @@
 </div><!-- d-flex -->
 
 <div class="br-pagebody">
-    <div class="br-section-wrapper">
-    </div><!-- br-section-wrapper -->
-</div><!-- br-pagebody -->
+    <div class="row row-sm">
 
+        <div class="col-sm-4 col-xl-4 mb-3">
+            <a asp-action="Index" asp-controller="Report">
+                <div class="bg-success rounded overflow-hidden">
+                    <div class="pd-x-20 pd-t-20 d-flex align-items-center">
+                        <i class="fas fa-chalkboard-teacher tx-60 lh-0 tx-white op-7"></i>
+                        <div class="mg-r-20">
+                            <p class="tx-20 tx-spacing-1 tx-mont tx-bold tx-uppercase tx-white-8 mg-b-10">قائمة التقارير</p>
+                            <p class="tx-24 tx-white tx-lato tx-bold mg-b-0 lh-1">@ViewBag.Report</p>
+                        </div>
+                    </div>
+                    <div id="ch2" class="ht-50 tr-y-1"></div>
+                </div>
+            </a>
+        </div><!-- col-3 -->
+
+
+
+
+    </div><!-- row -->
+</div><!-- br-pagebody -->
 @section scripts {
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
 

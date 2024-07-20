@@ -1,0 +1,187 @@
+﻿@using FollowUp.Models
+@model Attendance
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساءلة عن غياب عضو الهيئة التدريبية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+            color: #000;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 1200px;
+            margin: auto;
+            border: 1px solid #000;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #fff;
+            color: #000;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+            .header img {
+                width: 100px;
+                height: auto;
+            }
+
+            .header .header-text-right {
+                width: 40%;
+                text-align: center;
+                direction: ltr;
+            }
+
+            .header .header-text-left {
+                width: 40%;
+                text-align: center;
+            }
+
+            .header h1, .header h2, .header h3 {
+                margin: 0;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .content p, .content ul {
+            margin: 0 0 15px 0;
+        }
+
+        .signature {
+            margin-top: 40px;
+        }
+
+            .signature p {
+                margin: 5px 0;
+            }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .footer img {
+                width: 100px;
+                height: auto;
+            }
+
+        .dis {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-text-left">
+                <h1>المملكة العربية السعودية</h1>
+                <h2>المؤسسة العامة للتدريب التقني والمهني</h2>
+                <h4>الكلية التقنية للاتصالات والمعلومات بجدة</h4>
+                <h5>إدارة الرقابة</h5>
+            </div>
+            <img src="~/img/config/شعار.jpg" alt="Logo">
+            <div class="header-text-right">
+                <h3>KINGDOM OF SAUDI ARABIA</h3>
+                <h5>Technical and Vocational Training Corporation</h5>
+                <h6>Technical College of Telecommunications & Info – Jeddah</h6>
+            </div>
+        </div>
+        <hr />
+        <hr />
+        <h3 class="dis">مساءلة عن غياب عضو الهيئة التدريبية</h3>
+        <table>
+            <tr>
+                <th>الفصل التدريبي</th>
+                <th>اليوم</th>
+                <th>التاريخ</th>
+                <th>الأسبوع</th>
+                <th>رقم المحاضرة</th>
+                <th>اسم المادة</th>
+                <th>المبنى</th>
+                <th>رقم القاعة</th>
+            </tr>
+            <tr>
+                <td>الثاني 1444-1445هـ</td>
+                <td>@Model.Table.Day</td>
+                <td>05 / 06 / 1445هـ</td>
+                <td>4</td>
+                <td>3</td>
+                <td>إنترنت الاشياء</td>
+                <td>1</td>
+                <td>127</td>
+            </tr>
+        </table>
+
+        <div class="content">
+            <p>سعادة رئيس / قسم الحاسب الآلي، حفظه الله</p>
+            <p>السلام عليكم ورحمة الله وبركاته،</p>
+            <p>عدم تواجد الساعة 10:12 و 10:39 من خلال الجولة الميدانية ضمن إجراءات المتابعة تبين ما يلي:</p>
+            <ul>
+                <li>لم يتواجد المدرب في القاعة</li>
+            </ul>
+
+            <p>وبناءً على الجدول التدريبي فإن القاعة يشغلها المدرب: <strong>فهد السميري</strong></p>
+
+            <div class="signature">
+                <p>منسق إدارة الرقابة: مشعل بن مرزوق العتيبي</p>
+                <p>التوقيع: </p>
+                <p>التاريخ: 11 / 06 / 1445هـ</p>
+            </div>
+
+            <div class="signature">
+                <p>المكرم المدرب: فهد السميري</p>
+                <p>السلام عليكم ورحمة الله وبركاته، وبعد :</p>
+                <p>من خلال المتابعة تبين الموضح أعلاه آمل الإفادة عن أسباب ذلك وتقديم ما يؤيد عذركم خلال يومين عمل من تاريخه، علماً في حالة عدم الرد سيتم اتخاذ اللازم حسب النظام.</p>
+                <p>رئيس القسم: ____________</p>
+                <p>التوقيع: ____________</p>
+                <p>التاريخ: _____/_____/144هـ</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>يرجى أرفاق صورة إعلان الاعتذار عن المحاضرة للمتدربين عبر البلاك بورد أو الإيميل.</p>
+            <p>يجب أن يوضح المتغيب أسباب غيابه فور تسليمه الاستمارة وإعادتها ويقوم بإحضار ما يثبت ذلك خلال يومين عمل. وبعد هذه المدة فسوف يتم الحسم.</p>
+            <p>في حالة صدور قرار الحسم فلا يمكن قبول طلب الإعفاء منه مطلقاً.</p>
+            <p>تحفظ هذه المساءلة بملف المذكور بعد انتهاء الإجراءات النظامية.</p>
+            <p>لا يجوز نقل او تغيير موعد المحاضرة او مقرها بدون الحصول على الموافقة الرسمية من وكيل الكلية للتدريب.</p>
+            <img src="~/img/config/signature.svg" alt="Footer Logo">
+        </div>
+    </div>
+</body>
+</html>

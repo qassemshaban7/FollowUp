@@ -66,7 +66,7 @@ namespace FollowUp.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ApplicationUser model, string? returnUrl = null)
+        public async Task<IActionResult> Create(ApplicationUser model, IFormFile Image, string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
@@ -76,7 +76,30 @@ namespace FollowUp.Areas.Admin.Controllers
                     UserFullName = model.UserFullName,
                     UserName = model.UserName,
                     EmailConfirmed = true,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
                 };
+
+                if (Image != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+
+                    string[] allowedExtensions = { ".png", ".jpg", ".jpeg" };
+                    if (!allowedExtensions.Contains(Path.GetExtension(Image.FileName).ToLower()))
+                    {
+                        TempData["ErrorMessage"] = "Only .png and .jpg and .jpeg images are allowed!";
+                        return RedirectToAction("Create");
+                    }
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    await using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await Image.CopyToAsync(fileStream);
+                    }
+                    user.Image = uniqueFileName;
+                }
 
                 var result = await _userManager.CreateAsync(user, "P@ssw0rd");
 
@@ -115,6 +138,8 @@ namespace FollowUp.Areas.Admin.Controllers
                 Id = user.Id,
                 FullName = user.UserFullName,
                 UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
             };
 
             return View(editUserVM);
@@ -140,6 +165,47 @@ namespace FollowUp.Areas.Admin.Controllers
 
                 user.UserFullName = editUserVM.FullName;
                 user.UserName = editUserVM.UserName;
+                user.Email = editUserVM.Email;
+                user.PhoneNumber = editUserVM.PhoneNumber;
+
+                string oldImageFileName = user.Image;
+                string Oldd = user.Image;
+
+
+                if (editUserVM.Image != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+
+                    string[] allowedExtensions = { ".png", ".jpg", ".jpeg" };
+                    if (!allowedExtensions.Contains(Path.GetExtension(editUserVM.Image.FileName).ToLower()))
+                    {
+                        TempData["ErrorMessage"] = "Only .png and .jpg and .jpeg images are allowed!";
+                        return RedirectToAction("Create");
+                    }
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + editUserVM.Image.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    await using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await editUserVM.Image.CopyToAsync(fileStream);
+                    }
+
+                    if (!string.IsNullOrEmpty(oldImageFileName))
+                    {
+                        string oldFilePath = Path.Combine(uploadsFolder, oldImageFileName);
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
+                    }
+                    user.Image = uniqueFileName;
+                }
+                else
+                {
+                    user.Image = Oldd;
+                }
+
 
                 _context.Update(user);
                 await _context.SaveChangesAsync();

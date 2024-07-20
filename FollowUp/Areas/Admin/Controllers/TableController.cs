@@ -5,8 +5,11 @@ using FollowUp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FollowUp.Areas.Admin.Controllers
 {
@@ -30,121 +33,160 @@ namespace FollowUp.Areas.Admin.Controllers
         }
 
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Add()
-        //{
-        //    try
-        //    {
-        //        var files = HttpContext.Request.Form.Files;
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Add(int AcId)
+        {
+            try
+            {
+                var files = HttpContext.Request.Form.Files;
 
-        //        if (files.Count > 0)
-        //        {
-        //            string webRootPath = _hostingEnvironment.WebRootPath;
-        //            var uploads = Path.Combine(webRootPath, @"CoursesFiles\");
-        //            string uniqueFileName = Guid.NewGuid().ToString() + "_" + files[0].FileName;
+                if (files.Count > 0)
+                {
+                    string webRootPath = _hostingEnvironment.WebRootPath;
+                    var uploads = Path.Combine(webRootPath, @"TabelsFiles\");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + files[0].FileName;
 
-        //            using (var filesStream = new FileStream(Path.Combine(uploads, uniqueFileName), FileMode.Create))
-        //            {
-        //                files[0].CopyTo(filesStream);
-        //            }
+                    using (var filesStream = new FileStream(Path.Combine(uploads, uniqueFileName), FileMode.Create))
+                    {
+                        files[0].CopyTo(filesStream);
+                    }
 
-        //            using (var package = new ExcelPackage(new FileInfo(Path.Combine(uploads, uniqueFileName))))
-        //            {
-        //                var worksheet = package.Workbook.Worksheets[0];
+                    using (var package = new ExcelPackage(new FileInfo(Path.Combine(uploads, uniqueFileName))))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
 
-        //                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-        //                {
-        //                    string coursecode = worksheet.Cells[row, 5].Value?.ToString();
-        //                    if (string.IsNullOrEmpty(coursecode))
-        //                        continue;
+                        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            string deptName = worksheet.Cells[row, 4].Value?.ToString();
+                            if (string.IsNullOrEmpty(deptName))
+                                continue;
 
-        //                    var course = await _context.Courses.FirstOrDefaultAsync(x => x.Coursecode == coursecode);
+                            var department = await _context.Departments.FirstOrDefaultAsync(x => x.Name == deptName);
+                            if (department == null)
+                            {
+                                department = new Department { Name = deptName };
+                                _context.Departments.Add(department);
+                                await _context.SaveChangesAsync();
+                            }
 
-        //                    if (course == null)
-        //                    {
-        //                        string username = worksheet.Cells[row, 2].Value?.ToString();
-        //                        if (string.IsNullOrEmpty(username))
-        //                            continue;
+                            string coursecode = worksheet.Cells[row, 5].Value?.ToString();
+                            if (string.IsNullOrEmpty(coursecode))
+                                continue;
 
-        //                        var user = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.UserName == username);
-        //                        if (user == null)
-        //                            continue;
+                            var course = await _context.Courses.FirstOrDefaultAsync(x => x.Coursecode == coursecode);
 
-        //                        string deptName = worksheet.Cells[row, 7].Value?.ToString();
-        //                        if (string.IsNullOrEmpty(deptName))
-        //                            continue;
+                            if (course == null)
+                            {
+                                course = new Course
+                                {
+                                    Name = worksheet.Cells[row, 6].Value?.ToString(),
+                                    ClassPart = worksheet.Cells[row, 3].Value?.ToString(),
+                                    Coursecode = coursecode,
+                                    ReferenceNumber = Convert.ToInt32(worksheet.Cells[row, 7].Value)
+                                };
 
-        //                        var department = await _context.Departments.FirstOrDefaultAsync(x => x.Name == deptName);
-        //                        if (department == null)
-        //                        {
-        //                            department = new Department { Name = deptName };
-        //                            _context.Departments.Add(department);
-        //                            await _context.SaveChangesAsync();
-        //                        }
+                                await _context.Courses.AddAsync(course);
+                                await _context.SaveChangesAsync();
+                            }
 
-        //                        string specialiName = worksheet.Cells[row, 6].Value?.ToString();
-        //                        if (string.IsNullOrEmpty(specialiName))
-        //                            continue;
+                            string username = worksheet.Cells[row, 19].Value?.ToString();
 
-        //                        var specialization = await _context.Specializations.FirstOrDefaultAsync(x => x.Name == specialiName);
-        //                        if (specialization == null)
-        //                        {
-        //                            specialization = new Specialization { Name = specialiName };
-        //                            _context.Specializations.Add(specialization);
-        //                            await _context.SaveChangesAsync();
-        //                        }
+                            string email = worksheet.Cells[row, 21].Value?.ToString();
 
-        //                        course = new Course
-        //                        {
-        //                            Name = worksheet.Cells[row, 4].Value?.ToString(),
-        //                            SpecializationId = specialization.Id,
-        //                            Phase = worksheet.Cells[row, 8].Value?.ToString(),
-        //                            DepartmentId = department.Id,
-        //                            ApplicationUser = user,
-        //                            UserId = user.Id,
-        //                            Coursecode = coursecode,
-        //                            ReferenceNumber = Convert.ToInt32(worksheet.Cells[row, 3].Value)
-        //                        };
+                            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.UserName == username);
+                            if (user == null)
+                            {
+                                if (email == null)
+                                {
+                                    user = new ApplicationUser
+                                    {
+                                        UserFullName = worksheet.Cells[row, 20].Value?.ToString(),
+                                        UserName = username,
+                                        DepartmentId = department.Id,
+                                        EmailConfirmed = true,
+                                    };
 
-        //                        await _context.Courses.AddAsync(course);
-        //                        await _context.SaveChangesAsync();
-        //                    }
+                                    var result = await _userManager.CreateAsync(user, "P@ssw0rd");
 
-        //                    string trainingNumber = worksheet.Cells[row, 1].Value?.ToString();
-        //                    if (string.IsNullOrEmpty(trainingNumber))
-        //                        continue;
+                                    if (result.Succeeded)
+                                    {
+                                        await _userManager.AddToRoleAsync(user, StaticDetails.Trainer);
+                                        await _context.SaveChangesAsync();
+                                    }
+                                }
+                                else
+                                {
+                                    user = new ApplicationUser
+                                    {
+                                        UserFullName = worksheet.Cells[row, 20].Value?.ToString(),
+                                        UserName = username,
+                                        DepartmentId = department.Id,
+                                        EmailConfirmed = true,
+                                        Email = email,
+                                    };
 
-        //                    var trainee = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.UserName == trainingNumber);
-        //                    if (trainee == null)
-        //                        continue;
+                                    var result = await _userManager.CreateAsync(user, "P@ssw0rd");
 
-        //                    var selectedTraineeCourses = await _context.ApplicationUserCourses
-        //                        .Where(ptu => ptu.CourseId == course.Id && ptu.UserId == trainee.Id)
-        //                        .FirstOrDefaultAsync();
+                                    if (result.Succeeded)
+                                    {
+                                        await _userManager.AddToRoleAsync(user, StaticDetails.Trainer);
+                                        await _context.SaveChangesAsync();
+                                    }
+                                }
+                            }
 
-        //                    if (selectedTraineeCourses != null)
-        //                        continue;
+                            string hall = worksheet.Cells[row, 15].Value?.ToString();
+                            if (string.IsNullOrEmpty(hall))
+                                continue;
 
-        //                    var traineeCourse = new ApplicationUserCourse
-        //                    {
-        //                        UserId = trainee.Id,
-        //                        CourseId = course.Id
-        //                    };
+                            var build = await _context.Builds.FirstOrDefaultAsync(x => x.Hall == hall);
 
-        //                    await _context.ApplicationUserCourses.AddAsync(traineeCourse);
-        //                    await _context.SaveChangesAsync();
-        //                }
-        //            }
-        //            HttpContext.Session.SetString("created", "true");
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //}
+                            if (build == null)
+                            {
+                                build = new Build
+                                {
+                                    Hall = hall,
+                                    Building = worksheet.Cells[row, 14].Value?.ToString(),
+                                    TrainingUnit = worksheet.Cells[row, 2].Value?.ToString(),
+                                    Classroom = worksheet.Cells[row, 1].Value?.ToString(),
+                                };
+
+                                await _context.Builds.AddAsync(build);
+                                await _context.SaveChangesAsync();
+                            }
+
+                            var table = new Table
+                            {
+                                ContactHours = Convert.ToInt32(worksheet.Cells[row, 9].Value),
+                                AccountingHours = Convert.ToInt32(worksheet.Cells[row, 8].Value),
+                                TypeDivition = worksheet.Cells[row, 10].Value?.ToString(),
+                                Day = worksheet.Cells[row, 11].Value?.ToString(),
+                                Time = worksheet.Cells[row, 12].Value?.ToString(),
+                                Capacity = Convert.ToInt32(worksheet.Cells[row, 16].Value),
+                                Registered = Convert.ToInt32(worksheet.Cells[row, 17].Value),
+                                Stay = Convert.ToInt32(worksheet.Cells[row, 18].Value),
+                                DepartmentId = department.Id,
+                                CourseId = course.Id,
+                                BuildId = build.Id,
+                                ActivationId = AcId,
+                                TrainerId = user.Id,
+                                ApplicationUser = user,
+                            };
+
+                            await _context.Tables.AddAsync(table);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    HttpContext.Session.SetString("created", "true");
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+        }
 
         public async Task<IActionResult> Index()
         {
@@ -168,9 +210,13 @@ namespace FollowUp.Areas.Admin.Controllers
             var Course = await _context.Tables
                 .Include(x => x.ApplicationUser)
                 .Include(y => y.Department)
+                .Include(y => y.Activation)
                 .Include(y => y.Build)
                 .Include(y => y.Course)
+                .Where(r => r.Activation.Status == "نشط")
                 .ToListAsync();
+
+            ViewBag.Actvations = await _context.Activations.ToListAsync();
 
             return View(Course);
         }
@@ -183,21 +229,42 @@ namespace FollowUp.Areas.Admin.Controllers
                                join role in _context.Roles
                                on userRole.RoleId equals role.Id
                                where role.Name == StaticDetails.Trainer
-                               select new ApplicationUser
+                               select new SelectListItem
                                {
-                                   Id = x.Id,
-                                   UserFullName = x.UserFullName
+                                   Value = x.Id.ToString(),
+                                   Text = x.UserFullName
                                }).ToListAsync();
+
             ViewBag.Trainers = users;
 
-            ViewBag.Department = await _context.Departments.ToListAsync();
-            ViewBag.Course = await _context.Courses.ToListAsync();
-            ViewBag.Build = await _context.Builds.ToListAsync();
+            ViewBag.Activation = await _context.Activations.Select(a => new SelectListItem
+            {
+                Value = a.Id.ToString(),
+                Text = a.Name
+            }).ToListAsync();
 
+            ViewBag.Department = await _context.Departments.Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = d.Name
+            }).ToListAsync();
+
+            ViewBag.Course = await _context.Courses.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToListAsync();
+
+            ViewBag.Build = await _context.Builds.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Hall
+            }).ToListAsync();
 
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
+
 
 
         [HttpPost]
@@ -223,6 +290,7 @@ namespace FollowUp.Areas.Admin.Controllers
                     CourseId = model.CourseId,
                     BuildId = model.BuildId,
                     Stay = model.Stay,
+                    ActivationId = model.ActivationId,
                     ApplicationUser = user,
                 };
 
@@ -241,24 +309,44 @@ namespace FollowUp.Areas.Admin.Controllers
                                    join role in _context.Roles
                                    on userRole.RoleId equals role.Id
                                    where role.Name == StaticDetails.Trainer
-                                   select new ApplicationUser
+                                   select new SelectListItem
                                    {
-                                       Id = x.Id,
-                                       UserFullName = x.UserFullName
+                                       Value = x.Id.ToString(),
+                                       Text = x.UserFullName
                                    }).ToListAsync();
+
                 ViewBag.Trainers = users;
 
-                ViewBag.Department = await _context.Departments.ToListAsync();
-                ViewBag.Course = await _context.Courses.ToListAsync();
-                ViewBag.Build = await _context.Builds.ToListAsync();
+                ViewBag.Activation = await _context.Activations.Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Name
+                }).ToListAsync();
+
+                ViewBag.Department = await _context.Departments.Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                }).ToListAsync();
+
+                ViewBag.Course = await _context.Courses.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToListAsync();
+
+                ViewBag.Build = await _context.Builds.Select(b => new SelectListItem
+                {
+                    Value = b.Id.ToString(),
+                    Text = b.Hall
+                }).ToListAsync();
+
                 return View(model);
             }
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-
-
             if (id == null)
             {
                 return NotFound();
@@ -284,6 +372,7 @@ namespace FollowUp.Areas.Admin.Controllers
                 CourseId = table.CourseId,
                 TrainerId = table.TrainerId,
                 BuildId = table.BuildId,
+                ActivationId = table.ActivationId,
             };
 
             var users = await (from x in _context.ApplicationUsers
@@ -292,16 +381,37 @@ namespace FollowUp.Areas.Admin.Controllers
                                join role in _context.Roles
                                on userRole.RoleId equals role.Id
                                where role.Name == StaticDetails.Trainer
-                               select new ApplicationUser
+                               select new SelectListItem
                                {
-                                   Id = x.Id,
-                                   UserFullName = x.UserFullName
+                                   Value = x.Id.ToString(),
+                                   Text = x.UserFullName
                                }).ToListAsync();
+
             ViewBag.Trainers = users;
 
-            ViewBag.Department = await _context.Departments.ToListAsync();
-            ViewBag.Course = await _context.Courses.ToListAsync();
-            ViewBag.Build = await _context.Builds.ToListAsync();
+            ViewBag.Activation = await _context.Activations.Select(a => new SelectListItem
+            {
+                Value = a.Id.ToString(),
+                Text = a.Name
+            }).ToListAsync();
+
+            ViewBag.Department = await _context.Departments.Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = d.Name
+            }).ToListAsync();
+
+            ViewBag.Course = await _context.Courses.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToListAsync();
+
+            ViewBag.Build = await _context.Builds.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Hall
+            }).ToListAsync();
 
             return View(editUserVM);
 
@@ -338,6 +448,7 @@ namespace FollowUp.Areas.Admin.Controllers
                 table.CourseId = editUserVM.CourseId;
                 table.TrainerId = editUserVM.TrainerId;
                 table.BuildId = editUserVM.BuildId;
+                table.ActivationId = editUserVM.ActivationId;
                 table.ApplicationUser = user1;
 
                 _context.Update(table);
@@ -353,16 +464,37 @@ namespace FollowUp.Areas.Admin.Controllers
                                    join role in _context.Roles
                                    on userRole.RoleId equals role.Id
                                    where role.Name == StaticDetails.Trainer
-                                   select new ApplicationUser
+                                   select new SelectListItem
                                    {
-                                       Id = x.Id,
-                                       UserFullName = x.UserFullName
+                                       Value = x.Id.ToString(),
+                                       Text = x.UserFullName
                                    }).ToListAsync();
+
                 ViewBag.Trainers = users;
 
-                ViewBag.Department = await _context.Departments.ToListAsync();
-                ViewBag.Course = await _context.Courses.ToListAsync();
-                ViewBag.Build = await _context.Builds.ToListAsync();
+                ViewBag.Activation = await _context.Activations.Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Name
+                }).ToListAsync();
+
+                ViewBag.Department = await _context.Departments.Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                }).ToListAsync();
+
+                ViewBag.Course = await _context.Courses.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToListAsync();
+
+                ViewBag.Build = await _context.Builds.Select(b => new SelectListItem
+                {
+                    Value = b.Id.ToString(),
+                    Text = b.Hall
+                }).ToListAsync();
 
                 return View(editUserVM);
             }
@@ -388,8 +520,8 @@ namespace FollowUp.Areas.Admin.Controllers
         {
             try
             {
-                string FileName = "جداول الطلاب.xlsx";
-                string exampleFolder = Path.Combine(_hostingEnvironment.WebRootPath, "example");
+                string FileName = "مثال اضافة الجداول.xlsx";
+                string exampleFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Example");
                 var filePath = Path.Combine(exampleFolder, FileName);
 
                 if (!System.IO.File.Exists(filePath))

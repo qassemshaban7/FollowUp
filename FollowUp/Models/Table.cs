@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FollowUp.Models
 {
@@ -10,8 +9,7 @@ namespace FollowUp.Models
         public int AccountingHours { get; set; }
         public string TypeDivition { get; set; }
         public string Day { get; set; }
-        [NotMapped]
-        public TimeOnly Time { get; set; }  
+        public string Time { get; set; }
         public int Capacity { get; set; }
         public int Registered { get; set; }
         public double Stay { get; set; }
@@ -32,5 +30,9 @@ namespace FollowUp.Models
         [ForeignKey("BuildId")]
         public int BuildId { get; set; }
         public Build? Build { get; set; }
+
+        [ForeignKey("ActivationId")]
+        public int ActivationId { get; set; }
+        public Activation? Activation { get; set; }
     }
 }

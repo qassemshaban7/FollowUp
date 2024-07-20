@@ -123,12 +123,16 @@ namespace FollowUp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var ApplicationUsers = _context.ApplicationUsers.Where(rs => rs.DepartmentId == id).ToList();
-            _context.ApplicationUsers.RemoveRange(ApplicationUsers);
-            await _context.SaveChangesAsync();
+            //var tabels = await _context.Tables.FirstOrDefaultAsync(x => x.DepartmentId == id);
+            //_context.Tables.RemoveRange(tabels);
+            //await _context.SaveChangesAsync();
 
-            var course = await _context.Departments.FindAsync(id);
-            _context.Departments.Remove(course);
+            //var ApplicationUsers = _context.ApplicationUsers.Where(rs => rs.DepartmentId == id).ToList();
+            //_context.ApplicationUsers.RemoveRange(ApplicationUsers);
+            //await _context.SaveChangesAsync();
+
+            var dept = await _context.Departments.FindAsync(id);
+            _context.Departments.Remove(dept);
             await _context.SaveChangesAsync();
             HttpContext.Session.SetString("deleted", "true");
             return RedirectToAction(nameof(Index));

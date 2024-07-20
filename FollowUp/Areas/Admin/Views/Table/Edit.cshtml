@@ -5,8 +5,12 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+
 <div class="br-pagetitle">
-    <h3 class="text-info mr-3">تعديل بيانات الجدول </h3>
+    <h3 class="text-info mr-3">تعديل بيانات المحاضرة </h3>
 </div><!-- d-flex -->
 
 <div class="br-pagebody">
@@ -42,7 +46,7 @@
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اختر اليوم: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                <select asp-for="Day" class="form-control" required>
+                                <select asp-for="Day" class="form-control select2" required>
                                     <option value="">-- اختر يوم --</option>
                                     <option value="السبت">السبت</option>
                                     <option value="الأحد">الأحد</option>
@@ -58,7 +62,7 @@
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">الوقت: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                <input asp-for="Time" type="time" class="form-control" placeholder="الوقت" required>
+                                <input asp-for="Time" type="text" class="form-control" placeholder="الوقت" required>
                                 <span class="text-danger" asp-validation-for="Time"></span>
                             </div>
                         </div><!-- row -->
@@ -90,25 +94,17 @@
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم المدرب: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                <select asp-for="TrainerId" class="form-control" required>
-                                    <option value="">اختر المدرب...</option>
-                                    @foreach (var user in ViewBag.Trainers)
-                                    {
-                                        <option value="@user.Id">@user.UserFullName</option>
-                                    }
-                                </select>
+                                <div class="form-group">
+                                    <select asp-for="TrainerId" asp-items="@ViewBag.Trainers" class="form-control select2" required></select>
+                                </div>
                             </div>
                         </div><!-- row -->
 
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم القسم: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                <select asp-for="DepartmentId" class="form-control" required>
+                                <select asp-for="DepartmentId" asp-items="ViewBag.Department" class="form-control select2" required>
                                     <option value="">اختر القسم...</option>
-                                    @foreach (var user in ViewBag.Department)
-                                    {
-                                        <option value="@user.Id">@user.Name</option>
-                                    }
                                 </select>
                             </div>
                         </div><!-- row -->
@@ -116,12 +112,8 @@
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم المقرر: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                <select asp-for="CourseId" class="form-control" required>
+                                <select asp-for="CourseId" asp-items="ViewBag.Course" class="form-control select2" required>
                                     <option value="">اختر المقرر...</option>
-                                    @foreach (var user in ViewBag.Course)
-                                    {
-                                        <option value="@user.Id">@user.Name</option>
-                                    }
                                 </select>
                             </div>
                         </div><!-- row -->
@@ -129,12 +121,17 @@
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم القاعة: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                <select asp-for="BuildId" class="form-control" required>
+                                <select asp-for="BuildId" asp-items="ViewBag.Build" class="form-control select2" required>
                                     <option value="">اختر القاعة...</option>
-                                    @foreach (var user in ViewBag.Build)
-                                    {
-                                        <option value="@user.Id">@user.Hall</option>
-                                    }
+                                </select>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">اسم الجدول: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <select asp-for="ActivationId" asp-items="ViewBag.Activation" class="form-control select2" required>
+                                    <option value="">اختر الجدول...</option>
                                 </select>
                             </div>
                         </div><!-- row -->
@@ -152,6 +149,19 @@
     </div><!-- br-section-wrapper -->
 </div><!-- br-pagebody -->
 @section Scripts {
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: 'ابحث بالاسم هنا',
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

@@ -18,6 +18,8 @@ namespace FollowUp.Data
         public DbSet<Build> Builds { get; set; } 
         public DbSet<Course> Courses { get; set; } 
         public DbSet<Table> Tables { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Activation> Activations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

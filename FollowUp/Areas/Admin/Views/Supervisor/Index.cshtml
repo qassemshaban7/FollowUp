@@ -14,7 +14,7 @@
 }
 
 <div class="br-pagetitle">
-    <i class="fas fa-chalkboard-teacher fa-6x text-info"></i>
+    <i class="fas fa-user-check fa-6x text-info"></i>
     <div class="row">
         <div class="col-lg-10 col-10">
             <h3 class="text-info">قائمة المشرفين</h3>
@@ -34,8 +34,10 @@
             <table id="deptsTable" class="table display responsive nowrap">
                 <thead>
                     <tr>
+                        <th>صورة</th>
                         <th>اسم المشرف</th>
                         <th>اسم المستخدم</th>
+                        <th>البريد الالكتروني</th>
                         <th>التفاصيل</th>
                         <th>تعديل</th>
                         <th>حذف</th>
@@ -45,8 +47,21 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Image))
+                                {
+                                    <a class="image-receipt" href="~/images/@item.Image">
+                                        <img src="~/images/@item.Image" alt="صورة شخصية" width="50" height="50" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>لا توجد</span>
+                                }
+                            </td>
                             <td>@item.UserFullName</td>
                             <td>@item.UserName</td>
+                            <td>@item.Email</td>
                             <td>
                                 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ModalUser_@item.Id">
                                     عرض
@@ -95,6 +110,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <span>البريد الالكتروني :</span> <span class="text-info">  @item.Email</span>
+                            </div>
+                            <div class="col">
+                                <span>رقم الجوال:</span> <span class="text-info">   @item.PhoneNumber</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">اغلاق</button>
                     </div>
