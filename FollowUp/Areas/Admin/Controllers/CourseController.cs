@@ -148,11 +148,5 @@ namespace FollowUp.Areas.Admin.Controllers
             HttpContext.Session.SetString("deleted", "true");
             return RedirectToAction(nameof(Index));
         }
-
-        private bool UserExists(int id)
-        {
-            return _context.Courses.Any(e => e.Id == id);
-        }
-
     }
 }

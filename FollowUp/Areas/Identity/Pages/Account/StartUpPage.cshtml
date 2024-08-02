@@ -96,17 +96,21 @@
             <img src="~/img/logo-1.png" class="img-thumbnail logo-img" />
         </div>
         <div class="options">
-            <a href="/Identity/Account/LoginTrainer" class="option" onclick="redirectToLoginTrainerPage()">
-                <img src="~/img/مدرب.png" alt="مدرب">
-                <span>مدرب</span>
+            <a href="/Identity/Account/LoginAdmin" class="option" onclick="redirectToLoginPage()">
+                <img src="~/img/manager.png" alt="مدير النظام">
+                <span>مدير النظام</span>
+            </a>
+            <a href="/Identity/Account/LoginHead" class="option" onclick="redirectToLoginHeadPage()">
+                <img src="~/img/head.webp" alt="رئيس قسم">
+                <span>رئيس قسم</span>
             </a>
             <a href="/Identity/Account/Loginsupervisor" class="option" onclick="redirectToLoginTraineePage()">
                 <img src="~/img/متابع1.jpg" alt="مشرف">
                 <span>مشرف</span>
             </a>
-            <a href="/Identity/Account/LoginAdmin" class="option" onclick="redirectToLoginPage()">
-                <img src="~/img/manager.png" alt="مدير النظام">
-                <span>مدير النظام</span>
+            <a href="/Identity/Account/LoginTrainer" class="option" onclick="redirectToLoginTrainerPage()">
+                <img src="~/img/مدرب.png" alt="مدرب">
+                <span>مدرب</span>
             </a>
         </div>
     </div>
@@ -114,6 +118,9 @@
     <script>
         function redirectToLoginPage() {
             window.location.href = '/Identity/Account/LoginAdmin';
+        }
+        function redirectToLoginHeadPage() {
+            window.location.href = '/Identity/Account/LoginHead';
         }
         function redirectToLoginTrainerPage() {
             window.location.href = '/Identity/Account/LoginTrainer';

@@ -30,17 +30,22 @@ namespace FollowUp.Areas.Supervisor.Controllers
         public async Task<IActionResult> Index()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync( v => v.Id == userId);
 
             if (string.IsNullOrEmpty(userId))
             {
                 return NotFound();
             }
 
-            var Tables = await _context.Tables.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري صباحي" || r.TypeDivition == "عملي صباحي")).CountAsync();
+
+            var Tables = await _context.Tables.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري صباحي" || r.TypeDivition == "عملي صباحي") && r.ApplicationUser.Department.Name == user.Department.Name).CountAsync();
             ViewBag.Tables = Tables;
 
-            var Evening = await _context.Tables.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري مسائي" || r.TypeDivition == "عملي مسائي")).CountAsync();
+            var Evening = await _context.Tables.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري مسائي" || r.TypeDivition == "عملي مسائي") && r.ApplicationUser.Department.Name == user.Department.Name).CountAsync();
             ViewBag.Evening = Evening;
+
+            var Report = await _context.Attendances.Where(r => r.ApplicationUser.Department.Name == user.Department.Name).CountAsync();
+            ViewBag.Report = Report;
 
             return View();
         }

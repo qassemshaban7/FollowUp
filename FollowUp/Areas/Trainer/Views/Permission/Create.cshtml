@@ -1,0 +1,184 @@
+﻿@using FollowUp.Models
+@model Permission
+@{
+    ViewData["Title"] = "نموذج استئذان";
+    Layout = "~/Areas/Trainer/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج استئذان</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            direction: rtl;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .header img {
+                width: 100px;
+                height: auto;
+            }
+
+            .header .header-text-right, .header .header-text-left {
+                text-align: center;
+                flex: 1;
+            }
+
+            .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 {
+                margin: 5px 0;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header p {
+                font-size: 18px;
+            }
+
+        .content {
+            margin-bottom: 20px;
+        }
+
+            .content p {
+                margin: 10px 0;
+                font-size: 18px;
+            }
+
+            .content ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+                .content ul li {
+                    margin: 5px 0;
+                }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                font-size: 20px;
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .form-group textarea {
+                width: 100%;
+                height: 100px;
+                padding: 15px;
+                font-size: 20px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+                resize: vertical;
+            }
+
+        .form-layout-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+            .form-layout-footer input, .form-layout-footer a {
+                margin: 0 10px;
+                padding: 10px 20px;
+                font-size: 16px;
+                border-radius: 5px;
+            }
+
+            .form-layout-footer input {
+                border: none;
+                background-color: #007bff;
+                color: #fff;
+            }
+
+            .form-layout-footer a {
+                border: 1px solid #ccc;
+                background-color: #f8f9fa;
+                color: #333;
+            }
+
+        .footer p {
+            margin: 10px 0;
+            text-align: center;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-text-left">
+            <h2>المملكة العربية السعودية</h2>
+            <h3>المؤسسة العامة للتدريب التقني والمهني</h3>
+            <h4>الكلية التقنية للاتصالات والمعلومات بجدة</h4>
+            <h5>إدارة الرقابة</h5>
+        </div>
+        <img src="~/img/config/شعار.jpg" alt="Logo">
+        <div class="header-text-right">
+            <h3>KINGDOM OF SAUDI ARABIA</h3>
+            <h5>Technical and Vocational Training Corporation</h5>
+            <h6>Technical College of Telecommunications & Info – Jeddah</h6>
+        </div>
+    </div>
+    <hr />
+    <hr />
+    <div class="container" id="printArea">
+        <div class="header">
+            <h1>نموذج استئذان</h1>
+            <p id="hijri-date">تاريخ / / 144 هـ</p>
+        </div>
+
+        <form method="post" asp-action="Create" asp-controller="Permission" asp-route-returnurl="@ViewData["ReturnUrl"]">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label for="Value">مضمون الاستئذان : <span class="tx-danger">*</span></label>
+                <textarea id="Value" asp-for="Value" placeholder="مضمون الاستئذان" required></textarea>
+                <span class="text-danger" asp-validation-for="Value"></span>
+            </div>
+            <div class="form-layout-footer">
+                <input type="submit" value="إضافة" class="btn btn-info">
+                <a asp-action="Index" class="btn btn-secondary">الرجوع</a>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        function getHijriDate() {
+            var today = new Date();
+            var hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' }).format(today);
+            return hijriDate.replace(/\d+/g, (match) => {
+                return Number(match).toLocaleString('ar-EG');
+            });
+        }
+
+        document.getElementById('hijri-date').textContent = 'تاريخ ' + getHijriDate();
+    </script>
+</body>
+</html>

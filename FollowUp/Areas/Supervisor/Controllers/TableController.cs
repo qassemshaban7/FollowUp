@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
@@ -44,6 +45,10 @@ namespace FollowUp.Areas.Supervisor.Controllers
                 HttpContext.Session.Remove("updated");
             }
 
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(s => s.Id == userId);
+
+
             var daysInArabic = new Dictionary<DayOfWeek, string>
             {
                 { DayOfWeek.Saturday, "السبت" },
@@ -71,15 +76,15 @@ namespace FollowUp.Areas.Supervisor.Controllers
 
             if (selectedDate == "كل الايام")
             {
-                Course = Course.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري صباحي" || r.TypeDivition == "عملي صباحي"));
+                Course = Course.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري صباحي" || r.TypeDivition == "عملي صباحي") && r.ApplicationUser.Department.Name == user.Department.Name);
             }
             else if (selectedDate != null)
             {
-                Course = Course.Where(a => a.Day == selectedDate && a.Activation.Status == "نشط" && (a.TypeDivition == "نظري صباحي" || a.TypeDivition == "عملي صباحي"));
+                Course = Course.Where(a => a.Day == selectedDate && a.Activation.Status == "نشط" && (a.TypeDivition == "نظري صباحي" || a.TypeDivition == "عملي صباحي") && a.ApplicationUser.Department.Name == user.Department.Name);
             }
             else
             {
-                Course = Course.Where(a => a.Day == todayInArabic && a.Activation.Status == "نشط" && (a.TypeDivition == "نظري صباحي" || a.TypeDivition == "عملي صباحي"));
+                Course = Course.Where(a => a.Day == todayInArabic && a.Activation.Status == "نشط" && (a.TypeDivition == "نظري صباحي" || a.TypeDivition == "عملي صباحي") && a.ApplicationUser.Department.Name == user.Department.Name);
             }
 
             var attendances = await Course.ToListAsync();
@@ -108,6 +113,8 @@ namespace FollowUp.Areas.Supervisor.Controllers
                 var user = await _context.ApplicationUsers.FindAsync(table.TrainerId);
 
                 var today = DateTime.Today;
+                var hijriCalendar = new System.Globalization.HijriCalendar();
+                var hijriDate = $"{hijriCalendar.GetDayOfMonth(today)}/{hijriCalendar.GetMonth(today)}/{hijriCalendar.GetYear(today)}";
 
                 var results = await _context.Attendances
                     .Where(r => r.Date.Date == today && r.TableId == table.Id && r.ApplicationUser.Id == user.Id)
@@ -124,15 +131,17 @@ namespace FollowUp.Areas.Supervisor.Controllers
                     {
                         Value = "غائب",
                         Date = DateTime.Now,
+                        HijriDate = hijriDate, 
                         TableId = id,
                         TrainerId = table.TrainerId,
                         ApplicationUser = user,
+                        Status = 1,
                     };
 
                     _context.Attendances.Add(attendance);
                     await _context.SaveChangesAsync();
 
-                    await _emailProvider.SendMail( table.Id, user.Id, value, minutes);
+                    await _emailProvider.SendMail( attendance.Id, table.Id, user.Id, value, minutes);
 
                     HttpContext.Session.SetString("created", "true");
                     return RedirectToAction("Index");
@@ -144,21 +153,40 @@ namespace FollowUp.Areas.Supervisor.Controllers
                         Value = "متأخر",
                         Minutes = minutes.Value,
                         Date = DateTime.Now,
+                        HijriDate = hijriDate, 
                         TableId = id,
                         TrainerId = table.TrainerId,
                         ApplicationUser = user,
+                        Status = 1,
                     };
 
                     _context.Attendances.Add(attendance);
                     await _context.SaveChangesAsync();
 
-                    await _emailProvider.SendMail( table.Id, user.Id, value, minutes);
+                    await _emailProvider.SendMail( attendance.Id, table.Id, user.Id, value, minutes);
 
                     HttpContext.Session.SetString("updated", "true");
                     return RedirectToAction("Index");
                 }
                 else
                 {
+                    var attendance = new Attendance
+                    {
+                        Value = "مدرب بدون متدربين",
+                        Date = DateTime.Now,
+                        HijriDate = hijriDate,
+                        TableId = id,
+                        TrainerId = table.TrainerId,
+                        ApplicationUser = user,
+                        Status = 1,
+                    };
+
+                    _context.Attendances.Add(attendance);
+                    await _context.SaveChangesAsync();
+
+                    //await _emailProvider.SendMail( attendance.Id, table.Id, user.Id, value, minutes);
+
+                    HttpContext.Session.SetString("created", "true");
                     return RedirectToAction("Index");
                 }
             }
@@ -167,6 +195,7 @@ namespace FollowUp.Areas.Supervisor.Controllers
                 return RedirectToAction("Index");
             }
         }
+
 
     }
 }

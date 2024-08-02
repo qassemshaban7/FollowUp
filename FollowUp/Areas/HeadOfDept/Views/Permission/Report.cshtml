@@ -1,0 +1,400 @@
+﻿@using FollowUp.Models
+@model Permission
+@{
+    ViewData["Title"] = " نموذج استئذان";
+    Layout = "~/Areas/HeadOfDept/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> نموذج استئذان</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            direction: rtl;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .header img {
+                width: 100px;
+                height: auto;
+            }
+
+            .header .header-text-right, .header .header-text-left {
+                text-align: center;
+                flex: 1;
+            }
+
+            .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 {
+                margin: 5px 0;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header p {
+                font-size: 18px;
+            }
+
+        .content {
+            margin-bottom: 20px;
+        }
+
+            .content p {
+                margin: 10px 0;
+                font-size: 18px;
+            }
+
+            .content ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+                .content ul li {
+                    margin: 5px 0;
+                }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                font-size: 20px;
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .form-group textarea {
+                width: 100%;
+                height: 100px;
+                padding: 15px;
+                font-size: 20px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+                resize: vertical;
+            }
+
+        .form-layout-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+            .form-layout-footer input, .form-layout-footer a {
+                margin: 0 10px;
+                padding: 10px 20px;
+                font-size: 16px;
+                border-radius: 5px;
+            }
+
+            .form-layout-footer input {
+                border: none;
+                background-color: #007bff;
+                color: #fff;
+            }
+
+            .form-layout-footer a {
+                border: 1px solid #ccc;
+                background-color: #f8f9fa;
+                color: #333;
+            }
+
+        .footer p {
+            margin: 10px 0;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .table-container {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .cen {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+        .no-print {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="printArea">
+        <div class="header">
+            <div class="header-text-left">
+                <h2>المملكة العربية السعودية</h2>
+                <h3>المؤسسة العامة للتدريب التقني والمهني</h3>
+                <h4>الكلية التقنية للاتصالات والمعلومات بجدة</h4>
+                <h5>إدارة الرقابة</h5>
+            </div>
+            <img src="~/img/config/شعار.jpg" alt="Logo">
+            <div class="header-text-right">
+                <h3>KINGDOM OF SAUDI ARABIA</h3>
+                <h5>Technical and Vocational Training Corporation</h5>
+                <h6>Technical College of Telecommunications & Info – Jeddah</h6>
+            </div>
+        </div>
+        <hr />
+        <hr />
+        <div class="container">
+            <div class="header">
+                <h1>نموذج استئذان</h1>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>م</th>
+                            <th>الاسم</th>
+                            <th>رقم الحاسب</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>رقم الجوال</th>
+                            <th>الوقت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>@Model.ApplicationUser.UserFullName</td>
+                            <td>@Model.ApplicationUser.UserName</td>
+                            <td>
+                                @if (Model.ApplicationUser.Email == null)
+                                {
+                                    <span>لا يوجد</span>
+                                }
+                                else
+                                {
+                                    <span>@Model.ApplicationUser.Email</span>
+                                }
+                            </td>
+                            <td>
+                                @if (Model.ApplicationUser.PhoneNumber == null)
+                                {
+                                    <span>لا يوجد</span>
+                                }
+                                else
+                                {
+                                    <span>@Model.ApplicationUser.PhoneNumber</span>
+                                }
+                            </td>
+                            <td>@Model.Date</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="right">@Model.Value</h3>
+
+            <p class="cen">وتقبلوا خالص تحياتي،،،</p>
+        </div>
+    </div>
+
+    <div class="row d-flex justify-content-center mt-4 no-print">
+        <button class="btn btn-primary" id="btnPrint" onclick="printPage()">طباعة</button>
+    </div>
+
+    <script>
+        function printPage() {
+            var printContent = document.getElementById('printArea').innerHTML;
+            var originalContent = document.body.innerHTML;
+
+            var printStyles = `
+                            body {
+                                font-family: 'Arial', sans-serif;
+                                background-color: #f8f9fa;
+                                color: #333;
+                                direction: rtl;
+                                margin: 0;
+                                padding: 20px;
+                            }
+
+                            .container {
+                                max-width: 800px;
+                                margin: auto;
+                                padding: 20px;
+                                background-color: #fff;
+                                border: 1px solid #ddd;
+                                border-radius: 10px;
+                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                            }
+
+                            .header {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                margin-bottom: 20px;
+                            }
+
+                                .header img {
+                                    width: 100px;
+                                    height: auto;
+                                }
+
+                                .header .header-text-right, .header .header-text-left {
+                                    text-align: center;
+                                    flex: 1;
+                                }
+
+                                .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 {
+                                    margin: 5px 0;
+                                }
+
+                                .header h1 {
+                                    font-size: 24px;
+                                }
+
+                                .header p {
+                                    font-size: 18px;
+                                }
+
+                            .content {
+                                margin-bottom: 20px;
+                            }
+
+                                .content p {
+                                    margin: 10px 0;
+                                    font-size: 18px;
+                                }
+
+                                .content ul {
+                                    list-style-type: none;
+                                    padding: 0;
+                                }
+
+                                    .content ul li {
+                                        margin: 5px 0;
+                                    }
+
+                            .form-group {
+                                margin-bottom: 20px;
+                            }
+
+                                .form-group label {
+                                    font-size: 20px;
+                                    display: block;
+                                    margin-bottom: 10px;
+                                }
+
+                                .form-group textarea {
+                                    width: 100%;
+                                    height: 100px;
+                                    padding: 15px;
+                                    font-size: 20px;
+                                    border: 1px solid #ccc;
+                                    border-radius: 5px;
+                                    box-sizing: border-box;
+                                    resize: vertical;
+                                }
+
+                            .form-layout-footer {
+                                text-align: center;
+                                margin-top: 30px;
+                            }
+
+                                .form-layout-footer input, .form-layout-footer a {
+                                    margin: 0 10px;
+                                    padding: 10px 20px;
+                                    font-size: 16px;
+                                    border-radius: 5px;
+                                }
+
+                                .form-layout-footer input {
+                                    border: none;
+                                    background-color: #007bff;
+                                    color: #fff;
+                                }
+
+                                .form-layout-footer a {
+                                    border: 1px solid #ccc;
+                                    background-color: #f8f9fa;
+                                    color: #333;
+                                }
+
+                            .footer p {
+                                margin: 10px 0;
+                                text-align: center;
+                                font-size: 16px;
+                            }
+
+                            .table-container {
+                                margin-bottom: 20px;
+                            }
+
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 20px;
+                            }
+
+                            table, th, td {
+                                border: 1px solid #000;
+                            }
+
+                            th, td {
+                                padding: 10px;
+                                text-align: center;
+                            }
+
+                            .cen {
+                                text-align: center;
+                            }
+
+                            .right {
+                                text-align: right;
+                            }
+                            .no-print {
+                                display: none;
+                            }
+                            `;
+
+            document.body.innerHTML = `<style>${printStyles}</style>` + printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+    </script>
+</body>
+</html>

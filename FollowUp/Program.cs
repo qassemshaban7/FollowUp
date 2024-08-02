@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FollowUp.Data.Services;
+using FollowUp.Models;
+using Hangfire;
 
 internal class Program
 {
@@ -16,7 +18,15 @@ internal class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+        {
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequiredLength = 4;
+            options.SignIn.RequireConfirmedAccount = true;
+        })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -58,10 +68,12 @@ internal class Program
 
         app.UseAuthorization();
 
+        //app.UseHangfireDashboard(pathMatch: "/dashboard");
+        //app.UseHangfireServer();
+
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
-
 
         app.MapRazorPages();
 

@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>الإحصائيات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #3C3883;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .header h2 {
+                color: #6C63FF;
+                border-bottom: 2px solid #6C63FF;
+                padding-bottom: 10px;
+                margin: 0;
+            }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-attendance-chart, .btn-download {
+            background-color: #6C63FF;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+            .btn-attendance-chart:hover, .btn-download:hover {
+                background-color: #5a54d4;
+            }
+
+            .btn-attendance-chart i, .btn-download i {
+                margin-right: 5px;
+            }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: left;
+            background-color: #FFFFFF;
+            border: 1px solid #dddddd;
+        }
+
+            .styled-table thead tr {
+                background-color: #6C63FF;
+                color: #FFFFFF;
+            }
+
+            .styled-table th,
+            .styled-table td {
+                padding: 12px 15px;
+                border: 1px solid #dddddd;
+            }
+
+            .styled-table tbody tr:nth-of-type(even) {
+                background-color: #f3f3f3;
+            }
+
+        .form-container {
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            display: block;
+            color: #3C3883;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #3C3883;
+        }
+
+        button[type="submit"] {
+            background-color: #6C63FF;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+            button[type="submit"]:hover {
+                background-color: #5a54d4;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <form method="get" asp-action="Statistics" asp-controller="Statistics">
+            <div class="form-group">
+                <label for="day">اليوم (اتركه فارغًا للبحث عن الشهر بالكامل):</label>
+                <input type="text" id="day" name="day" placeholder="أدخل اليوم" />
+            </div>
+            <div class="form-group">
+                <label for="month">الشهر:</label>
+                <input type="text" id="month" name="month" placeholder="أدخل الشهر" required />
+            </div>
+            <div class="form-group">
+                <label for="year">السنة:</label>
+                <input type="text" id="year" name="year" placeholder="أدخل السنة" required />
+            </div>
+            <button type="submit">عرض الإحصائيات</button>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>عدد المحاضرات</th>
+                    <th>عدد الحضور</th>
+                    <th>عدد الغياب</th>
+                    <th>عدد التأخير</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@ViewBag.TotalTables</td>
+                    <td>@ViewBag.PresentStatistics</td>
+                    <td>@ViewBag.AbsentStatistics</td>
+                    <td>@ViewBag.LateStatistics</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

@@ -7,57 +7,80 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            background-color: #fff;
             margin: 0;
-            padding: 0;
-            color: #333;
+            padding: 20px;
+            color: #000;
+            direction: rtl;
+            text-align: right;
         }
 
         .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f2f2f2;
-            padding: 20px;
-        }
-
-        .verification-box {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-            margin: 20px;
+            max-width: 1200px;
+            margin: auto;
+            border: 1px solid #000;
         }
 
-            .verification-box img {
-                max-width: 100%;
-                height: auto;
-                margin-bottom: 20px;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+            .header .header-text-right {
+                width: 40%;
+                text-align: center;
             }
 
-            .verification-box h2 {
-                margin-bottom: 10px;
-                color: #333;
-                font-size: 1.5rem;
+            .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 {
+                margin: 5px 0;
             }
 
-            .verification-box h3 {
-                margin-bottom: 20px;
-                color: #555;
-                font-size: 1.25rem;
+        .content, .footer {
+            text-align: right;
+        }
+
+            .content p, .content ul {
+                margin: 0 0 15px 0;
             }
 
-            .verification-box p {
-                margin: 20px 0;
-                color: #666;
-                font-size: 1rem;
-                line-height: 1.6;
-                text-align: left;
+        .signature {
+            margin-top: 40px;
+        }
+
+            .signature p {
+                margin: 5px 0;
             }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .dis {
+            text-align: center;
+        }
+
+        .disLeft {
+            text-align: left;
+        }
 
         .footer {
             margin-top: 20px;
@@ -68,23 +91,62 @@
 </head>
 <body>
     <div class="container">
-        <div class="verification-box">
-            <h2>نظام تقرير المتابعة بكلية الاتصالات والالكترونيات بجده</h2>
-            <h3>تقرير تأخير</h3>
-            <p>
-                السيد المحترم <strong>MessEMf</strong>
-            </p>
-            <p>
-                نفيدكم علماً بأن المشرف قد رصد تأخيركم عدد دقائق <strong>MessEMg</strong> عن تواجدكم في يوم <strong>MessEMa</strong> في مبنى <strong>MessEMb</strong> بقاعة <strong>MessEMc</strong> في التوقيت <strong>MessEMd</strong>، وذلك لتدريس مقرر <strong>MessEMe</strong>.
-            </p>
-            <p>
-                نرجو منكم الالتزام بالمواعيد والتواجد في الأوقات المحددة.
-            </p>
-            <p class="footer">
-                مع التحية<br>
-                إدارة كلية الاتصالات والالكترونيات بجده
-            </p>
+        <div class="header">
+            <div>
+                <h2>المملكة العربية السعودية</h2>
+                <h3>المؤسسة العامة للتدريب التقني والمهني</h3>
+                <h4>الكلية التقنية للاتصالات والمعلومات بجدة</h4>
+                <h5>وحدة الرقابة</h5>
+            </div>
+        </div>
+
+        <hr />
+        <hr />
+
+        <div class="content">
+            <h2 class="dis">إشعار بالحسم</h2>
+            <h3>المدرب/ <strong>MessEMf</strong> المحترم</h3>
+            <h5>السلام عليكم ورحمة الله وبركاته...</h5>
+            <h5>نفيدكم بصدور قرار حسم ، وذلك لتأخيركم عن التدريب في يوم <strong>MessEMa</strong> الموافق <strong>MessEMb</strong> هجريا حسب الجدول التالي:</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>المقرر</th>
+                        <th>اليوم</th>
+                        <th>تاريخ</th>
+                        <th>الحالة</th>
+                        <th>عدد دقائق</th>
+                        <th>ساعات الاتصال</th>
+                        <th>الوقت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MessEMg</td>
+                        <td>MessEMa</td>
+                        <td>MessEMb</td>
+                        <td>MessEMc</td>
+                        <td>MessEMt</td>
+                        <td>MessEMd</td>
+                        <td>MessEMe</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="dis">والله يحفظكم...</p>
+        </div>
+
+        <div class="content">
+            <h2 class="disLeft">مساعد مشرف وحدة الرقابة بالبرنامج التطبيقي المسائي</h2>
+            <h3 class="disLeft">مشعل بن مرزوق العتيبي</h3>
         </div>
     </div>
+
+    <p>
+        نرجو منكم الالتزام بالمواعيد والتواجد في الأوقات المحددة.
+    </p>
+    <p class="footer">
+        مع التحية<br>
+        إدارة كلية الاتصالات والالكترونيات بجده
+    </p>
 </body>
 </html>

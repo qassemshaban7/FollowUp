@@ -37,6 +37,14 @@
                             </div>
                         </div><!-- row -->
                         <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label"> كلمة المرور: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="NewPassword" type="password" class="form-control" placeholder="كلمة المرور">
+                                <span class="text-danger" asp-validation-for="NewPassword"></span>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم القسم</label>
                             <select class="col-sm-7 form-control" required asp-for="DepartmentId">
                                 <option value="">اختر القسم...</option>
@@ -48,9 +56,9 @@
                         </div><!-- row -->
 
                         <div class="row mb-3">
-                            <label class="col-sm-4 form-control-label">الصورة الشخصية: <span class="tx-danger">*</span></label>
+                            <label class="col-sm-4 form-control-label">الصورة الشخصية: <span class="tx-danger"></span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                <input asp-for="Image" type="file" class="form-control-file">
+                                <input asp-for="Image" type="file" class="form-control-image" accept="image/*">
                                 <span class="text-danger" asp-validation-for="Image"></span>
                             </div>
                         </div><!-- row -->

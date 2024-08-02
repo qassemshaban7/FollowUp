@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace FollowUp.Areas.Supervisor.Controllers
 {
@@ -53,6 +54,9 @@ namespace FollowUp.Areas.Supervisor.Controllers
                 { DayOfWeek.Friday, "الجمعة" }
             };
 
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(s => s.Id == userId);
+
             var todayInArabic = daysInArabic[DateTime.Today.DayOfWeek];
 
             var Course = _context.Tables
@@ -70,15 +74,15 @@ namespace FollowUp.Areas.Supervisor.Controllers
 
             if (selectedDate == "كل الايام")
             {
-                Course = Course.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري مسائي" || r.TypeDivition == "عملي مسائي"));
+                Course = Course.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري مسائي" || r.TypeDivition == "عملي مسائي") && r.ApplicationUser.Department.Name == user.Department.Name);
             }
             else if (selectedDate != null)
             {
-                Course = Course.Where(a => a.Day == selectedDate && a.Activation.Status == "نشط" && (a.TypeDivition == "نظري مسائي" || a.TypeDivition == "عملي مسائي"));
+                Course = Course.Where(a => a.Day == selectedDate && a.Activation.Status == "نشط" && (a.TypeDivition == "نظري مسائي" || a.TypeDivition == "عملي مسائي") && a.ApplicationUser.Department.Name == user.Department.Name);
             }
             else
             {
-                Course = Course.Where(a => a.Day == todayInArabic && a.Activation.Status == "نشط" && (a.TypeDivition == "نظري مسائي" || a.TypeDivition == "عملي مسائي"));
+                Course = Course.Where(a => a.Day == todayInArabic && a.Activation.Status == "نشط" && (a.TypeDivition == "نظري مسائي" || a.TypeDivition == "عملي مسائي") && a.ApplicationUser.Department.Name == user.Department.Name);
             }
 
             var attendances = await Course.ToListAsync();
@@ -97,74 +101,74 @@ namespace FollowUp.Areas.Supervisor.Controllers
             return View(Course);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Attendance(int id, string value, int? minutes)
-        {
-            try
-            {
-                var table = await _context.Tables.FindAsync(id);
-                var user = await _context.ApplicationUsers.FindAsync(table.TrainerId);
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Attendance(int id, string value, int? minutes)
+        //{
+        //    try
+        //    {
+        //        var table = await _context.Tables.FindAsync(id);
+        //        var user = await _context.ApplicationUsers.FindAsync(table.TrainerId);
 
-                var today = DateTime.Today;
+        //        var today = DateTime.Today;
 
-                var results = await _context.Attendances
-                    .Where(r => r.Date.Date == today && r.TableId == table.Id && r.ApplicationUser.Id == user.Id)
-                    .CountAsync();
+        //        var results = await _context.Attendances
+        //            .Where(r => r.Date.Date == today && r.TableId == table.Id && r.ApplicationUser.Id == user.Id)
+        //            .CountAsync();
 
-                if (results != 0)
-                {
-                    return RedirectToAction("Index");
-                }
+        //        if (results != 0)
+        //        {
+        //            return RedirectToAction("Index");
+        //        }
 
-                if (value == "غائب")
-                {
-                    var attendance = new Attendance
-                    {
-                        Value = "غائب",
-                        Date = DateTime.Now,
-                        TableId = id,
-                        TrainerId = table.TrainerId,
-                        ApplicationUser = user,
-                    };
+        //        if (value == "غائب")
+        //        {
+        //            var attendance = new Attendance
+        //            {
+        //                Value = "غائب",
+        //                Date = DateTime.Now,
+        //                TableId = id,
+        //                TrainerId = table.TrainerId,
+        //                ApplicationUser = user,
+        //            };
 
-                    _context.Attendances.Add(attendance);
-                    await _context.SaveChangesAsync();
+        //            _context.Attendances.Add(attendance);
+        //            await _context.SaveChangesAsync();
 
-                    await _emailProvider.SendMail(table.Id, user.Id, value, minutes);
+        //            await _emailProvider.SendMail(table.Id, user.Id, value, minutes);
 
-                    HttpContext.Session.SetString("created", "true");
-                    return RedirectToAction("Index");
-                }
-                else if (value == "متأخر" && minutes.HasValue)
-                {
-                    var attendance = new Attendance
-                    {
-                        Value = "متأخر",
-                        Minutes = minutes.Value,
-                        Date = DateTime.Now,
-                        TableId = id,
-                        TrainerId = table.TrainerId,
-                        ApplicationUser = user,
-                    };
+        //            HttpContext.Session.SetString("created", "true");
+        //            return RedirectToAction("Index");
+        //        }
+        //        else if (value == "متأخر" && minutes.HasValue)
+        //        {
+        //            var attendance = new Attendance
+        //            {
+        //                Value = "متأخر",
+        //                Minutes = minutes.Value,
+        //                Date = DateTime.Now,
+        //                TableId = id,
+        //                TrainerId = table.TrainerId,
+        //                ApplicationUser = user,
+        //            };
 
-                    _context.Attendances.Add(attendance);
-                    await _context.SaveChangesAsync();
+        //            _context.Attendances.Add(attendance);
+        //            await _context.SaveChangesAsync();
 
-                    await _emailProvider.SendMail(table.Id, user.Id, value, minutes);
+        //            await _emailProvider.SendMail(table.Id, user.Id, value, minutes);
 
-                    HttpContext.Session.SetString("updated", "true");
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-            catch
-            {
-                return RedirectToAction("Index");
-            }
-        }
+        //            HttpContext.Session.SetString("updated", "true");
+        //            return RedirectToAction("Index");
+        //        }
+        //        else
+        //        {
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
     }
 }

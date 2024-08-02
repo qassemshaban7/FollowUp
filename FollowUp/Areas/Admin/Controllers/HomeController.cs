@@ -49,6 +49,16 @@ namespace FollowUp.Areas.Admin.Controllers
 
             ViewBag.Trainers = trainers;
 
+            var HeadOfDept = await (from user in _context.ApplicationUsers
+                                  join userRole in _context.UserRoles
+                                  on user.Id equals userRole.UserId
+                                  join role in _context.Roles
+                                  on userRole.RoleId equals role.Id
+                                  where role.Name == StaticDetails.HeadOfDept
+                                  select user).CountAsync();
+
+            ViewBag.HeadOfDept = HeadOfDept;
+
             var Courses = await _context.Courses.CountAsync();
             ViewBag.Course = Courses;
 
@@ -66,6 +76,9 @@ namespace FollowUp.Areas.Admin.Controllers
 
             var Activation = await _context.Activations.CountAsync();
             ViewBag.Activation = Activation;
+
+            var Permissions = await _context.Permissions.CountAsync();
+            ViewBag.Permissions = Permissions;
 
             SuperAdminHomeVM homeVM = new SuperAdminHomeVM
             {

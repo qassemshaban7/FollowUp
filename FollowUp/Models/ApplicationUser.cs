@@ -12,13 +12,12 @@ namespace FollowUp.Models
     {
         [Required]
         public string UserFullName { get; set; } = null!; // اسم المدرب
-
         public string? Image { get; set; }
-
+        public int? DeptManager { get; set; }  // 1
+        public string? Specialty { get; set; }
 
         [ForeignKey("DepartmentId")]
         public int? DepartmentId { get; set; }
         public Department? Department { get; set; }  
-
     }
 }

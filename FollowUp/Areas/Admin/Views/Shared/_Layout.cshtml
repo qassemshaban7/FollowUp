@@ -62,6 +62,18 @@
                 </ul>
             </li>
 
+
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-user-cog tx-20"></i>
+                    <span class="menu-item-label">قائمة رؤساء الاقسام</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="HeadOfDept" class="sub-link">عرض رؤساء الاقسام</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="HeadOfDept" class="sub-link">اضافة رئيس قسم جديد</a></li>
+                </ul>
+            </li>
+            
             <li class="br-menu-item">
                 <a href="#" class="br-menu-link with-sub">
                     <i class="menu-item-icon icon fas fa-book-open tx-20"></i>
@@ -104,15 +116,13 @@
                     <li class="sub-item"><a asp-action="Index" asp-controller="Report" class="sub-link">عرض التقارير</a></li>
                 </ul>
             </li>
-
             <li class="br-menu-item">
                 <a href="#" class="br-menu-link with-sub">
-                    <i class="menu-item-icon icon fas fa-building tx-20"></i>
-                    <span class="menu-item-label">قائمة القاعات</span>
+                    <i class="menu-item-icon icon fas fa-file-signature tx-20"></i>
+                    <span class="menu-item-label">نماذج الاستئذان</span>
                 </a><!-- br-menu-link -->
                 <ul class="br-menu-sub">
-                    <li class="sub-item"><a asp-action="Index" asp-controller="Build" class="sub-link">عرض القاعات</a></li>
-                    <li class="sub-item"><a asp-action="Create" asp-controller="Build" class="sub-link">اضافة قاعة جديدة</a></li>
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Permission" class="sub-link">عرض نماذج الاستئذان</a></li>
                 </ul>
             </li>
 
@@ -126,7 +136,26 @@
                     <li class="sub-item"><a asp-action="Create" asp-controller="Department" class="sub-link">اضافة قسم جديد</a></li>
                 </ul>
             </li>
-
+            
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-building tx-20"></i>
+                    <span class="menu-item-label">قائمة القاعات</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Index" asp-controller="Build" class="sub-link">عرض القاعات</a></li>
+                    <li class="sub-item"><a asp-action="Create" asp-controller="Build" class="sub-link">اضافة قاعة جديدة</a></li>
+                </ul>
+            </li>
+            <li class="br-menu-item">
+                <a href="#" class="br-menu-link with-sub">
+                    <i class="menu-item-icon icon fas fa-chart-bar tx-20"></i>
+                    <span class="menu-item-label">الإحصائيات</span>
+                </a><!-- br-menu-link -->
+                <ul class="br-menu-sub">
+                    <li class="sub-item"><a asp-action="Statistics" asp-controller="Statistics" class="sub-link">عرض الإحصائيات</a></li>
+                </ul>
+            </li>
 
 
         </ul>
@@ -155,7 +184,7 @@
                         <div class="tx-center">
                             <a href="#"><img src="~/img/avatar.png" class="wd-80 rounded-circle" alt=""></a>
                             <h6 class="logged-fullname">@User.Identity.Name </h6>
-                            <p> المدير  </p>
+                            <p> مدير </p>
                         </div>
                         <hr>
                         

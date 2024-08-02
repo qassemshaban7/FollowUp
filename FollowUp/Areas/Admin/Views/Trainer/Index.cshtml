@@ -20,7 +20,12 @@
             <h3 class="text-info">قائمة المدربين</h3>
         </div>
         <div class="col-lg-2 col-7 mb-2">
-            <a asp-action="Create" asp-controller="Trainer" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <i class="fas fa-plus-circle"></i> اضافة موظفين
+            </button>
+        </div>
+        <div class="col-lg-2 col-7 mb-2">
+            <a asp-action="Create" asp-controller="Trainer" class="btn btn-success">
                 <i class="fas fa-plus-circle"></i> اضافة مدرب
             </a>
         </div>
@@ -37,9 +42,10 @@
                         <th>صورة</th>
                         <th>اسم المدرب</th>
                         <th>رقم الحاسب</th>
-                        <th>البريد الالكتروني</th>
-                        <th>القسم</th>
+                        @* <th>البريد الالكتروني</th> *@
+                        @* <th>القسم</th> *@
                         <th>التفاصيل</th>
+                        <th>تقرير</th>
                         <th>تعديل</th>
                         <th>حذف</th>
                     </tr>
@@ -62,7 +68,7 @@
                             </td>
                             <td>@item.UserFullName</td>
                             <td>@item.UserName</td>
-                            <td>
+@*                             <td>
                                 @if(item.Email == null)
                                 {
                                     <span>غير موجود</span>
@@ -71,12 +77,17 @@
                                 {
                                     @item.Email
                                 }
-                            </td>
-                            <td>@item.Department.Name</td>
+                            </td> *@
+                            @* <td>@item.Department.Name</td> *@
                             <td>
                                 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ModalUser_@item.Id">
                                     عرض
                                 </button>
+                            </td>
+                            <td>
+                                <a asp-action="Report" asp-controller="Trainer" asp-route-id="@item.Id" class="btn btn-success text-white">
+                                    <i class="fas fa-file-alt"></i> عرض
+                                </a>
                             </td>
                             <td>
                                 <a asp-action="Edit" asp-controller="Trainer" asp-route-id="@item.Id" class="btn btn-primary text-white">
@@ -99,6 +110,50 @@
 <input type="hidden" id="created" data-value="@ViewBag.created" />
 <input type="hidden" id="updated" data-value="@ViewBag.updated" />
 <input type="hidden" id="deleted" data-value="@ViewBag.deleted" />
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> اضافة موظفين عن طريق ملف EXCEL</h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning text-center" role="alert">
+                    يرجى الالتزام بترتيب الأعمدة في ملف Excel كما هو مذكور في النموذج الفارغ.
+                </div>
+                <div class="form-layout form-layout-4">
+                    <form method="get" asp-action="DownloadExcel" asp-controller="Trainer" enctype="multipart/form-data">
+                        <div class="row mg-t-20">
+                            <label class="col-sm-4 form-control-label">تحميل ملف اكسيل فارغ: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-download"></i> تحميل
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr />
+                    <form method="post" asp-action="Add" asp-controller="Trainer" enctype="multipart/form-data">
+                        <div class="row mg-t-20">
+                            <label class="col-sm-4 form-control-label">اختر ملف: <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input type="file" name="excelFile" accept=".xlsx" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-layout-footer mg-t-30 text-center">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-upload"></i> اضافة الموظفين
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">اغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @if (Model.Count() > 0)
 {
@@ -138,6 +193,22 @@
                             <div class="col">
                                 <span>القسم :</span> <span class="text-info"> @item.Department.Name </span>
                             </div>
+                        </div>
+                        <hr />
+                        
+                        <div class="row mb-2">
+                            @if (item.PhoneNumber == null)
+                            {
+                                <div class="col">
+                                    <span> رقم الجوال :</span> <span class="text-info"> غير موجود</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <span> رقم الجوال :</span> <span class="text-info">  @item.PhoneNumber</span>
+                                </div>
+                            }
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -2,6 +2,6 @@
 {
     public interface IEmailProvider
     {
-        Task<int> SendMail(int tableId, string UserId, string Value, int? minut);
+        Task<int> SendMail(int attendId, int tableId, string UserId, string Value, int? minut);
     }
 }

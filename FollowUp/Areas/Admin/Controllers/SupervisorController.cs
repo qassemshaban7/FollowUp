@@ -54,19 +54,21 @@ namespace FollowUp.Areas.Admin.Controllers
                                on userRole.RoleId equals role.Id
                                where role.Name == StaticDetails.Supervisor
                                select x)
+                               .Include(f => f.Department)
                                .ToListAsync();
 
             return View(users);
         }
         public async Task<IActionResult> Create(string? returnUrl = null)
         {
+            ViewBag.Department = await _context.Departments.ToListAsync();
             ViewData["ReturnUrl"] = returnUrl;
             return View();
 
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ApplicationUser model, IFormFile Image, string? returnUrl = null)
+        public async Task<IActionResult> Create(ApplicationUser model, IFormFile? Image, string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
@@ -78,6 +80,7 @@ namespace FollowUp.Areas.Admin.Controllers
                     EmailConfirmed = true,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
+                    DepartmentId = model.DepartmentId,
                 };
 
                 if (Image != null)
@@ -133,6 +136,13 @@ namespace FollowUp.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            var department = await _context.Departments
+                  .FirstOrDefaultAsync(d => d.Id == user.DepartmentId);
+            if (department == null)
+            {
+                return NotFound();
+            }
+
             var editUserVM = new EditSupervisorVM
             {
                 Id = user.Id,
@@ -140,8 +150,10 @@ namespace FollowUp.Areas.Admin.Controllers
                 UserName = user.UserName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                DepartmentId = department.Id,
             };
 
+            ViewBag.Department = await _context.Departments.ToListAsync();
             return View(editUserVM);
         }
 
@@ -167,6 +179,7 @@ namespace FollowUp.Areas.Admin.Controllers
                 user.UserName = editUserVM.UserName;
                 user.Email = editUserVM.Email;
                 user.PhoneNumber = editUserVM.PhoneNumber;
+                user.DepartmentId = editUserVM.DepartmentId;
 
                 string oldImageFileName = user.Image;
                 string Oldd = user.Image;
@@ -206,12 +219,20 @@ namespace FollowUp.Areas.Admin.Controllers
                     user.Image = Oldd;
                 }
 
+                if (editUserVM.NewPassword != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result2 = await _userManager.ResetPasswordAsync(user, token, editUserVM.NewPassword);
+                    await _userManager.UpdateAsync(user);
+                }
 
                 _context.Update(user);
                 await _context.SaveChangesAsync();
                 HttpContext.Session.SetString("updated", "true");
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Department = await _context.Departments.ToListAsync();
             return View(editUserVM);
         }
 

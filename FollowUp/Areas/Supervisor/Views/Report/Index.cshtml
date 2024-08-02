@@ -1,0 +1,193 @@
+﻿@model IEnumerable<Attendance>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section head {
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/dt-global_style.css">
+
+}
+
+<div class="br-pagetitle">
+    <i class="fas fa-file-alt fa-6x text-info"></i>
+    <div class="row">
+        <div class="col-lg-10 col-10">
+            <h3 class="text-info">قائمة التقارير</h3>
+        </div>
+    </div>
+</div>
+
+<div class="br-pagebody">
+    <div class="br-section-wrapper">
+        <div class="table-wrapper">
+            <table id="deptsTable" class="table display responsive nowrap">
+                <thead>
+                    <tr>
+                        <th>اسم المدرب</th>
+                        <th>اليوم</th>
+                        <th>الوقت</th>
+                        <th>المبنى</th>
+                        <th>القاعة</th>
+                        <th>الحالة</th>
+                        <th>التاريخ الهجري</th>
+                        <th>التفاصيل</th>
+                        <th>حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ApplicationUser.UserFullName</td>
+                            <td>@item.Table.Day</td>
+                            <td>@item.Table.Time</td>
+                            <td>@item.Table.Build.Building</td>
+                            <td>@item.Table.Build.Hall</td>
+                            <td>@item.Value</td>
+                            <td>@item.HijriDate</td>
+                            <td>
+                                <button type="button" class="btn btn-primary text-white" data-toggle="modal" data-target="#ModalUser_@item.Id">
+                                    عرض
+                                </button>
+                            </td>
+                            <td>
+                                <a asp-action="Delete" asp-controller="Report" asp-route-id="@item.Id" class="btn btn-danger">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="created" data-value="@ViewBag.created" />
+<input type="hidden" id="updated" data-value="@ViewBag.updated" />
+
+@if (Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        <div class="modal fade" id="ModalUser_@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"> تفاصيل الجدول :</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <span>الحالة :</span> <span class="text-info">  @item.Value</span>
+                            </div>
+                            @if (item.Minutes != null)
+                            {
+                                <div class="col">
+                                    <span>عدد الدقائق :</span> <span class="text-info">   @item.Minutes</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <span>عدد الدقائق :</span> <span class="text-info"> لا يوجد</span>
+                                </div>
+                            }
+                        </div>
+                        <hr />
+                        <div class="row mb-2">
+                            <div class="col">
+                                <span>ساعات الاتصال :</span> <span class="text-info">  @item.Table.ContactHours</span>
+                            </div>
+                            <div class="col">
+                                <span>ساعات المحاسبة :</span> <span class="text-info">   @item.Table.AccountingHours</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-2">
+                            <div class="col">
+                                <span>اليوم :</span> <span class="text-info">   @item.Table.Day</span>
+                            </div>
+                            <div class="col">
+                                <span>الوقت :</span> <span class="text-info">  @item.Table.Time</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-2">
+                            <div class="col">
+                                <span>سعة :</span> <span class="text-info">   @item.Table.Capacity</span>
+                            </div>
+                            <div class="col">
+                                <span>مسجلين :</span> <span class="text-info">   @item.Table.Registered</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-1">
+                            <div class="col">
+                                <span>متبقي :</span> <span class="text-info">  @item.Table.Stay</span>
+                            </div>
+                            <div class="col">
+                                <span>نوع الشعبة :</span> <span class="text-info">   @item.Table.TypeDivition</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-1">
+                            <div class="col">
+                                <span>القسم :</span> <span class="text-info">  @item.Table.Department.Name</span>
+                            </div>
+                            <div class="col">
+                                <span>المقرر :</span> <span class="text-info">   @item.Table.Course.Name</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-1">
+                            <div class="col">
+                                <span>اسم المدرب :</span> <span class="text-info">  @item.ApplicationUser.UserFullName</span>
+                            </div>
+                            <div class="col">
+                                <span>القاعة :</span> <span class="text-info">   @item.Table.Build.Hall</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-1">
+                            <div class="col">
+                                <span>التاريخ الهجري  :</span> <span class="text-info">  @item.HijriDate</span>
+                            </div>
+                        </div>
+                        <hr />
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary text-white" data-dismiss="modal">اغلاق</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section scripts {
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/lib/table/datatable/datatables.js"></script>
+    <script>
+        $('#deptsTable').DataTable({
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": "عدد النتائج   _TOTAL_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "بحث...",
+                "sLengthMenu": "النتائج :  _MENU_ ",
+            },
+            "order": [[1, "desc"]],
+            "stripeClasses": [],
+            "lengthMenu": [7, 10, 20, 50],
+            "pageLength": 20,
+            drawCallback: function () { $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered mb-5'); }
+        });
+    </script>
+    <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+    <script src="~/lib/toaster/toaster.js"></script>
+}

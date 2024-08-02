@@ -20,6 +20,7 @@ namespace FollowUp.Data
         public DbSet<Table> Tables { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Activation> Activations { get; set; }
+        public DbSet<Permission> Permissions { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,6 +31,8 @@ namespace FollowUp.Data
 
             string TRAINEE_ROLE_ID = "9eebd485-2a1d-45c6-9c00-68099eebd485";
 
+            string Head_ROLE_ID = "9eebd4pp-2a1d-45c6-9g80-68099eebd485";
+
             builder.Entity<ApplicationRole>().HasData(new ApplicationRole
             {
                 Name = "Admin",
@@ -37,6 +40,15 @@ namespace FollowUp.Data
                 Id = ADMIN_ROLE_ID,
                 ConcurrencyStamp = ADMIN_ROLE_ID,
                 ArabicRoleName = "الادمن"
+            });
+
+            builder.Entity<ApplicationRole>().HasData(new ApplicationRole
+            {
+                Name = "HeadOfDept",
+                NormalizedName = "HEADOFDEPT",
+                Id = Head_ROLE_ID,
+                ConcurrencyStamp = Head_ROLE_ID,
+                ArabicRoleName = "رئيس قسم"
             });
 
             builder.Entity<ApplicationRole>().HasData(new ApplicationRole

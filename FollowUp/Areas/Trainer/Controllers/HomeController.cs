@@ -35,15 +35,26 @@ namespace FollowUp.Areas.Trainer.Controllers
                 ViewBag.created = true;
                 HttpContext.Session.Remove("created");
             }
+
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _context.ApplicationUsers.FindAsync(userId);
 
             if (string.IsNullOrEmpty(userId))
             {
                 return NotFound();
             }
 
+
+            var Tables = await _context.Tables.Where(r => r.Activation.Status == "نشط" && r.ApplicationUser.UserName == user.UserName).CountAsync();
+            ViewBag.Tables = Tables;
+
             var Report = await _context.Attendances.Where(c => c.ApplicationUser.Id == userId).CountAsync();
             ViewBag.Report = Report;
+
+
+            var Permissions = await _context.Permissions.Where(c => c.TrainerId == userId).CountAsync();
+
+            ViewBag.Permissions = Permissions;
 
             return View();
         }

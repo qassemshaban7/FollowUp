@@ -1,0 +1,303 @@
+﻿@using FollowUp.Models
+@model ApplicationUser
+@{
+    ViewData["Title"] = "قرار إداري";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قرار إداري</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;
+            color: #000;
+            direction: rtl;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #000;
+            border-radius: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .header p {
+                margin: 0;
+                font-size: 18px;
+            }
+
+        .content {
+            margin-bottom: 20px;
+        }
+
+            .content p {
+                margin: 10px 0;
+                font-size: 18px;
+            }
+
+        .co {
+            font-size: 17px;
+        }
+
+        .content ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            .content ul li {
+                margin: 5px 0;
+            }
+
+        .table-container {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .cen {
+            text-align: center;
+        }
+
+        .lef {
+            text-align: left;
+        }
+
+        .ri {
+            text-align: right;
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        .no-print {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="printArea">
+        <div class="header">
+            <h1>قـــرار إداري</h1>
+            <p id="hijri-date">تاريخ / / 144هـ</p>
+        </div>
+
+        <div class="content co">
+            <ul>
+                <li>إن عميد كلية الاتصالات والالكترونيات بجده.</li>
+                <li>بنـاء على الصلاحيات المخولة له بموجب القـرار رقم 2/30723 وتـاريخ 01/03/1443هـ.</li>
+                <li>وبعد الاطلاع على سجلات دوام الموظفين في برنامج التطبيقي المسائي للفصل الثالث لعام 1444هـ.</li>
+                <li>وبناءً على غياب الموظف الموضح أسمه أدناه.</li>
+                <li>وبناءً على ما تقتضية مصلحة العمل والعقد الموحد بمهمة التدريب، واستناداً للنظام.</li>
+                <li>ولموافاتنا.</li>
+            </ul>
+
+            <p class="co">فقد تقرر ما يلي:</p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>م</th>
+                        <th>الاسم</th>
+                        <th>رقم الحاسب</th>
+                        <th>محاضرات الغياب</th>
+                        <th>محاضرات التأخير</th>
+                        <th>دقائق التأخير</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>@Model.UserFullName</td>
+                        <td>@Model.UserName</td>
+                        <td>@ViewBag.Atten</td>
+                        <td>@ViewBag.Late</td>
+                        <td>@ViewBag.Minutes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="content co">
+            <ul>
+                <li>1) يحسم على الموظف الموضح بياناته ولغيابه حسب ما هو موضح بعالية.</li>
+                <li>2) على مركز خدمة المجتمع والتدريب المستمر اتخاذ إجراءات الحسم نظاماً.</li>
+                <li>3) يبلغ هذا القرار للمختصين لتنفيذه.</li>
+            </ul>
+
+            <p class="cen">وتقبلوا خالص تحياتي،،،</p>
+        </div>
+
+        <div class="footer">
+            <p class="lef">عميد كلية الاتصالات والالكترونيات بجده</p>
+            <p class="lef">@ViewBag.Admin.UserFullName</p>
+            <p class="ri">ص . مع التحية لمدير مركز خدمة المجتمع والتدريب المستمر.</p>
+            <p class="ri">ص . ادارة الرقابة بالكلية.</p>
+        </div>
+    </div>
+
+    <div class="row d-flex justify-content-center mt-4 no-print">
+        <button class="btn btn-primary" id="btnPrint" onclick="printPage()">طباعة</button>
+    </div>
+    <script>
+        function getHijriDate() {
+            var today = new Date();
+            var hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' }).format(today);
+            return hijriDate.replace(/\d+/g, (match) => {
+                return Number(match).toLocaleString('ar-EG');
+            });
+        }
+
+        document.getElementById('hijri-date').textContent = 'تاريخ ' + getHijriDate() + ' هـ';
+
+        function printPage() {
+            var originalContents = document.body.innerHTML;
+            var printContents = document.getElementById('printArea').innerHTML;
+
+            var printStyles = `
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            background-color: #fff;
+                            color: #000;
+                            direction: rtl;
+                            margin: 0;
+                            padding: 20px;
+                        }
+
+                        .container {
+                            max-width: 800px;
+                            margin: auto;
+                            padding: 20px;
+                            border: 1px solid #000;
+                            border-radius: 10px;
+                        }
+
+                        .header {
+                            text-align: center;
+                            margin-bottom: 20px;
+                        }
+
+                        .header h1 {
+                            margin: 0;
+                            font-size: 24px;
+                        }
+
+                        .header p {
+                            margin: 0;
+                            font-size: 18px;
+                        }
+
+                        .content {
+                            margin-bottom: 20px;
+                        }
+
+                        .content p {
+                            margin: 10px 0;
+                            font-size: 18px;
+                        }
+
+                        .co {
+                            font-size: 17px;
+                        }
+
+                        .content ul {
+                            list-style-type: none;
+                            padding: 0;
+                        }
+
+                        .content ul li {
+                            margin: 5px 0;
+                        }
+
+                        .table-container {
+                            margin-bottom: 20px;
+                        }
+
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                        }
+
+                        table, th, td {
+                            border: 1px solid #000;
+                        }
+
+                        th, td {
+                            padding: 10px;
+                            text-align: center;
+                        }
+
+                        .cen {
+                            text-align: center;
+                        }
+
+                        .lef {
+                            text-align: left;
+                        }
+
+                        .ri {
+                            text-align: right;
+                        }
+
+                        .footer p {
+                            margin: 10px 0;
+                        }
+
+                        .no-print {
+                            display: none;
+                        }
+                    `;
+
+            var printDocument = document.createElement('html');
+            printDocument.innerHTML = `
+                        <head>
+                            <style>
+                                ${printStyles}
+                            </style>
+                        </head>
+                        <body>
+                            ${printContents}
+                        </body>
+                    `;
+
+            document.body.innerHTML = printDocument.innerHTML;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+</body>
+</html>

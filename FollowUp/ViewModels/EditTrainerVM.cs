@@ -10,6 +10,9 @@ namespace FollowUp.ViewModels
         public int DepartmentId { get; set; }
         [EmailAddress]
         public string Email { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Specialty { get; set; }
+        public string? NewPassword { get; set; }
 
         public IFormFile? Image { get; set; }
     }

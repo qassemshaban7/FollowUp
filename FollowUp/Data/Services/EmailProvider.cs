@@ -18,9 +18,9 @@ namespace FollowUp.Data.Services
             _config = config;
         }
 
-        public async Task<int> SendMail(int tableId, string UserId, string Value, int? minut)
+        public async Task<int> SendMail( int attendId, int tableId, string UserId, string Value, int? minut)
         {
-            
+            var attendance = await _context.Attendances.FindAsync(attendId);
 
             var user = await _context.ApplicationUsers.FindAsync(UserId);
             if (user.Email == null) return 0;
@@ -41,11 +41,12 @@ namespace FollowUp.Data.Services
                 string htmlTemplate = System.IO.File.ReadAllText(templatePath);
 
                 htmlTemplate = htmlTemplate.Replace("MessEMf", user.UserFullName);
+                htmlTemplate = htmlTemplate.Replace("MessEMg", table.Course.Name);
                 htmlTemplate = htmlTemplate.Replace("MessEMa", table.Day);
-                htmlTemplate = htmlTemplate.Replace("MessEMb", table.Build.Building);
-                htmlTemplate = htmlTemplate.Replace("MessEMc", table.Build.Hall);
-                htmlTemplate = htmlTemplate.Replace("MessEMd", table.Time);
-                htmlTemplate = htmlTemplate.Replace("MessEMe", table.Course.Name);
+                htmlTemplate = htmlTemplate.Replace("MessEMb", attendance.HijriDate);
+                htmlTemplate = htmlTemplate.Replace("MessEMc", attendance.Value);
+                htmlTemplate = htmlTemplate.Replace("MessEMd", table.ContactHours.ToString());
+                htmlTemplate = htmlTemplate.Replace("MessEMe", table.Time);
 
                 var builder = new BodyBuilder();
                 builder.HtmlBody = htmlTemplate;
@@ -72,12 +73,13 @@ namespace FollowUp.Data.Services
                 string htmlTemplate = System.IO.File.ReadAllText(templatePath);
 
                 htmlTemplate = htmlTemplate.Replace("MessEMf", user.UserFullName);
+                htmlTemplate = htmlTemplate.Replace("MessEMg", table.Course.Name);
                 htmlTemplate = htmlTemplate.Replace("MessEMa", table.Day);
-                htmlTemplate = htmlTemplate.Replace("MessEMb", table.Build.Building);
-                htmlTemplate = htmlTemplate.Replace("MessEMc", table.Build.Hall);
-                htmlTemplate = htmlTemplate.Replace("MessEMd", table.Time);
-                htmlTemplate = htmlTemplate.Replace("MessEMe", table.Course.Name);
-                htmlTemplate = htmlTemplate.Replace("MessEMg", minut.Value.ToString());
+                htmlTemplate = htmlTemplate.Replace("MessEMb", attendance.HijriDate);
+                htmlTemplate = htmlTemplate.Replace("MessEMc", attendance.Value);
+                htmlTemplate = htmlTemplate.Replace("MessEMt", attendance.Minutes.ToString());
+                htmlTemplate = htmlTemplate.Replace("MessEMd", table.ContactHours.ToString());
+                htmlTemplate = htmlTemplate.Replace("MessEMe", table.Time);
 
                 var builder = new BodyBuilder();
                 builder.HtmlBody = htmlTemplate;

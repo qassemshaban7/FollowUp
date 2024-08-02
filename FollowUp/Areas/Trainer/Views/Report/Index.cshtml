@@ -31,6 +31,7 @@
                         <th>المبنى</th>
                         <th>القاعة</th>
                         <th>الحالة</th>
+                        <th>الارسال</th>
                         <th>التفاصيل</th>
                         <th>ارسال تقرير</th>
                     </tr>
@@ -45,14 +46,36 @@
                             <td>@item.Table.Build.Hall</td>
                             <td>@item.Value</td>
                             <td>
-                                <button type="button" class="btn btn-primary text-white" data-toggle="modal" data-target="#ModalUser_@item.Id">
-                                    عرض
+                                @if (item.Status == 1)
+                                {
+                                    <span style="color: red;"><i class="fas fa-times-circle"></i> لم يتم الرد</span>
+                                }
+                                else if (item.Status == 2)
+                                {
+                                    <span style="color: orange;"><i class="fas fa-paper-plane"></i> تم الارسال لرئيس القسم</span>
+                                }
+                                else if (item.Status == 3)
+                                {
+                                    <span style="color: blue;"><i class="fas fa-user-tie"></i> تم الارسال للعميد</span>
+                                }
+                                else if (item.Status == 4)
+                                {
+                                    <span style="color: green;"><i class="fas fa-check-circle"></i> تم الرد من العميد</span>
+                                }
+                                else if (item.Status == 5)
+                                {
+                                    <span style="color: purple;"><i class="fas fa-file-alt"></i> تم الرد ورقي</span>
+                                }
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-info text-white" data-toggle="modal" data-target="#ModalUser_@item.Id">
+                                    <i class="fas fa-eye"></i> عرض
                                 </button>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal_@item.Id">
-                                    <span class="text-warning">ارسل تقرير <i class="fas fa-pen"></i></span>
-                                </button>
+                                <a asp-action="Report" asp-controller="Report" asp-route-id="@item.Id" class="btn btn-success text-white">
+                                    <i class="fas fa-file-alt"></i> عرض التقرير
+                                </a>
                             </td>
                         </tr>
                     }
@@ -65,58 +88,6 @@
 <input type="hidden" id="created" data-value="@ViewBag.created" />
 <input type="hidden" id="updated" data-value="@ViewBag.updated" />
 
-@foreach (var item in Model)
-{
-    <div class="modal fade" id="exampleModal_@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">تقرير الحضور</h5>
-                </div>
-                <div class="modal-body">
-                    <form method="post" asp-action="Attendance" asp-controller="Table" enctype="multipart/form-data" onsubmit="return validateForm(@item.Id)">
-                        <input type="hidden" name="id" value="@item.Id" />
-
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <label for="value_@item.Id">اختر الحالة:</label>
-                                </div>
-                                <div class="col-sm-8">
-                                    <select id="value_@item.Id" name="value" class="form-control" onchange="toggleMinutesField(@item.Id)" required>
-                                        <option value="">-- اختر الحالة --</option>
-                                        <option value="غائب">غائب</option>
-                                        <option value="متأخر">متأخر</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="minutesField_@item.Id" style="display: none;">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <label for="minutes_@item.Id">عدد الدقائق:</label>
-                                </div>
-                                <div class="col-sm-8">
-                                    <input type="number" min="1" id="minutes_@item.Id" name="minutes" class="form-control" placeholder="عدد الدقائق">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group text-center">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-upload"></i> ارسال
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">اغلاق</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
 
 @if (Model.Count() > 0)
 {
@@ -126,7 +97,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel"> تفاصيل الجدول :</h5>
+                        <h5 class="modal-title" id="exampleModalLabel"> تفاصيل المحاضرة :</h5>
                     </div>
                     <div class="modal-body">
                         <div class="row mb-2">
@@ -198,6 +169,12 @@
                             </div>
                             <div class="col">
                                 <span>القاعة :</span> <span class="text-info">   @item.Table.Build.Hall</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-1">
+                            <div class="col">
+                                <span>التاريخ الهجري  :</span> <span class="text-info">  @item.HijriDate</span>
                             </div>
                         </div>
                         <hr />
@@ -276,7 +253,7 @@
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 }
-                toastr.success("تم تسجيل التأخير وارسال تقرير الي المدرب بنجاح");
+                toastr.success("تم ارسال الافادة الي رئيس القسم بنجاح");
             }
         });
     </script>

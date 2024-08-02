@@ -116,6 +116,9 @@ namespace FollowUp.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserFullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeptManager = table.Column<int>(type: "int", nullable: true),
+                    Specialty = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -229,6 +232,28 @@ namespace FollowUp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Permissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TrainerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Permissions_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tables",
                 columns: table => new
                 {
@@ -262,7 +287,8 @@ namespace FollowUp.Migrations
                         name: "FK_Tables_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Tables_Builds_BuildId",
                         column: x => x.BuildId,
@@ -291,6 +317,18 @@ namespace FollowUp.Migrations
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Minutes = table.Column<int>(type: "int", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HijriDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<int>(type: "int", nullable: true),
+                    Statment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StatmentDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstAnswer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeadOfDeptName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeadOfDeptSignture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeadOfDeptSendDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecondAnswer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeanStatment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeanName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TrainerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TableId = table.Column<int>(type: "int", nullable: false)
@@ -318,13 +356,14 @@ namespace FollowUp.Migrations
                 {
                     { "68099eeb-4f6b-45c6-9c00-68099eebd485", "المدرب", "68099eeb-4f6b-45c6-9c00-68099eebd485", "ApplicationRole", "Trainer", "TRAINER" },
                     { "9eebd485-2a1d-45c6-9c00-68099eebd485", "المشرف", "9eebd485-2a1d-45c6-9c00-68099eebd485", "ApplicationRole", "Supervisor", "SUPERVISOR" },
+                    { "9eebd4pp-2a1d-45c6-9g80-68099eebd485", "رئيس قسم", "9eebd4pp-2a1d-45c6-9g80-68099eebd485", "ApplicationRole", "HeadOfDept", "HEADOFDEPT" },
                     { "ba51b8f7-2a1d-45c6-9c00-68099eebd485", "الادمن", "ba51b8f7-2a1d-45c6-9c00-68099eebd485", "ApplicationRole", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserFullName", "UserName" },
-                values: new object[] { "ecc07b18-f55e-4f6b-95bd-0e84f556135f", 0, "d25967ef-b211-44a5-b21e-1c988cc0503c", null, "ApplicationUser", null, true, false, null, null, "ADMIN", "AQAAAAIAAYagAAAAEEhwG1k3DPYWBKkDoiZWY+xeRXI+N8xiyw9MwjCGgGPoOYpqnpXuSG7rodKVYM/99A==", null, false, "79cecbbc-9938-40c7-bdb4-79fe7a7af4cc", false, "الادمن", "Admin" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "DeptManager", "Discriminator", "Email", "EmailConfirmed", "Image", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Specialty", "TwoFactorEnabled", "UserFullName", "UserName" },
+                values: new object[] { "ecc07b18-f55e-4f6b-95bd-0e84f556135f", 0, "5565f977-1431-487d-95dc-bf25fa48d216", null, null, "ApplicationUser", null, true, null, false, null, null, "ADMIN", "AQAAAAIAAYagAAAAEL5yjsAtmjQj9pj4qHslIX4eAqU62Y01JqwWuv/7vMTcr0/zSrx+RphX+mvIKWrzXg==", null, false, "361e8290-db6e-42d9-8c43-df6e115f1d20", null, false, "الادمن", "Admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -386,6 +425,11 @@ namespace FollowUp.Migrations
                 column: "TableId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Permissions_ApplicationUserId",
+                table: "Permissions",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tables_ActivationId",
                 table: "Tables",
                 column: "ActivationId");
@@ -431,6 +475,9 @@ namespace FollowUp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Attendances");
+
+            migrationBuilder.DropTable(
+                name: "Permissions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

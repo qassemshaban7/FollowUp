@@ -46,6 +46,21 @@
         </div><!-- col-3 -->
 
         <div class="col-sm-4 col-xl-4 mb-3">
+            <a asp-action="Index" asp-controller="HeadOfDept">
+                <div class="bg-warning rounded overflow-hidden">
+                    <div class="pd-x-20 pd-t-20 d-flex align-items-center">
+                        <i class="fas fa-user-cog tx-60 lh-0 tx-white op-7"></i>
+                        <div class="mg-r-20">
+                            <p class="tx-20 tx-spacing-1 tx-mont tx-bold tx-uppercase tx-white-8 mg-b-10">قائمة رؤساء الأقسام</p>
+                            <p class="tx-24 tx-white tx-lato tx-bold mg-b-0 lh-1">@ViewBag.HeadOfDept</p>
+                        </div>
+                    </div>
+                    <div id="ch2" class="ht-50 tr-y-1"></div>
+                </div>
+            </a>
+        </div><!-- col-3 -->
+       
+        <div class="col-sm-4 col-xl-4 mb-3">
             <a asp-action="Index" asp-controller="Course">
                 <div class="bg-info rounded overflow-hidden">
                     <div class="pd-x-20 pd-t-20 d-flex align-items-center">
@@ -104,6 +119,34 @@
                 </div>
             </a>
         </div><!-- col-3 -->
+        <div class="col-sm-4 col-xl-4 mb-3">
+            <a asp-action="Index" asp-controller="Permission">
+                <div class="bg-primary rounded overflow-hidden">
+                    <div class="pd-x-20 pd-t-20 d-flex align-items-center">
+                        <i class="fas fa-file-signature tx-60 lh-0 tx-white op-7"></i>
+                        <div class="mg-r-20">
+                            <p class="tx-20 tx-spacing-1 tx-mont tx-bold tx-uppercase tx-white-8 mg-b-10">نماذج الاستئذان</p>
+                            <p class="tx-24 tx-white tx-lato tx-bold mg-b-0 lh-1">@ViewBag.Permissions</p>
+                        </div>
+                    </div>
+                    <div id="ch2" class="ht-50 tr-y-1"></div>
+                </div>
+            </a>
+        </div><!-- col-3 -->
+        <div class="col-sm-4 col-xl-4 mb-3">
+            <a asp-action="Index" asp-controller="Department">
+                <div class="bg-warning rounded overflow-hidden">
+                    <div class="pd-x-20 pd-t-20 d-flex align-items-center">
+                        <i class="fas fa-sitemap tx-60 lh-0 tx-white op-7"></i>
+                        <div class="mg-r-20">
+                            <p class="tx-20 tx-spacing-1 tx-mont tx-bold tx-uppercase tx-white-8 mg-b-10">قائمة الأقسام</p>
+                            <p class="tx-24 tx-white tx-lato tx-bold mg-b-0 lh-1">@ViewBag.Departments</p>
+                        </div>
+                    </div>
+                    <div id="ch2" class="ht-50 tr-y-1"></div>
+                </div>
+            </a>
+        </div><!-- col-3 -->
 
         <div class="col-sm-4 col-xl-4 mb-3">
             <a asp-action="Index" asp-controller="Build">
@@ -120,21 +163,8 @@
             </a>
         </div><!-- col-3 -->
 
-        <div class="col-sm-4 col-xl-4 mb-3">
-            <a asp-action="Index" asp-controller="Department">
-                <div class="bg-warning rounded overflow-hidden">
-                    <div class="pd-x-20 pd-t-20 d-flex align-items-center">
-                        <i class="fas fa-sitemap tx-60 lh-0 tx-white op-7"></i>
-                        <div class="mg-r-20">
-                            <p class="tx-20 tx-spacing-1 tx-mont tx-bold tx-uppercase tx-white-8 mg-b-10">قائمة الأقسام</p>
-                            <p class="tx-24 tx-white tx-lato tx-bold mg-b-0 lh-1">@ViewBag.Departments</p>
-                        </div>
-                    </div>
-                    <div id="ch2" class="ht-50 tr-y-1"></div>
-                </div>
-            </a>
-        </div><!-- col-3 -->
 
-        
+
+
     </div><!-- row -->
 </div><!-- br-pagebody -->

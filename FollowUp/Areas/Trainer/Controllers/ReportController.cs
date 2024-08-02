@@ -59,5 +59,54 @@ namespace FollowUp.Areas.Trainer.Controllers
 
             return View(Course);
         }
+
+        public async Task<IActionResult> Report(int id)
+        {
+            var Attendance = await _context.Attendances
+                .Include(a => a.Table)
+                    .ThenInclude(t => t.Department)
+                .Include(a => a.Table)
+                    .ThenInclude(d => d.Build)
+                .Include(a => a.Table)
+                    .ThenInclude(b => b.Course)
+                .Include(a => a.ApplicationUser)
+                    .ThenInclude(t => t.Department)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            return View(Attendance);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FirstExcuse(int id, string Statment)
+        {
+            var department = await _context.Attendances.FindAsync(id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                var today = DateTime.Today;
+                var hijriCalendar = new System.Globalization.HijriCalendar();
+                var hijriDate = $"{hijriCalendar.GetDayOfMonth(today)}/{hijriCalendar.GetMonth(today)}/{hijriCalendar.GetYear(today)}";
+
+                department.Statment = Statment;
+                department.Status = 2;
+                department.StatmentDate = hijriDate;
+
+                _context.Attendances.Update(department);
+                await _context.SaveChangesAsync();
+                HttpContext.Session.SetString("updated", "true");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return View(department);
+            }
+        }
+        
     }
 }

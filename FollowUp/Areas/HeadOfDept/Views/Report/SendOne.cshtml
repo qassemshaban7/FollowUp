@@ -1,0 +1,783 @@
+﻿@using FollowUp.Models
+@model Attendance
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/HeadOfDept/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+            color: #000;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 1200px;
+            margin: auto;
+            border: 1px solid #000;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #fff;
+            color: #000;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+            .header img {
+                width: 100px;
+                height: auto;
+            }
+
+            .header .header-text-right {
+                width: 40%;
+                text-align: center;
+                direction: ltr;
+            }
+
+            .header .header-text-left {
+                width: 40%;
+                text-align: center;
+            }
+
+            .header h1, .header h2, .header h3 {
+                margin: 0;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .content p, .content ul {
+            margin: 0 0 15px 0;
+        }
+
+        .signature.left {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+
+        .signature.left label {
+            text-align: right;
+        }
+
+        .foot {
+            bottom: 20px;
+            right: 20px;
+            width: 100%;
+        }
+
+            .foot p {
+                font-size: 0.9em;
+                line-height: 1.2;
+            }
+
+                .foot p::before {
+                    content: '● ';
+                    color: #000;
+                }
+
+        .dis {
+            text-align: center;
+        }
+
+        .form-group-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            flex: 1 1 20%;
+            margin-bottom: 10px;
+        }
+
+        .dotted-line::before {
+            content: ".............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................";
+            color: #000;
+            display: inline-block;
+            width: 100%;
+            height: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .form-container{
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .signature {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .signature-row {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+            .signature-row p {
+                margin: 0 10px;
+                flex: 1;
+                text-align: right;
+            }
+
+        .form-group-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-right: 20px;
+        }
+
+        .ri {
+            text-align: right;
+        }
+
+        .le {
+            text-align: left;
+        }
+
+        .en {
+            text-align: right;
+        }
+
+        .inline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+            .inline-labels label {
+                margin-right: 20px;
+            }
+
+        .foc {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .fog {
+            margin-right: 30px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="printArea" class="container">
+        <div class="header">
+            <div class="header-text-left">
+                <h2>المملكة العربية السعودية</h2>
+                <h3>المؤسسة العامة للتدريب التقني والمهني</h3>
+                <h4>الكلية التقنية للاتصالات والمعلومات بجدة</h4>
+                <h5>إدارة الرقابة</h5>
+            </div>
+            <img src="~/img/config/شعار.jpg" alt="Logo">
+            <div class="header-text-right">
+                <h3>KINGDOM OF SAUDI ARABIA</h3>
+                <h5>Technical and Vocational Training Corporation</h5>
+                <h6>Technical College of Telecommunications & Info – Jeddah</h6>
+            </div>
+        </div>
+        <hr />
+        <hr />
+        <h3 class="dis">مساءلة عن غياب عضو الهيئة التدريبية</h3>
+        <table>
+            <tr>
+                <th>اليوم</th>
+                <th>التاريخ</th>
+                <th>الوقت</th>
+                <th>اسم المادة</th>
+                <th>المبنى</th>
+                <th>رقم القاعة</th>
+                <th>ساعات الاتصال</th>
+                <th>الحالة</th>
+                @if (Model.Value == "متأخر")
+                {
+                    <th>مدة التأخير</th>
+                }
+            </tr>
+            <tr>
+                <td>@Model.Table.Day</td>
+                <td>@Model.HijriDate هـ</td>
+                <td>@Model.Table.Time</td>
+                <td>@Model.Table.Course.Name</td>
+                <td>@Model.Table.Build.Building</td>
+                <td>@Model.Table.Build.Hall</td>
+                <td>@Model.Table.ContactHours</td>
+                <td>@Model.Value</td>
+                @if (Model.Value == "متأخر")
+                {
+                    <td>@Model.Minutes</td>
+                }
+            </tr>
+        </table>
+
+        <div class="content">
+            <p>سعادة رئيس / قسم @Model.ApplicationUser.Department.Name حفظه الله</p>
+            <p>السلام عليكم ورحمة الله وبركاته،</p>
+            <p>عدم تواجد الساعة <strong>@Model.Table.Time</strong> من خلال الجولة الميدانية ضمن إجراءات المتابعة تبين ما يلي:</p>
+
+            <p>وبناءً على الجدول التدريبي فإن القاعة يشغلها المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
+            <div>
+@*                 <p>منسق إدارة الرقابة: مشعل بن مرزوق العتيبي</p>
+                <p>التوقيع: <strong></strong> </p>
+                <p>التاريخ: <strong>@Model.HijriDate</strong>هـ</p> *@
+                <p>ملاحظة: في حالة عدم الحاجة إلى مساءلة المدرب يتم الانتقال إلى الفقرة رقم (4) مباشرة (الرجاء الاطلاع على الملاحظات في اسفل الصفحة).</p>
+            </div>
+
+            <hr />
+
+            <div class="signature">
+                <p>المكرم المدرب:<strong>@Model.ApplicationUser.UserFullName</strong> الموقر</p>
+                <p>السلام عليكم ورحمة الله وبركاته، وبعد :</p>
+                <p>من خلال المتابعة تبين الموضح أعلاه آمل الإفادة عن أسباب ذلك وتقديم ما يؤيد عذركم خلال يومين عمل من تاريخه، علماً في حالة عدم الرد سيتم اتخاذ اللازم حسب النظام.</p>
+            </div>
+
+            <hr />
+
+            <div class="signature">
+                @if (Model.Status == 1 || Model.Status == 5)
+                {
+                    <p>الافادة: سعادة رئيس قسم <strong>@Model.ApplicationUser.Department.Name</strong> أفيد سعادتكم:</p>
+                    <div class="dotted-line"></div>
+                    <div class="signature-row">
+                        <p>اسم المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
+                        <p>التاريخ: _____/_____/144هـ</p>
+                        <p>رقم الحاسب: <strong>@Model.ApplicationUser.UserName</strong></p>
+                    </div>
+                }
+            </div>
+
+            @if (Model.Status != 1 && Model.Status != 5)
+            {
+                <p>الافادة: سعادة رئيس قسم <strong>@Model.ApplicationUser.Department.Name</strong> أفيد سعادتكم:</p>
+                <p>@Model.Statment</p>
+            
+                <div class="signature">
+                    <div class="signature-row">
+                        <p>اسم المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
+                        @if (Model.Status != 1)
+                        {
+                            <p>التاريخ: @Model.StatmentDate هـ</p>
+                        }
+                        <p>رقم الحاسب: <strong>@Model.ApplicationUser.UserName</strong></p>
+                    </div>
+                </div>
+            }
+
+            <hr />
+
+            @if (Model.Status == 1 || Model.Status == 5)
+            {
+                <div class="form-container">
+                    <p>رأي سعادة رئيس قسم: الحاسب الآلي</p>
+                    <p>سعادة وكيل الكلية للتدريب نرى ما يلي:</p>
+                    <div class="form-group-container">
+                        <div class="form-group">
+                            <label>
+                                [       ] مستأذن
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [        ] قبول العذر
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [        ] عدم قبول العذر
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [        ] إجراء اضطرارية
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [        ] إجازة مرضية
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [        ] دورة تدريبية
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [        ] مشاركات
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signature left">
+                    <label for="name">الإسم:</label>
+                    <label for="signature">التوقيع:</label>
+                    <label for="date">التاريخ:</label>
+                </div>
+            }
+            else if (Model.Status == 2)
+            {
+                <form method="post" asp-action="FirstExcuse" asp-controller="Report" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="foc">
+                        <div class="fog">
+                            <label>
+                                <input type="radio" asp-for="FirstAnswer" name="FirstAnswer" value="1" required>
+                                مستأذن
+                            </label>
+                        </div>
+                        <div class="fog">
+                            <label>
+                                <input type="radio" asp-for="FirstAnswer" name="FirstAnswer" value="2" required>
+                                قبول العذر
+                            </label>
+                        </div>
+                        <div class="fog">
+                            <label>
+                                <input type="radio" asp-for="FirstAnswer" name="FirstAnswer" value="3" required>
+                                عدم قبول العذر
+                            </label>
+                        </div>
+                        <div class="fog">
+                            <label>
+                                <input type="radio" asp-for="FirstAnswer" name="FirstAnswer" value="4" required>
+                                إجراء اضطرارية
+                            </label>
+                        </div>
+                        <div class="fog">
+                            <label>
+                                <input type="radio" asp-for="FirstAnswer" name="FirstAnswer" value="5" required>
+                                إجازة مرضية
+                            </label>
+                        </div>
+                        <div class="fog">
+                            <label>
+                                <input type="radio" asp-for="FirstAnswer" name="FirstAnswer" value="6" required>
+                                دورة تدريبية
+                            </label>
+                        </div>
+                        <div class="fog">
+                            <label>
+                                <input type="radio" asp-for="FirstAnswer" name="FirstAnswer" value="7" required>
+                                مشاركات
+                            </label>
+                        </div>
+                    </div
+
+                    <div class="signature">
+                        <div class="row mb-3">
+                            <label class="fog"> التوقيع: <span class="tx-danger"></span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="HeadOfDeptSignture" type="file" class="form-control-image" accept="image/*" required>
+                                <span class="text-danger" asp-validation-for="HeadOfDeptSignture"></span>
+                            </div>
+                        </div><!-- row -->
+                    </div>
+
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="form-layout-footer">
+                        <input type="submit" value="إرسال" class="btn btn-info">
+                        <a asp-action="Index" class="btn btn-secondary">الرجوع</a>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="form-container">
+                    <p>رأي سعادة رئيس قسم: الحاسب الآلي</p>
+                    <p>سعادة وكيل الكلية للتدريب نرى ما يلي:</p>
+                    <div class="form-group-container">
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if(Model.FirstAnswer == "1")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] مستأذن
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if(Model.FirstAnswer == "2")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] قبول العذر
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if(Model.FirstAnswer == "3")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] عدم قبول العذر
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if(Model.FirstAnswer == "4")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] إجراء اضطرارية
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if(Model.FirstAnswer == "5")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] إجازة مرضية
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if(Model.FirstAnswer == "6")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] دورة تدريبية
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if(Model.FirstAnswer == "7")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] مشاركات
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signature left">
+                    <label for="name">الإسم: @Model.HeadOfDeptName</label>
+                    <label for="signature">التوقيع:
+                        <a @* class="image-receipt" href="~/Signture/@Model.HeadOfDeptSignture" *@>
+                            <img src="~/Signture/@Model.HeadOfDeptSignture" alt="صورة شخصية" width="80" height="40" />
+                        </a>
+                    </label>
+                    <label for="date">التاريخ: @Model.HeadOfDeptSendDate هـ</label>
+                </div>
+            }
+
+            <hr />
+
+            @if (Model.Status != 4)
+            {
+                <div class="form-container">
+                    <p>رأي سعادة عميد الكلية :</p>
+                    <div class="form-group-container">
+                        <div class="form-group">
+                            <label>
+                                [     ] للحفظ
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [    ] انذار
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [     ] حسب النظام
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <label for="date" class="ri">توجيه سعادة عميد الكلية :</label>
+                <br />
+                <div class="inline-labels">
+                    <label for="signature" class="le">عميد الكلية: </label>
+                </div>
+            }
+            else
+            {
+                <div class="form-container">
+                    <p>رأي سعادة عميد الكلية :</p>
+                    <div class="form-group-container">
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if (Model.SecondAnswer == "1")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] للحفظ
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if (Model.SecondAnswer == "2")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] انذار
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                [
+                                @if (Model.SecondAnswer == "3")
+                                {
+                                    <span class="fas fa-check"></span>
+                                }
+                                ] حسب النظام
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <p>@Model.DeanStatment</p>
+
+                <div class="signature">
+                    <div class="signature-row">
+                        <p>عميد الكلية: <strong>@Model.DeanName</strong></p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <hr />
+
+        <div class="foot">
+            <p>يرجى أرفاق صورة إعلان الاعتذار عن المحاضرة للمتدربين عبر البلاك بورد أو الإيميل.</p>
+            <p>يجب أن يوضح المتغيب أسباب غيابه فور تسليمه الاستمارة وإعادتها ويقوم بإحضار ما يثبت ذلك خلال يومين عمل. وبعد هذه المدة فسوف يتم الحسم.</p>
+            <p>في حالة صدور قرار الحسم فلا يمكن قبول طلب الإعفاء منه مطلقاً.</p>
+            <p>تحفظ هذه المساءلة بملف المذكور بعد انتهاء الإجراءات النظامية.</p>
+            <p>لا يجوز نقل او تغيير موعد المحاضرة او مقرها بدون الحصول على الموافقة الرسمية من وكيل الكلية للتدريب.</p>
+        </div>
+
+    </div>
+
+    <div class="row d-flex justify-content-center mt-4 no-print">
+        <button class="btn btn-primary" id="btnPrint" onclick="printPage()">طباعة</button>
+    </div>
+
+    <script>
+        function printPage() {
+            var printContent = document.getElementById('printArea').innerHTML;
+            var originalContent = document.body.innerHTML;
+
+            var printStyles = `
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #fff;
+                            margin: 0;
+                            padding: 20px;
+                            color: #000;
+                            direction: rtl;
+                            text-align: right;
+                        }
+                        .container {
+                            background-color: #fff;
+                            padding: 20px;
+                            border-radius: 8px;
+                            max-width: 1200px;
+                            margin: auto;
+                            border: 1px solid #000;
+                        }
+                        .header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 20px;
+                            background-color: #fff;
+                            color: #000;
+                            padding: 10px;
+                            border-radius: 8px;
+                        }
+                        .header img {
+                            width: 100px;
+                            height: auto;
+                        }
+                        .header .header-text-right {
+                            width: 40%;
+                            text-align: center;
+                            direction: ltr;
+                        }
+                        .header .header-text-left {
+                            width: 40%;
+                            text-align: center;
+                        }
+                        .header h1, .header h2, .header h3 {
+                            margin: 0;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                        }
+                        table, th, td {
+                            border: 1px solid #000;
+                        }
+                        th, td {
+                            padding: 8px;
+                            text-align: center;
+                        }
+                        .content p, .content ul {
+                            margin: 0 0 15px 0;
+                        }
+                        .signature.left {
+                            display: grid;
+                            grid-template-columns: repeat(3, 1fr);
+                            gap: 10px;
+                            width: 100%;
+                        }
+
+                        .signature.left label {
+                                    text-align: right;
+                        }
+
+                        .foot {
+                            bottom: 20px;
+                            right: 20px;
+                            width: 100%;
+                        }
+
+                        .foot p {
+                            font-size: 0.9em;
+                            line-height: 1.2;
+                        }
+
+                        .foot p::before {
+                            content: '● ';
+                            color: #000;
+                        }
+                        .dis {
+                            text-align: center;
+                        }
+                        .form-group-container {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 10px;
+                            width: 100%;
+                            margin-bottom: 10px;
+                        }
+                        .form-group {
+                            flex: 1 1 20%;
+                            margin-bottom: 10px;
+                        }
+                        .dotted-line::before {
+                            content: ".............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................";
+                            color: #000;
+                            display: inline-block;
+                            width: 100%;
+                            height: 1px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                        }
+                        .form-container{
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                        }
+                        .signature {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            width: 100%;
+                        }
+
+                        .signature-row {
+                            display: flex;
+                            width: 100%;
+                            justify-content: space-between;
+                        }
+
+                        .signature-row p {
+                            margin: 0 10px;
+                            flex: 1;
+                                    text-align: right;
+                        }
+                        .form-group-container {
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: flex-start;
+                            margin-bottom: 10px;
+                        }
+                        .form-group {
+                            margin-right: 20px;
+                        }
+                        .ri {
+                            text-align: right;
+                        }
+                        .le {
+                            text-align: left;
+                        }
+                        .en {
+                            text-align: right;
+                        }
+                        .inline-labels {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        }
+                        .inline-labels label {
+                            margin-right: 20px;
+                        }
+                    `;
+
+            document.body.innerHTML = `<style>${printStyles}</style>` + printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+    </script>
+</body>
+</html>

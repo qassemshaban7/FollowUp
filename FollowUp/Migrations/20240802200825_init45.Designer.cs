@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FollowUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240719122448_init")]
-    partial class init
+    [Migration("20240802200825_init45")]
+    partial class init45
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,7 +60,44 @@ namespace FollowUp.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DeanName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeanStatment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstAnswer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeadOfDeptName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeadOfDeptSendDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeadOfDeptSignture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HijriDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("Minutes")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Note")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SecondAnswer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Statment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StatmentDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<int>("TableId")
@@ -155,6 +192,35 @@ namespace FollowUp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("FollowUp.Models.Permission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TrainerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("FollowUp.Models.Table", b =>
@@ -472,6 +538,14 @@ namespace FollowUp.Migrations
                         },
                         new
                         {
+                            Id = "9eebd4pp-2a1d-45c6-9g80-68099eebd485",
+                            ConcurrencyStamp = "9eebd4pp-2a1d-45c6-9g80-68099eebd485",
+                            Name = "HeadOfDept",
+                            NormalizedName = "HEADOFDEPT",
+                            ArabicRoleName = "رئيس قسم"
+                        },
+                        new
+                        {
                             Id = "9eebd485-2a1d-45c6-9c00-68099eebd485",
                             ConcurrencyStamp = "9eebd485-2a1d-45c6-9c00-68099eebd485",
                             Name = "Supervisor",
@@ -495,6 +569,15 @@ namespace FollowUp.Migrations
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DeptManager")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Specialty")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserFullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -508,13 +591,13 @@ namespace FollowUp.Migrations
                         {
                             Id = "ecc07b18-f55e-4f6b-95bd-0e84f556135f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d25967ef-b211-44a5-b21e-1c988cc0503c",
+                            ConcurrencyStamp = "3183bd19-83ea-408e-a3c3-9ecaa27c5a2b",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEhwG1k3DPYWBKkDoiZWY+xeRXI+N8xiyw9MwjCGgGPoOYpqnpXuSG7rodKVYM/99A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDDaPfQqdvmKhJs5ob4mREjQKsR++AFRz2vgPfWRX1tb8gitYadidXRzEpD0BN+tFg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "79cecbbc-9938-40c7-bdb4-79fe7a7af4cc",
+                            SecurityStamp = "bf48c924-2c86-4458-bb16-aee5d3702b52",
                             TwoFactorEnabled = false,
                             UserName = "Admin",
                             UserFullName = "الادمن"
@@ -536,6 +619,15 @@ namespace FollowUp.Migrations
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Table");
+                });
+
+            modelBuilder.Entity("FollowUp.Models.Permission", b =>
+                {
+                    b.HasOne("FollowUp.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("FollowUp.Models.Table", b =>

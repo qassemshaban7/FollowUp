@@ -100,9 +100,9 @@
                             <div class="row mb-3">
                                 <label class="col-sm-4 form-control-label">اسم المدرب: <span class="tx-danger">*</span></label>
                                 <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                    <div class="form-group">
-                                        <select asp-for="TrainerId" asp-items="@ViewBag.Trainers" class="form-control select2" required></select>
-                                    </div>
+                                    <select asp-for="TrainerId" asp-items="@ViewBag.Trainers" class="form-control select2" required>
+                                        <option value="">اختر المدرب...</option>
+                                    </select>
                                 </div>
                             </div><!-- row -->
 

@@ -66,10 +66,38 @@ namespace FollowUp.Areas.Admin.Controllers
                 .Include(a => a.Table)
                     .ThenInclude(b => b.Course)
                 .Include(a => a.ApplicationUser)
+                    .ThenInclude(t => t.Department)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             return View(Attendance);
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FirstExcuse(int id, string SecondAnswer)
+        {
+            var department = await _context.Attendances.FindAsync(id);
+            if (department == null) return NotFound();
+
+            try
+            {
+                string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
+
+                department.SecondAnswer = SecondAnswer;
+                department.Status = 4;
+                department.DeanName = user.UserFullName;
+
+                _context.Attendances.Update(department);
+                await _context.SaveChangesAsync();
+                HttpContext.Session.SetString("updated", "true");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return View(department);
+            }
+        }
     }
 }
