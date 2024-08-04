@@ -37,6 +37,13 @@
                             </div>
                         </div><!-- row -->
                         <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label"> رقم الجوال : <span class="tx-danger">*</span></label>
+                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input asp-for="PhoneNumber" type="number" class="form-control" placeholder="رقم الجوال" required>
+                                <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم القسم:<span class="tx-danger">*</span></label>
                             <select class="col-sm-7 form-control" required asp-for="DepartmentId">
                                 <option value="">اختر القسم...</option>

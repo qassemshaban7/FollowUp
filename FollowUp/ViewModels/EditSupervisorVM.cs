@@ -13,6 +13,9 @@ namespace FollowUp.ViewModels
         public string PhoneNumber { get; set; }
         public string? NewPassword { get; set; } 
         public IFormFile? Image { get; set; }
+
+        public List<string> SelectedRoles { get; set; }
+
         public int DepartmentId { get; set; }
     }
 }

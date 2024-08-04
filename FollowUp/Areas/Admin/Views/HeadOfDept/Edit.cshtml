@@ -9,12 +9,31 @@
     <h3 class="text-info mr-3">تعديل بيانات رئيس القسم </h3>
 </div><!-- d-flex -->
 
+<style>
+    .form-check {
+        margin-bottom: 10px;
+    }
+
+    .form-check-input {
+        margin-right: 10px;
+    }
+
+    .form-check-label {
+        font-size: 16px;
+    }
+
+    .te {
+        text-align: right;
+        padding-right: 30px;
+    }
+</style>
+
 <div class="br-pagebody">
     <div class="br-section-wrapper">
         <div class="row">
             <div class="col-xl-12">
                 <div class="form-layout form-layout-4">
-                    <form method="post" asp-action="Edit" asp-controller="HeadOfDept" enctype="multipart/form-data">
+                    <form id="myForm" method="post" asp-action="Edit" asp-controller="HeadOfDept" enctype="multipart/form-data">
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم رئيس القسم: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
@@ -63,6 +82,26 @@
                         </div><!-- row -->
 
                         <div class="row mb-3">
+                            <label class="col-sm-4 form-control-label">الصلاحيات :</label>
+                            <div class="col-sm-7">
+                                @foreach (var role in ViewBag.Roles)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               id="role_@role.Value"
+                                               name="SelectedRoles"
+                                               value="@role.Value"
+                                        @(Model.SelectedRoles.Contains(role.Value) ? "checked" : "")>
+                                        <label class="form-check-label te" for="role_@role.Value">
+                                            @role.Text
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">الصورة الشخصية: <span class="tx-danger"></span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">
                                 <input asp-for="Image" type="file" class="form-control-image" accept="image/*">
@@ -86,4 +125,20 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.getElementById('myForm');
+
+            form.addEventListener('submit', function (event) {
+                var selectedRoles = document.querySelectorAll('input[name="SelectedRoles"]:checked');
+
+                if (selectedRoles.length === 0) {
+                    alert("يجب اختيار صلاحية واحدة على الأقل.");
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+
 }

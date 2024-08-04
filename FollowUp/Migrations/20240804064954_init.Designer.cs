@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FollowUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240802200825_init45")]
-    partial class init45
+    [Migration("20240804064954_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,6 +192,13 @@ namespace FollowUp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 5504,
+                            Name = "موظف اداري"
+                        });
                 });
 
             modelBuilder.Entity("FollowUp.Models.Permission", b =>
@@ -591,13 +598,13 @@ namespace FollowUp.Migrations
                         {
                             Id = "ecc07b18-f55e-4f6b-95bd-0e84f556135f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3183bd19-83ea-408e-a3c3-9ecaa27c5a2b",
+                            ConcurrencyStamp = "d7af983c-2cfa-43e2-ba01-42a2bc989f84",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDDaPfQqdvmKhJs5ob4mREjQKsR++AFRz2vgPfWRX1tb8gitYadidXRzEpD0BN+tFg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPNNcXjgZcnPgdCNPys5jzEHEDSlmGdWSzvCwFhd5VaJwxIADEe6vW6ZgdAEvngSyQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bf48c924-2c86-4458-bb16-aee5d3702b52",
+                            SecurityStamp = "d9ed2783-e008-4bf8-8877-d03fa4391790",
                             TwoFactorEnabled = false,
                             UserName = "Admin",
                             UserFullName = "الادمن"

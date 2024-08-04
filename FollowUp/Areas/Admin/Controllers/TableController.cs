@@ -65,9 +65,19 @@ namespace FollowUp.Areas.Admin.Controllers
                             var department = await _context.Departments.FirstOrDefaultAsync(x => x.Name == deptName);
                             if (department == null)
                             {
-                                department = new Department { Name = deptName };
-                                _context.Departments.Add(department);
-                                await _context.SaveChangesAsync();
+                                if (deptName == "تقنية الحاسب" || deptName == "تقنية الاتصالات" || deptName == "التقنية الالكترونية" || deptName == "مركز الدراسات العامة")
+                                {
+                                    department = new Department
+                                    {
+                                        Name = deptName
+                                    };
+                                    _context.Departments.Add(department);
+                                    await _context.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    department = await _context.Departments.FirstOrDefaultAsync(x => x.Name == "موظف اداري");
+                                }
                             }
 
                             string coursecode = worksheet.Cells[row, 5].Value?.ToString();

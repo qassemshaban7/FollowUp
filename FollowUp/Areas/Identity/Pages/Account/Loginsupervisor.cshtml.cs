@@ -117,8 +117,8 @@ namespace FollowUp.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     var user = await _userManager.FindByNameAsync(Input.UserName);
                     var roles = await _signInManager.UserManager.GetRolesAsync(user);
-                    if (roles.First() == StaticDetails.Supervisor)
-                        return RedirectToAction(nameof(Supervisor.Controllers.HomeController.Index),
+                    if (roles.Contains(StaticDetails.Supervisor))
+                            return RedirectToAction(nameof(Supervisor.Controllers.HomeController.Index),
                            nameof(Supervisor.Controllers.HomeController).Replace("Controller", ""),
                            new { area = nameof(Supervisor) });
                     return LocalRedirect(returnUrl);

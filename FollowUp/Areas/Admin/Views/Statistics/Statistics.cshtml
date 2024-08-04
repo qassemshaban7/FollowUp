@@ -90,6 +90,7 @@
 
         .form-group {
             margin-bottom: 15px;
+            width : 300px;
         }
 
         label {
@@ -122,23 +123,27 @@
             button[type="submit"]:hover {
                 background-color: #5a54d4;
             }
+
+        .form-group input {
+            width: 200px; 
+            padding: 5px; 
+        }
     </style>
 </head>
 <body>
-
     <div class="form-container">
         <form method="get" asp-action="Statistics" asp-controller="Statistics">
             <div class="form-group">
                 <label for="day">اليوم (اتركه فارغًا للبحث عن الشهر بالكامل):</label>
-                <input type="text" id="day" name="day" placeholder="أدخل اليوم" />
+                <input type="number" min="1" max="31" id="day" name="day" placeholder="أدخل اليوم" />
             </div>
             <div class="form-group">
                 <label for="month">الشهر:</label>
-                <input type="text" id="month" name="month" placeholder="أدخل الشهر" required />
+                <input type="number" min="1" max="12" id="month" name="month" placeholder="أدخل الشهر" required />
             </div>
             <div class="form-group">
                 <label for="year">السنة:</label>
-                <input type="text" id="year" name="year" placeholder="أدخل السنة" required />
+                <input type="number" maxlength="4" id="year" name="year" placeholder="أدخل السنة" required />
             </div>
             <button type="submit">عرض الإحصائيات</button>
         </form>

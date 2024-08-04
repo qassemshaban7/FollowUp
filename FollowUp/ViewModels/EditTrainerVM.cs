@@ -14,6 +14,8 @@ namespace FollowUp.ViewModels
         public string? Specialty { get; set; }
         public string? NewPassword { get; set; }
 
+        public List<string> SelectedRoles { get; set; }
+
         public IFormFile? Image { get; set; }
     }
 }

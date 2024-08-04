@@ -5,6 +5,7 @@ using FollowUp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace FollowUp.Areas.Admin.Controllers
@@ -143,6 +144,24 @@ namespace FollowUp.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            var Roles = await _context.ApplicationRoles
+                .Select(t => new SelectListItem
+                {
+                    Value = t.Name,
+                    Text = t.ArabicRoleName
+                })
+                .ToListAsync();
+
+            ViewBag.Roles = Roles;
+
+            var selectedRoleNames = await _context.UserRoles
+                .Where(userRole => userRole.UserId == id)
+                .Join(_context.ApplicationRoles,
+                    userRole => userRole.RoleId,
+                    role => role.Id,
+                    (userRole, role) => role.Name)
+                .ToListAsync();
+
             var editUserVM = new EditSupervisorVM
             {
                 Id = user.Id,
@@ -151,6 +170,7 @@ namespace FollowUp.Areas.Admin.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 DepartmentId = department.Id,
+                SelectedRoles = selectedRoleNames,
             };
 
             ViewBag.Department = await _context.Departments.ToListAsync();
@@ -219,6 +239,23 @@ namespace FollowUp.Areas.Admin.Controllers
                     user.Image = Oldd;
                 }
 
+
+                var selectedRoles = await _context.UserRoles
+                    .Where(userRole => userRole.UserId == id)
+                    .Select(userRole => userRole.RoleId)
+                    .ToListAsync();
+
+                var roleNames = await _context.ApplicationRoles
+                    .Where(role => selectedRoles.Contains(role.Id))
+                    .Select(role => role.Name)
+                    .ToListAsync();
+
+
+                await _userManager.RemoveFromRolesAsync(user, roleNames);
+                await _context.SaveChangesAsync();
+
+                await _userManager.AddToRolesAsync(user, editUserVM.SelectedRoles);
+                await _context.SaveChangesAsync();
 
                 if (editUserVM.NewPassword != null)
                 {

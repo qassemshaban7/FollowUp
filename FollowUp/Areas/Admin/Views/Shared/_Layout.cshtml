@@ -156,7 +156,18 @@
                     <li class="sub-item"><a asp-action="Statistics" asp-controller="Statistics" class="sub-link">عرض الإحصائيات</a></li>
                 </ul>
             </li>
-
+            @if(User.Identity.Name == "Admin")
+            {
+                <li class="br-menu-item">
+                    <a href="#" class="br-menu-link with-sub">
+                        <i class="menu-item-icon icon fas fa-cog tx-20"></i>
+                        <span class="menu-item-label">الاعدادات</span>
+                    </a><!-- br-menu-link -->
+                    <ul class="br-menu-sub">
+                        <li class="sub-item"><a asp-action="Index" asp-controller="Statistics" class="sub-link">عرض مديرو النظام</a></li>
+                    </ul>
+                </li>
+            }
 
         </ul>
         <!-- br-sideleft-menu -->

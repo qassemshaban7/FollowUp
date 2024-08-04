@@ -39,7 +39,7 @@ namespace FollowUp.Data
                 NormalizedName = "ADMIN",
                 Id = ADMIN_ROLE_ID,
                 ConcurrencyStamp = ADMIN_ROLE_ID,
-                ArabicRoleName = "الادمن"
+                ArabicRoleName = "الادمن",
             });
 
             builder.Entity<ApplicationRole>().HasData(new ApplicationRole
@@ -87,6 +87,12 @@ namespace FollowUp.Data
             {
                 RoleId = ADMIN_ROLE_ID,
                 UserId = ADMIN_ID
+            });
+
+            builder.Entity<Department>().HasData(new Department
+            {
+                Name = "موظف اداري",
+                Id = 5504,
             });
 
             base.OnModelCreating(builder);

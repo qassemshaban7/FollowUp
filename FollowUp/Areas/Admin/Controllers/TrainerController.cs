@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System.Security.Claims;
@@ -62,12 +64,19 @@ namespace FollowUp.Areas.Admin.Controllers
                             var department = await _context.Departments.FirstOrDefaultAsync(x => x.Name == deptName);
                             if (department == null)
                             {
-                                department = new Department
+                                if(deptName == "تقنية الحاسب" || deptName == "تقنية الاتصالات" || deptName == "التقنية الالكترونية" || deptName == "مركز الدراسات العامة")
                                 {
-                                    Name = deptName
-                                };
-                                _context.Departments.Add(department);
-                                await _context.SaveChangesAsync();
+                                    department = new Department
+                                    {
+                                        Name = deptName
+                                    };
+                                    _context.Departments.Add(department);
+                                    await _context.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    department = await _context.Departments.FirstOrDefaultAsync(x => x.Name == "موظف اداري");
+                                }
                             }
                             var user = new ApplicationUser
                             {
@@ -177,7 +186,7 @@ namespace FollowUp.Areas.Admin.Controllers
                     DepartmentId = model.DepartmentId,
                     Email = model.Email,
                     EmailConfirmed = true,
-                    //PhoneNumber = model.PhoneNumber,
+                    PhoneNumber = model.PhoneNumber,
                     //Specialty = model.Specialty,
                 };
 
@@ -223,8 +232,6 @@ namespace FollowUp.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Edit(string id)
         {
-
-
             if (id == null)
             {
                 return NotFound();
@@ -233,7 +240,6 @@ namespace FollowUp.Areas.Admin.Controllers
             var user = await _context.ApplicationUsers
                 .Include(x => x.Department)
                 .FirstOrDefaultAsync(d => d.Id == id);
-
 
             if (user == null)
             {
@@ -247,6 +253,24 @@ namespace FollowUp.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            var Roles = await _context.ApplicationRoles
+                .Select(t => new SelectListItem
+                {
+                    Value = t.Name,
+                    Text = t.ArabicRoleName
+                })
+                .ToListAsync();
+
+            ViewBag.Roles = Roles;
+
+            var selectedRoleNames = await _context.UserRoles
+                .Where(userRole => userRole.UserId == id)
+                .Join(_context.ApplicationRoles,
+                    userRole => userRole.RoleId,
+                    role => role.Id,
+                    (userRole, role) => role.Name)
+                .ToListAsync();
+
             var editUserVM = new EditTrainerVM
             {
                 Id = user.Id,
@@ -254,10 +278,10 @@ namespace FollowUp.Areas.Admin.Controllers
                 UserName = user.UserName,
                 DepartmentId = department.Id,
                 Email = user.Email,
-                //PhoneNumber = user.PhoneNumber,
+                SelectedRoles = selectedRoleNames,
+                PhoneNumber = user.PhoneNumber,
                 //Specialty = user.Specialty,
             };
-
 
             ViewBag.Department = await _context.Departments.ToListAsync();
             return View(editUserVM);
@@ -327,6 +351,24 @@ namespace FollowUp.Areas.Admin.Controllers
                 {
                     user.Image = Oldd;
                 }
+
+
+                var selectedRoles = await _context.UserRoles
+                    .Where(userRole => userRole.UserId == id)
+                    .Select(userRole => userRole.RoleId)
+                    .ToListAsync();
+
+                var roleNames = await _context.ApplicationRoles
+                    .Where(role => selectedRoles.Contains(role.Id))
+                    .Select(role => role.Name)
+                    .ToListAsync();
+
+
+                await _userManager.RemoveFromRolesAsync(user, roleNames);
+                await _context.SaveChangesAsync();
+
+                await _userManager.AddToRolesAsync(user, editUserVM.SelectedRoles);
+                await _context.SaveChangesAsync();
 
                 if (editUserVM.NewPassword != null)
                 {

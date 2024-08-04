@@ -363,7 +363,12 @@ namespace FollowUp.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "DeptManager", "Discriminator", "Email", "EmailConfirmed", "Image", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Specialty", "TwoFactorEnabled", "UserFullName", "UserName" },
-                values: new object[] { "ecc07b18-f55e-4f6b-95bd-0e84f556135f", 0, "5565f977-1431-487d-95dc-bf25fa48d216", null, null, "ApplicationUser", null, true, null, false, null, null, "ADMIN", "AQAAAAIAAYagAAAAEL5yjsAtmjQj9pj4qHslIX4eAqU62Y01JqwWuv/7vMTcr0/zSrx+RphX+mvIKWrzXg==", null, false, "361e8290-db6e-42d9-8c43-df6e115f1d20", null, false, "الادمن", "Admin" });
+                values: new object[] { "ecc07b18-f55e-4f6b-95bd-0e84f556135f", 0, "d7af983c-2cfa-43e2-ba01-42a2bc989f84", null, null, "ApplicationUser", null, true, null, false, null, null, "ADMIN", "AQAAAAIAAYagAAAAEPNNcXjgZcnPgdCNPys5jzEHEDSlmGdWSzvCwFhd5VaJwxIADEe6vW6ZgdAEvngSyQ==", null, false, "d9ed2783-e008-4bf8-8877-d03fa4391790", null, false, "الادمن", "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 5504, "موظف اداري" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
