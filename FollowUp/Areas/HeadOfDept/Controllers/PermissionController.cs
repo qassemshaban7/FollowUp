@@ -55,7 +55,7 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
         [HttpGet]
         public async Task<IActionResult> Report(int id)
         {
-            var repo = await _context.Permissions.Include(x => x.ApplicationUser).FirstOrDefaultAsync(c => c.Id == id);
+            var repo = await _context.Permissions.Include(x => x.ApplicationUser).ThenInclude(v => v.Department).FirstOrDefaultAsync(c => c.Id == id);
             return View(repo);
         }
     }

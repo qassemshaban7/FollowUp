@@ -4,6 +4,7 @@ using FollowUp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FollowUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240809222020_updateRoles")]
+    partial class updateRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -595,13 +598,13 @@ namespace FollowUp.Migrations
                         {
                             Id = "ecc07b18-f55e-4f6b-95bd-0e84f556135f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "81c5657d-1465-4880-a9ef-ff05d88115ec",
+                            ConcurrencyStamp = "0d845ada-8145-4edb-8ad2-5e25538ff25f",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIYGCbvr8ZpE9YLJLWIAfZ5m7J7CHyhoJWUJBNspVxgdCyMPmxgyqIQOQ+POzYnzWw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKoTfQU8ts6A4E84j2wdvcMEDfHzOfa5sndixNPLRUNT7vGFRJCgFPyEGsyZqJJWEw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6277491f-a7cd-45a2-9d92-811d8894f57c",
+                            SecurityStamp = "e225f692-62a1-4d29-9549-2e7be7be7af9",
                             TwoFactorEnabled = false,
                             UserName = "Admin",
                             UserFullName = "الادمن"

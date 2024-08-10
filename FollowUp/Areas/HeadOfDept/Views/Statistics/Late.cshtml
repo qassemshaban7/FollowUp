@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Attendance>
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/HeadOfDept/Views/Shared/_Layout.cshtml";
 }
 
 @section head {
@@ -15,7 +15,7 @@
     <i class="fas fa-file-alt fa-6x text-info"></i>
     <div class="row">
         <div class="col-lg-10 col-10">
-            <h3 class="text-info">قائمة التقارير</h3>
+            <h3 class="text-info">تقارير التأخير</h3>
         </div>
     </div>
 </div>
@@ -29,12 +29,11 @@
                         <th>اسم المدرب</th>
                         <th>اليوم</th>
                         <th>الوقت</th>
-                       @*  <th>المبنى</th>
+                        @*  <th>المبنى</th>
                         <th>القاعة</th> *@
                         <th>الحالة</th>
-                        <th>الارسال</th>
+                        @* <th>الارسال</th> *@
                         <th>التفاصيل</th>
-                        <th>نموذج مسائلات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,39 +44,34 @@
                             <td>@item.Table.Day</td>
                             <td>@item.Table.Time</td>
                             @* <td>@item.Table.Build.Building</td>
-                            <td>@item.Table.Build.Hall</td> *@
+                        <td>@item.Table.Build.Hall</td> *@
                             <td>@item.Value</td>
-                            <td>
-                                @if (item.Status == 1)
-                                {
-                                    <span style="color: red;"><i class="fas fa-times-circle"></i> لم يتم الرد</span>
-                                }
-                                else if (item.Status == 2)
-                                {
-                                    <span style="color: orange;"><i class="fas fa-paper-plane"></i> تم الارسال لرئيس القسم</span>
-                                }
-                                else if (item.Status == 3)
-                                {
-                                    <span style="color: blue;"><i class="fas fa-user-tie"></i> تم الارسال للعميد</span>
-                                }
-                                else if (item.Status == 4)
-                                {
-                                    <span style="color: green;"><i class="fas fa-check-circle"></i> تم الرد من العميد</span>
-                                }
-                                else if (item.Status == 5)
-                                {
-                                    <span style="color: purple;"><i class="fas fa-file-alt"></i> تم الرد ورقي</span>
-                                }
-                            </td>
+                            @*                             <td>
+                        @if (item.Status == 1)
+                        {
+                        <span style="color: red;"><i class="fas fa-times-circle"></i> لم يتم الرد</span>
+                        }
+                        else if (item.Status == 2)
+                        {
+                        <span style="color: orange;"><i class="fas fa-paper-plane"></i> تم الارسال لرئيس القسم</span>
+                        }
+                        else if (item.Status == 3)
+                        {
+                        <span style="color: blue;"><i class="fas fa-user-tie"></i> تم الارسال للعميد</span>
+                        }
+                        else if (item.Status == 4)
+                        {
+                        <span style="color: green;"><i class="fas fa-check-circle"></i> تم الرد من العميد</span>
+                        }
+                        else if (item.Status == 5)
+                        {
+                        <span style="color: purple;"><i class="fas fa-file-alt"></i> تم الرد ورقي</span>
+                        }
+                        </td> *@
                             <td>
                                 <button type="button" class="btn btn-primary text-white" data-toggle="modal" data-target="#ModalUser_@item.Id">
                                     عرض
                                 </button>
-                            </td>
-                            <td>
-                                <a asp-action="SendOne" asp-controller="Report" asp-route-id="@item.Id" class="btn btn-primary text-white">
-                                    <i class="fas fa-edit"></i> نموذج مسائلات
-                                </a>
                             </td>
                         </tr>
                     }

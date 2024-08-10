@@ -56,23 +56,29 @@ namespace FollowUp.Areas.Trainer.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(string? returnUrl = null)
         {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
+            ViewBag.user = user;
+
             ViewData["ReturnUrl"] = returnUrl;
-            ViewData["Permissions"] = new SelectList(await _context.Permissions.ToListAsync(), "Id", "Value");
+            ViewData["Permissions"] = new SelectList(await _context.Permissions.ToListAsync(), "Id", "Value", "to", "fromdate");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string Value, Permission department)
+        public async Task<IActionResult> Create( TimeOnly fromdate, TimeOnly to, DateTime Date, string Value, Permission department)
         {
             try
             {
                 string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var user = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
 
+                department.Date = Date;
+                department.fromdate = fromdate;
+                department.to = to;
                 department.TrainerId = user.Id;
                 department.ApplicationUser = user;
-                department.Date = DateTime.Now;
                 department.Value = Value;
                 _context.Permissions.Add(department);
                 await _context.SaveChangesAsync();
@@ -93,7 +99,7 @@ namespace FollowUp.Areas.Trainer.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Permissions.Include(x => x.ApplicationUser).FirstOrDefaultAsync(e => e.Id == id);
+            var department = await _context.Permissions.Include(x => x.ApplicationUser).ThenInclude(z => z.Department).FirstOrDefaultAsync(e => e.Id == id);
             if (department == null)
             {
                 return NotFound();
@@ -103,7 +109,7 @@ namespace FollowUp.Areas.Trainer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string Value )
+        public async Task<IActionResult> Edit(TimeOnly fromdate, TimeOnly to, DateTime Date, int id, string Value )
         {
             var department = await _context.Permissions.FirstOrDefaultAsync(v => v.Id == id);
             if (id != department.Id)
@@ -119,7 +125,9 @@ namespace FollowUp.Areas.Trainer.Controllers
                 department.TrainerId = user.Id;
                 department.ApplicationUser = user;
                 department.Value = Value;
-                department.Date = DateTime.Now;
+                department.Date = Date;
+                department.fromdate = fromdate;
+                department.to = to;
                 _context.Permissions.Update(department);
                 await _context.SaveChangesAsync();
                 HttpContext.Session.SetString("updated", "true");
@@ -148,7 +156,7 @@ namespace FollowUp.Areas.Trainer.Controllers
         [HttpGet]
         public async Task<IActionResult> Report(int id)
         {
-            var repo = await _context.Permissions.Include(x => x.ApplicationUser).FirstOrDefaultAsync( c => c.Id == id);
+            var repo = await _context.Permissions.Include(x => x.ApplicationUser).ThenInclude(v => v.Department).FirstOrDefaultAsync( c => c.Id == id);
             return View(repo);
         }
     }

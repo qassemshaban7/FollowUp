@@ -1,9 +1,14 @@
 ﻿@using FollowUp.Models
 @model Attendance
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var arabicCulture = new CultureInfo("ar-SA");
+    var formattedTime = Model.Date.ToString("hh:mm tt", arabicCulture);
+    formattedTime = formattedTime.Replace("AM", "صباحاً").Replace("PM", "مساءً");
 }
 
 <!DOCTYPE html>
@@ -267,7 +272,7 @@
         <div class="content">
             <p>سعادة رئيس / قسم @Model.ApplicationUser.Department.Name حفظه الله</p>
             <p>السلام عليكم ورحمة الله وبركاته،</p>
-            <p>عدم تواجد الساعة <strong>@Model.Table.Time</strong> من خلال الجولة الميدانية ضمن إجراءات المتابعة تبين ما يلي:</p>
+            <p>من خلال الجولة الميدانية ضمن إجراءات المتابعة تبين ما يلي: عدم تواجد الساعة @formattedTime</p>
 
             <p>وبناءً على الجدول التدريبي فإن القاعة يشغلها المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
             <div>

@@ -1,5 +1,7 @@
 ﻿@using FollowUp.Models
 @model Permission
+@using System.Globalization
+
 @{
     ViewData["Title"] = " نموذج استئذان";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -9,26 +11,30 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> نموذج استئذان</title>
+    <title>نموذج الاستئذان</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            direction: rtl;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
             margin: 0;
             padding: 20px;
+            color: #000;
+            direction: rtl;
+            text-align: right;
         }
 
         .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
             max-width: 800px;
             margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #000;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .header {
@@ -36,6 +42,10 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            background-color: #fff;
+            color: #000;
+            padding: 10px;
+            border-radius: 8px;
         }
 
             .header img {
@@ -43,125 +53,62 @@
                 height: auto;
             }
 
-            .header .header-text-right, .header .header-text-left {
+            .header .header-text-right {
+                width: 40%;
                 text-align: center;
-                flex: 1;
+                direction: ltr;
             }
 
-            .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 {
-                margin: 5px 0;
+            .header .header-text-left {
+                width: 40%;
+                text-align: center;
             }
-
-            .header h1 {
-                font-size: 24px;
-            }
-
-            .header p {
-                font-size: 18px;
-            }
-
-        .content {
-            margin-bottom: 20px;
+        .content p {
+            margin: 15px 0;
         }
 
-            .content p {
-                margin: 10px 0;
-                font-size: 18px;
-            }
-
-            .content ul {
-                list-style-type: none;
-                padding: 0;
-            }
-
-                .content ul li {
-                    margin: 5px 0;
-                }
-
-        .form-group {
-            margin-bottom: 20px;
+        .signature {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
         }
 
-            .form-group label {
-                font-size: 20px;
-                display: block;
-                margin-bottom: 10px;
-            }
-
-            .form-group textarea {
-                width: 100%;
-                height: 100px;
-                padding: 15px;
-                font-size: 20px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                box-sizing: border-box;
-                resize: vertical;
-            }
-
-        .form-layout-footer {
-            text-align: center;
-            margin-top: 30px;
+        .footer {
+            margin-top: 40px;
         }
 
-            .form-layout-footer input, .form-layout-footer a {
-                margin: 0 10px;
-                padding: 10px 20px;
-                font-size: 16px;
-                border-radius: 5px;
-            }
-
-            .form-layout-footer input {
-                border: none;
-                background-color: #007bff;
-                color: #fff;
-            }
-
-            .form-layout-footer a {
-                border: 1px solid #ccc;
-                background-color: #f8f9fa;
-                color: #333;
-            }
-
-        .footer p {
-            margin: 10px 0;
-            text-align: center;
-            font-size: 16px;
+        hr {
+            border: none;
+            border-top: 1px solid #000;
+            margin: 20px 0;
         }
 
-        .table-container {
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #000;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-
-        .cen {
-            text-align: center;
-        }
-
-        .right {
+        .right{
             text-align: right;
         }
-        .no-print {
-            display: none;
+
+        .signature {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
         }
+
+        .signature-row {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+            .signature-row p {
+                margin: 0 10px;
+                flex: 1;
+                text-align: right;
+            }
     </style>
 </head>
 <body>
-    <div id="printArea">
+    <div id="printArea" class="container">
         <div class="header">
             <div class="header-text-left">
                 <h2>المملكة العربية السعودية</h2>
@@ -178,57 +125,68 @@
         </div>
         <hr />
         <hr />
-        <div class="container">
-            <div class="header">
-                <h1>نموذج استئذان</h1>
+        <div class="header">
+            <h2 >نموذج استئذان موظف خلال فترة الدوام الرسمي</h2>
+        </div>
+        
+        <div class="content">
+            <p>سعادة مدير <span>@Model.ApplicationUser.Department.Name</span> المحترم</p>
+            <p>السلام عليكم ورحمة الله وبركاته ، وبعد :</p>
+            <p>
+                أتقدم لسعادتكم بطلبي هذا طالباً الاستئذان عن الدوام لليوم
+                <span>@Model.Date.ToString("dddd", new CultureInfo("ar-AE"))</span> التاريخ <span>@Model.Date.ToString("yyyy-MM-dd")</span>
+                في الفترة من الساعة <span>@FormatTimeOnly(Model.fromdate)</span>
+                وحتى الساعة <span>@FormatTimeOnly(Model.to)</span> خلال وقت الدوام الرسمي.
+            </p>
+            <p>
+                السبب: <span><h6 class="right">@Model.Value</h6></span>
+            </p>
+            <p>مقدمه الموظف: حسين عبده الشاعري</p>
+            <p>يتم تعبئة النموذج من قبل الموظف</p>
+        </div>
+        <div class="signature">
+            <div class="signature-row">
+                <p>اسم المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
+
+                <p>رقم الحاسب: <strong>@Model.ApplicationUser.UserName</strong></p>
             </div>
+        </div>
+        <hr />
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>م</th>
-                            <th>الاسم</th>
-                            <th>رقم الحاسب</th>
-                            <th>البريد الإلكتروني</th>
-                            <th>رقم الجوال</th>
-                            <th>الوقت</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>@Model.ApplicationUser.UserFullName</td>
-                            <td>@Model.ApplicationUser.UserName</td>
-                            <td>
-                                @if (Model.ApplicationUser.Email == null)
-                                {
-                                    <span>لا يوجد</span>
-                                }
-                                else
-                                {
-                                    <span>@Model.ApplicationUser.Email</span>
-                                }
-                            </td>
-                            <td>
-                                @if (Model.ApplicationUser.PhoneNumber == null)
-                                {
-                                    <span>لا يوجد</span>
-                                }
-                                else
-                                {
-                                    <span>@Model.ApplicationUser.PhoneNumber</span>
-                                }
-                            </td>
-                            <td>@Model.Date</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="content">
+            <p>سعادة مدير إدارة الرقابة المحترم</p>
+            <p>السلام عليكم ورحمة الله وبركاته ، وبعد :</p>
+            <p>لا مانع من استئذان الموظف عن الدوام كما هو موضح أعلاه خلال وقت الدوام الرسمي.</p>
+            <p>عدم الموافقة على طلب الاستئذان.</p>
+            <p>الرئيس المباشر</p>
+            <p>مدير مركز تقنية المعلومات</p>
+            <p>يتم تعبئة النموذج من قبل رئيس القسم</p>
+            <p>م. عبدالله أحمد السهيمي</p>
+        </div>
 
-            <h3 class="right">@Model.Value</h3>
+        <hr />
 
-            <p class="cen">وتقبلوا خالص تحياتي،،،</p>
+        <div class="content">
+            <p>سعادة مدير الشؤون الإدارية المحترم</p>
+            <p>السلام عليكم ورحمة الله وبركاته ، وبعد :</p>
+            <p>لا مانع من استئذان الموظف عن الدوام كما هو موضح أعلاه خلال وقت الدوام الرسمي.</p>
+            <p>حفظ في ملف الموظف.</p>
+            <p>مدير إدارة الرقابة</p>
+            <p>أ. مشعل مرزوق العتيبي</p>
+        </div>
+
+        <hr />
+
+        <div class="footer">
+            <h3>ضوابط الاستئذان</h3>
+            <ul>
+                <li>يجب أن يعتمد الإذن من الرئيس المباشر ولا يصبح نافذاً إلا بعد اعتماده من قبل مدير الرقابة.</li>
+                <li>أن يكون تعبئة نموذج الاستئذان في نفس اليوم أو قبله ولا ينظر لنماذج الاستئذان بعد الخروج من العمل.</li>
+                <li>يعتبر نموذج الاستئذان هو الطريقة المعتمدة الوحيدة للخروج أثناء الدوام الرسمي.</li>
+                <li>لا يجوز أن يكون الاستئذان في بداية الدوام ونهايته في يوم واحد.</li>
+                <li>أن يثبت الموظف حضوره بعد انتهاء فترة الإذن في جهاز البصمة أو ورقة الدوام وكذلك قبل خروجه.</li>
+                <li>يجب اعتماد النموذج الجديد لاستئذان الموظف أثناء الدوام الرسمي الموجود على نظام الكلية أو في الشؤون الإدارية.</li>
+            </ul>
         </div>
     </div>
 
@@ -242,153 +200,99 @@
             var originalContent = document.body.innerHTML;
 
             var printStyles = `
-                            body {
-                                font-family: 'Arial', sans-serif;
-                                background-color: #f8f9fa;
-                                color: #333;
-                                direction: rtl;
-                                margin: 0;
-                                padding: 20px;
+                                                                body {
+                            font-family: Arial, sans-serif;
+                            background-color: #fff;
+                            margin: 0;
+                            padding: 20px;
+                            color: #000;
+                            direction: rtl;
+                            text-align: right;
+                        }
+
+                        .container {
+                            background-color: #fff;
+                            padding: 20px;
+                            border-radius: 8px;
+                            max-width: 800px;
+                            margin: auto;
+                            border: 1px solid #000;
+                        }
+
+                        .header {
+                            text-align: center;
+                            margin-bottom: 20px;
+                        }
+
+                        .header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 20px;
+                            background-color: #fff;
+                            color: #000;
+                            padding: 10px;
+                            border-radius: 8px;
+                        }
+
+                            .header img {
+                                width: 100px;
+                                height: auto;
                             }
 
-                            .container {
-                                max-width: 800px;
-                                margin: auto;
-                                padding: 20px;
-                                background-color: #fff;
-                                border: 1px solid #ddd;
-                                border-radius: 10px;
-                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                            }
-
-                            .header {
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                margin-bottom: 20px;
-                            }
-
-                                .header img {
-                                    width: 100px;
-                                    height: auto;
-                                }
-
-                                .header .header-text-right, .header .header-text-left {
-                                    text-align: center;
-                                    flex: 1;
-                                }
-
-                                .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 {
-                                    margin: 5px 0;
-                                }
-
-                                .header h1 {
-                                    font-size: 24px;
-                                }
-
-                                .header p {
-                                    font-size: 18px;
-                                }
-
-                            .content {
-                                margin-bottom: 20px;
-                            }
-
-                                .content p {
-                                    margin: 10px 0;
-                                    font-size: 18px;
-                                }
-
-                                .content ul {
-                                    list-style-type: none;
-                                    padding: 0;
-                                }
-
-                                    .content ul li {
-                                        margin: 5px 0;
-                                    }
-
-                            .form-group {
-                                margin-bottom: 20px;
-                            }
-
-                                .form-group label {
-                                    font-size: 20px;
-                                    display: block;
-                                    margin-bottom: 10px;
-                                }
-
-                                .form-group textarea {
-                                    width: 100%;
-                                    height: 100px;
-                                    padding: 15px;
-                                    font-size: 20px;
-                                    border: 1px solid #ccc;
-                                    border-radius: 5px;
-                                    box-sizing: border-box;
-                                    resize: vertical;
-                                }
-
-                            .form-layout-footer {
+                            .header .header-text-right {
+                                width: 40%;
                                 text-align: center;
-                                margin-top: 30px;
+                                direction: ltr;
                             }
 
-                                .form-layout-footer input, .form-layout-footer a {
-                                    margin: 0 10px;
-                                    padding: 10px 20px;
-                                    font-size: 16px;
-                                    border-radius: 5px;
-                                }
-
-                                .form-layout-footer input {
-                                    border: none;
-                                    background-color: #007bff;
-                                    color: #fff;
-                                }
-
-                                .form-layout-footer a {
-                                    border: 1px solid #ccc;
-                                    background-color: #f8f9fa;
-                                    color: #333;
-                                }
-
-                            .footer p {
-                                margin: 10px 0;
-                                text-align: center;
-                                font-size: 16px;
-                            }
-
-                            .table-container {
-                                margin-bottom: 20px;
-                            }
-
-                            table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                margin-bottom: 20px;
-                            }
-
-                            table, th, td {
-                                border: 1px solid #000;
-                            }
-
-                            th, td {
-                                padding: 10px;
+                            .header .header-text-left {
+                                width: 40%;
                                 text-align: center;
                             }
+                        .content p {
+                            margin: 15px 0;
+                        }
 
-                            .cen {
-                                text-align: center;
-                            }
+                        .signature {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 20px;
+                        }
 
-                            .right {
+                        .footer {
+                            margin-top: 40px;
+                        }
+
+                        hr {
+                            border: none;
+                            border-top: 1px solid #000;
+                            margin: 20px 0;
+                        }
+
+                        .right{
+                            text-align: right;
+                        }
+
+                        .signature {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            width: 100%;
+                        }
+
+                        .signature-row {
+                            display: flex;
+                            width: 100%;
+                            justify-content: space-between;
+                        }
+
+                            .signature-row p {
+                                margin: 0 10px;
+                                flex: 1;
                                 text-align: right;
                             }
-                            .no-print {
-                                display: none;
-                            }
-                            `;
+                                            `;
 
             document.body.innerHTML = `<style>${printStyles}</style>` + printContent;
             window.print();
@@ -396,5 +300,16 @@
             location.reload();
         }
     </script>
+
+    @functions {
+        public string FormatTimeOnly(TimeOnly time)
+        {
+            string period = time.Hour < 12 ? "صباحًا" : "مساءً";
+            int hour = time.Hour % 12;
+            hour = hour == 0 ? 12 : hour;
+            return $"{hour}:{time.Minute:D2} {period}";
+        }
+    }
 </body>
 </html>
+

@@ -1,9 +1,14 @@
 ﻿@using FollowUp.Models
 @model Attendance
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/HeadOfDept/Views/Shared/_Layout.cshtml";
+
+    var arabicCulture = new CultureInfo("ar-SA");
+    var formattedTime = Model.Date.ToString("hh:mm tt", arabicCulture);
+    formattedTime = formattedTime.Replace("AM", "صباحاً").Replace("PM", "مساءً");
 }
 <!DOCTYPE html>
 <html lang="ar">
@@ -182,6 +187,17 @@
             text-align: right;
         }
 
+                .form-group textarea {
+            width: 100%;
+            height: 100px;
+            padding: 15px;
+            font-size: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
         .inline-labels {
             display: flex;
             justify-content: space-between;
@@ -254,7 +270,7 @@
         <div class="content">
             <p>سعادة رئيس / قسم @Model.ApplicationUser.Department.Name حفظه الله</p>
             <p>السلام عليكم ورحمة الله وبركاته،</p>
-            <p>عدم تواجد الساعة <strong>@Model.Table.Time</strong> من خلال الجولة الميدانية ضمن إجراءات المتابعة تبين ما يلي:</p>
+            <p>من خلال الجولة الميدانية ضمن إجراءات المتابعة تبين ما يلي: عدم تواجد الساعة @formattedTime</p>
 
             <p>وبناءً على الجدول التدريبي فإن القاعة يشغلها المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
             <div>
@@ -274,35 +290,45 @@
 
             <hr />
 
-            <div class="signature">
-                @if (Model.Status == 1 || Model.Status == 5)
-                {
-                    <p>الافادة: سعادة رئيس قسم <strong>@Model.ApplicationUser.Department.Name</strong> أفيد سعادتكم:</p>
-                    <div class="dotted-line"></div>
-                    <div class="signature-row">
-                        <p>اسم المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
-                        <p>التاريخ: _____/_____/144هـ</p>
-                        <p>رقم الحاسب: <strong>@Model.ApplicationUser.UserName</strong></p>
+            <p> الافادة: سعادة رئيس قسم <strong>@Model.ApplicationUser.Department.Name</strong></p>
+            <p>أفيد سعادتكم: </p>
+
+            @if (Model.Status == 1 || Model.Status == 5)
+            {
+                <div class="dotted-line"></div>
+                <form method="post" asp-action="FirstExcuseHead" asp-controller="Report" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label for="Value">الافادة : <span class="tx-danger">*</span></label>
+                        <textarea id="Statment" asp-for="Statment" placeholder="الافادة" required></textarea>
+                        <span class="text-danger" asp-validation-for="Statment"></span>
                     </div>
-                }
+
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="form-layout-footer">
+                        <input type="submit" value="إرسال" class="btn btn-info">
+                        <a asp-action="Index" class="btn btn-secondary">الرجوع</a>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <p>@Model.Statment</p>
+            }
+
+            <div class="signature">
+                <div class="signature-row">
+                    <p>اسم المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
+                    @if (Model.Status != 1)
+                    {
+                        <p>التاريخ: @Model.StatmentDate هـ</p>
+                    }
+                    <p>رقم الحاسب: <strong>@Model.ApplicationUser.UserName</strong></p>
+                </div>
             </div>
 
-            @if (Model.Status != 1 && Model.Status != 5)
-            {
-                <p>الافادة: سعادة رئيس قسم <strong>@Model.ApplicationUser.Department.Name</strong> أفيد سعادتكم:</p>
-                <p>@Model.Statment</p>
-            
-                <div class="signature">
-                    <div class="signature-row">
-                        <p>اسم المدرب: <strong>@Model.ApplicationUser.UserFullName</strong></p>
-                        @if (Model.Status != 1)
-                        {
-                            <p>التاريخ: @Model.StatmentDate هـ</p>
-                        }
-                        <p>رقم الحاسب: <strong>@Model.ApplicationUser.UserName</strong></p>
-                    </div>
-                </div>
-            }
 
             <hr />
 

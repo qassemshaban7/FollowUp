@@ -24,126 +24,118 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Statistics(int? day, int? month, int? year)
+        public async Task<IActionResult> Statistics(DateOnly? date)
         {
             HijriCalendar hijriCalendar = new HijriCalendar();
 
-            if (month == null || year == null)
+            if (date == null)
             {
                 ViewBag.PresentStatistics = 0;
                 ViewBag.LateStatistics = 0;
                 ViewBag.AbsentStatistics = 0;
                 ViewBag.TotalTables = 0;
-
                 return View();
-
-                //DateTime now = DateTime.Now;
-                //month = month ?? hijriCalendar.GetMonth(now);
-                //year = year ?? hijriCalendar.GetYear(now);
             }
+            ViewData["SelectedDate"] = date.Value.ToString("yyyy-MM-dd");
 
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
-
-            if (day != null)
+            try
             {
-                try
-                {
-                    DateTime hijriDate = hijriCalendar.ToDateTime(year.Value, month.Value, day.Value, 0, 0, 0, 0);
+                DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
+                int day = hijriCalendar.GetDayOfMonth(dateTime);
+                int month = hijriCalendar.GetMonth(dateTime);
+                int year = hijriCalendar.GetYear(dateTime);
 
-                    CultureInfo arabicCulture = new CultureInfo("ar-SA");
-                    string dayNameInArabic = arabicCulture.DateTimeFormat.GetDayName(hijriDate.DayOfWeek);
+                CultureInfo arabicCulture = new CultureInfo("ar-SA");
+                string dayNameInArabic = arabicCulture.DateTimeFormat.GetDayName(dateTime.DayOfWeek);
 
-                    var Absent = await _context.Attendances
-                        .Where(x => x.ApplicationUser.Department.Name == user.Department.Name && x.HijriDate == $"{day}/{month}/{year}" && x.Value == "متأخر")
-                        .CountAsync();
+                var Absent = await _context.Attendances
+                    .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "غائب")
+                    .CountAsync();
+                
+                var Late = await _context.Attendances
+                    .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "متأخر")
+                    .CountAsync();
 
-                    var Late = await _context.Attendances
-                        .Where(x => x.ApplicationUser.Department.Name == user.Department.Name && x.HijriDate == $"{day}/{month}/{year}" && x.Value == "غائب")
-                        .CountAsync();
+                var Tables = await _context.Tables
+                    .Where(r => r.Activation.Status == "نشط" && r.Day == dayNameInArabic)
+                    .CountAsync();
+                ViewBag.TotalTables = Tables;
 
-                    var Tables = await _context.Tables
-                        .Where(r => r.ApplicationUser.Department.Name == user.Department.Name && r.Activation.Status == "نشط" && r.Day == dayNameInArabic)
-                        .CountAsync();
-                    ViewBag.TotalTables = Tables;
+                var PresentStatistics = Tables - (Absent + Late);
+                ViewBag.PresentStatistics = PresentStatistics;
 
-                    var PresentStatistics = Tables - (Absent + Late);
-                    ViewBag.PresentStatistics = PresentStatistics;
+                var LateStatistics = Late;
+                ViewBag.LateStatistics = LateStatistics;
 
-                    var LateStatistics = Late;
-                    ViewBag.LateStatistics = LateStatistics;
-
-                    var AbsentStatistics = Absent;
-                    ViewBag.AbsentStatistics = AbsentStatistics;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    ViewBag.PresentStatistics = 0;
-                    ViewBag.LateStatistics = 0;
-                    ViewBag.AbsentStatistics = 0;
-                }
+                var AbsentStatistics = Absent;
+                ViewBag.AbsentStatistics = AbsentStatistics;
             }
-            else
+            catch (ArgumentOutOfRangeException)
             {
-                try
-                {
-                    int daysInMonth = hijriCalendar.GetDaysInMonth(year.Value, month.Value);
-
-                    int totalAbsent = 0;
-                    int totalLate = 0;
-                    int totalTables = 0;
-
-                    for (int d = 1; d <= daysInMonth; d++)
-                    {
-                        DateTime hijriDate = hijriCalendar.ToDateTime(year.Value, month.Value, d, 0, 0, 0, 0);
-                        string dayNameInArabic = new CultureInfo("ar-SA").DateTimeFormat.GetDayName(hijriDate.DayOfWeek);
-
-                        var dailyAbsent = await _context.Attendances
-                            .Where(x => x.ApplicationUser.Department.Name == user.Department.Name && x.HijriDate == $"{d}/{month}/{year}" && x.Value == "متأخر")
-                            .CountAsync();
-
-                        var dailyLate = await _context.Attendances
-                            .Where(x => x.ApplicationUser.Department.Name == user.Department.Name && x.HijriDate == $"{d}/{month}/{year}" && x.Value == "غائب")
-                            .CountAsync();
-
-                        var dailyTables = await _context.Tables
-                            .Where(r => r.ApplicationUser.Department.Name == user.Department.Name && r.Activation.Status == "نشط" && r.Day == dayNameInArabic)
-                            .CountAsync();
-
-                        totalAbsent += dailyAbsent;
-                        totalLate += dailyLate;
-                        totalTables += dailyTables;
-                    }
-
-                    ViewBag.totalTables = totalTables;
-
-                    if (totalTables > 0)
-                    {
-                        var PresentStatistics = (totalTables - (totalAbsent + totalLate));
-                        ViewBag.PresentStatistics = PresentStatistics;
-
-                        var LateStatistics = totalLate;
-                        ViewBag.LateStatistics = LateStatistics;
-
-                        var AbsentStatistics = totalAbsent;
-                        ViewBag.AbsentStatistics = AbsentStatistics;
-                    }
-                    else
-                    {
-                        ViewBag.PresentStatistics = 0;
-                        ViewBag.LateStatistics = 0;
-                        ViewBag.AbsentStatistics = 0;
-                    }
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    ViewBag.PresentStatistics = 0;
-                    ViewBag.LateStatistics = 0;
-                    ViewBag.AbsentStatistics = 0;
-                }
+                ViewBag.PresentStatistics = 0;
+                ViewBag.LateStatistics = 0;
+                ViewBag.AbsentStatistics = 0;
             }
 
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Absent(DateOnly? date)
+        {
+            if (!date.HasValue)
+            {
+                return View(new List<Attendance>());
+            }
+            HijriCalendar hijriCalendar = new HijriCalendar();
+
+            DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
+            int day = hijriCalendar.GetDayOfMonth(dateTime);
+            int month = hijriCalendar.GetMonth(dateTime);
+            int year = hijriCalendar.GetYear(dateTime);
+
+
+            var Absent = await _context.Attendances
+                .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "غائب")
+                .Include(a => a.Table)
+                    .ThenInclude(t => t.Department)
+                    .Include(a => a.Table)
+                    .ThenInclude(d => d.Build)
+                    .Include(a => a.Table)
+                    .ThenInclude(b => b.Course)
+                .Include(a => a.ApplicationUser)
+                .ToListAsync();
+
+            return View(Absent);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Late(DateOnly? date)
+        {
+            if (!date.HasValue)
+            {
+                return View(new List<Attendance>());
+            }
+            HijriCalendar hijriCalendar = new HijriCalendar();
+
+            DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
+            int day = hijriCalendar.GetDayOfMonth(dateTime);
+            int month = hijriCalendar.GetMonth(dateTime);
+            int year = hijriCalendar.GetYear(dateTime);
+
+            var Late = await _context.Attendances
+                .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "متأخر")
+                .Include(a => a.Table)
+                    .ThenInclude(t => t.Department)
+                    .Include(a => a.Table)
+                    .ThenInclude(d => d.Build)
+                    .Include(a => a.Table)
+                    .ThenInclude(b => b.Course)
+                .Include(a => a.ApplicationUser)
+                .ToListAsync();
+
+            return View(Late);
+        }
+
     }
 }

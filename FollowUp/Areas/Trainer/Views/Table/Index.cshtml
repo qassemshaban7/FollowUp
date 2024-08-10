@@ -1,14 +1,12 @@
 ﻿@model IEnumerable<Table>
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Areas/Supervisor/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Trainer/Views/Shared/_Layout.cshtml";
 }
 
 @section head {
-    <!-- BEGIN PAGE LEVEL STYLES -->
     <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/datatables.css">
     <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/dt-global_style.css">
-
 }
 
 <style>
@@ -36,8 +34,36 @@
             .filter-form button:hover {
                 background-color: #3C3883;
             }
-</style>
 
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 18px;
+        text-align: left;
+        background-color: #FFFFFF;
+        border: 1px solid #dddddd;
+    }
+
+        .styled-table thead tr {
+            background-color: #6C63FF;
+            color: #FFFFFF;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #ddd;
+        }
+</style>
 
 <div class="br-pagetitle">
     <i class="fas fa-users fa-6x text-info"></i>
@@ -50,8 +76,8 @@
 
 <div class="br-pagebody">
     <div class="br-section-wrapper">
-        <div class="table-wrapper">
-            <table id="deptsTable" class="table display responsive nowrap">
+        <div class="table-container">
+            <table class="styled-table">
                 <thead>
                     <tr>
                         <th>اليوم</th>
@@ -165,10 +191,9 @@
 }
 
 @section scripts {
-    <!-- BEGIN PAGE LEVEL SCRIPTS -->
     <script src="~/lib/table/datatable/datatables.js"></script>
     <script>
-        $('#deptsTable').DataTable({
+        $('.styled-table').DataTable({
             "oLanguage": {
                 "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
                 "sInfo": "عدد النتائج   _TOTAL_",
@@ -178,12 +203,11 @@
             },
             "order": [[1, "desc"]],
             "stripeClasses": [],
-            "lengthMenu": [7, 10, 20, 50],
+            "lengthMenu": [7, 10, 20, 50, 100],
             "pageLength": 20,
-            drawCallback: function () { $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered mb-5'); }
+            drawCallback: function () { $('.dataTables_paginate > .pagination').addClass('pagination-style-13 pagination-bordered mb-5'); }
         });
     </script>
     <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
     <script src="~/lib/toaster/toaster.js"></script>
-
 }

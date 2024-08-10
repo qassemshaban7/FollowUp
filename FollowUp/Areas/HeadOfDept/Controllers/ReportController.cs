@@ -132,6 +132,38 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
             }
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FirstExcuseHead(int id, string Statment)
+        {
+            var department = await _context.Attendances.FindAsync(id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                var today = DateTime.Today;
+                var hijriCalendar = new System.Globalization.HijriCalendar();
+                var hijriDate = $"{hijriCalendar.GetDayOfMonth(today)}/{hijriCalendar.GetMonth(today)}/{hijriCalendar.GetYear(today)}";
+
+                department.Statment = Statment;
+                department.Status = 2;
+                department.StatmentDate = hijriDate;
+
+                _context.Attendances.Update(department);
+                await _context.SaveChangesAsync();
+                HttpContext.Session.SetString("updated", "true");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return View(department);
+            }
+        }
+
         public async Task<IActionResult> DeActivate(int? Id)
         {
             try

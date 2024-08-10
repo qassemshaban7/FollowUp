@@ -39,7 +39,7 @@ namespace FollowUp.Data
                 NormalizedName = "ADMIN",
                 Id = ADMIN_ROLE_ID,
                 ConcurrencyStamp = ADMIN_ROLE_ID,
-                ArabicRoleName = "الادمن",
+                ArabicRoleName = "عميد الكلية",
             });
 
             builder.Entity<ApplicationRole>().HasData(new ApplicationRole
@@ -57,7 +57,7 @@ namespace FollowUp.Data
                 NormalizedName = "SUPERVISOR",
                 Id = TRAINEE_ROLE_ID,
                 ConcurrencyStamp = TRAINEE_ROLE_ID,
-                ArabicRoleName = "المشرف"
+                ArabicRoleName = "مشرف"
             });
 
             builder.Entity<ApplicationRole>().HasData(new ApplicationRole
@@ -66,7 +66,7 @@ namespace FollowUp.Data
                 NormalizedName = "TRAINER",
                 Id = TRAINER_ROLE_ID,
                 ConcurrencyStamp = TRAINER_ROLE_ID,
-                ArabicRoleName = "المدرب"
+                ArabicRoleName = "مدرب"
             });
 
             var appUser = new ApplicationUser
