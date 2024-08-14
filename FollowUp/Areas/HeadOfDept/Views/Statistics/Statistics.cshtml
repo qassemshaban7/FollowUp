@@ -133,8 +133,12 @@
     <div class="form-container">
         <form method="get" asp-action="Statistics" asp-controller="Statistics">
             <div class="form-group">
-                <label for="date">التاريخ:</label>
-                <input type="date" id="date" name="date" required />
+                <label for="startDate">من تاريخ:</label>
+                <input type="date" id="startDate" name="startDate" required />
+            </div>
+            <div class="form-group">
+                <label for="endDate">إلى تاريخ:</label>
+                <input type="date" id="endDate" name="endDate" required />
             </div>
             <button type="submit">عرض الإحصائيات</button>
         </form>
@@ -174,14 +178,16 @@
                     <td>
                         @ViewBag.AbsentStatistics
                         <form method="get" asp-action="Absent" asp-controller="Statistics">
-                            <input type="hidden" name="date" value="@ViewData["SelectedDate"]" />
+                            <input type="hidden" name="date" value="@ViewData["SelectedStartDate"]" />
+                            <input type="hidden" name="date2" value="@ViewData["SelectedEndDate"]" />
                             <button type="submit">عرض</button>
                         </form>
                     </td>
                     <td>
                         @ViewBag.LateStatistics
                         <form method="get" asp-action="Late" asp-controller="Statistics">
-                            <input type="hidden" name="date" value="@ViewData["SelectedDate"]" />
+                            <input type="hidden" name="date" value="@ViewData["SelectedStartDate"]" />
+                            <input type="hidden" name="date2" value="@ViewData["SelectedEndDate"]" />
                             <button type="submit">عرض</button>
                         </form>
                     </td>

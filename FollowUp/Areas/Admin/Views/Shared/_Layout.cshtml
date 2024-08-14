@@ -10,7 +10,7 @@
     <meta name="description" content="Basstahalak Management System">
     <meta name="author" content="">
 
-    <title> تقرير المتابعة بكلية الاتصالات والالكترونيات بجده</title>
+    <title>تقرير المتابعة</title>
 
     <!-- vendor css -->
     <link href="~/lib/fontawesome/css/all.min.css" rel="stylesheet">
@@ -26,8 +26,22 @@
 <body>
 
     <!-- ########## START: LEFT PANEL ########## -->
-    
-        <div class="br-logo d-flex justify-content-center"><a  asp-action="Index" asp-controller="Home" asp-area="SuperAdmin"> <img src="~/img/logo-1.png" class="img-thumbnail" /></a></div>
+    @using FollowUp.Data
+    @inject ApplicationDbContext _context
+
+    @{
+        var logoPG = _context.configs
+        .Where(x => x.Id == 7)
+        .Select(x => x.Name)
+        .FirstOrDefault();
+    }
+
+    <div class="br-logo d-flex justify-content-center">
+        <a asp-action="Index" asp-controller="Home" asp-area="SuperAdmin">
+            <img src="~/img/basiclogo/@logoPG" class="img-thumbnail" />
+        </a>
+    </div>
+
 
     
     <div class="br-sideleft sideleft-scrollbar">
@@ -165,6 +179,7 @@
                     </a><!-- br-menu-link -->
                     <ul class="br-menu-sub">
                         <li class="sub-item"><a asp-action="Index" asp-controller="Statistics" class="sub-link">عرض مديرو النظام</a></li>
+                        <li class="sub-item"><a asp-action="config" asp-controller="Statistics" class="sub-link">اعدادات الموقع</a></li>
                     </ul>
                 </li>
             }

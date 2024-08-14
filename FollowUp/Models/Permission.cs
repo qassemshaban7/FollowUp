@@ -8,11 +8,24 @@ namespace FollowUp.Models
         public string Value { get; set; }
         public DateTime Date { get; set; }
 
-        [NotMapped]
-        public TimeOnly fromdate { get; set; }
-        [NotMapped]
-        public TimeOnly to { get; set; }
+        public TimeSpan FromTime { get; set; }
+        public TimeSpan ToTime { get; set; }
 
+        [NotMapped]
+        public TimeOnly fromdate
+        {
+            get => TimeOnly.FromTimeSpan(FromTime);
+            set => FromTime = value.ToTimeSpan();
+        }
+
+        [NotMapped]
+        public TimeOnly to
+        {
+            get => TimeOnly.FromTimeSpan(ToTime);
+            set => ToTime = value.ToTimeSpan();
+        }
+
+        public int Status { get; set; }
 
         [ForeignKey("TrainerId")]
         public string TrainerId { get; set; }

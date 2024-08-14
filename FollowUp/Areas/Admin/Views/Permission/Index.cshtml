@@ -8,7 +8,7 @@
     <!-- BEGIN PAGE LEVEL STYLES -->
     <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/datatables.css">
     <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/dt-global_style.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 }
 
 <div class="br-pagetitle">
@@ -32,6 +32,9 @@
                 <thead>
                     <tr>
                         <th>التاريخ</th>
+                        <th> الحالة</th>
+                        <th>قبول</th>
+                        <th>رفض</th>
                         <th>النموذج</th>
                     </tr>
                 </thead>
@@ -40,6 +43,36 @@
                     {
                         <tr>
                             <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                @if (item.Status == 1)
+                                {
+                                    <span style="color: orange;">
+                                        <i class="fas fa-hourglass-half"></i> لم يتم الرد
+                                    </span>
+                                }
+                                else if (item.Status == 2)
+                                {
+                                    <span style="color: green;">
+                                        <i class="fas fa-check-circle"></i> تم قبول الإذن
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span style="color: red;">
+                                        <i class="fas fa-times-circle"></i> تم رفض الإذن
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Activate" asp-route-Id="@item.Id" class="btn btn-success text-white">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a asp-action="Deactivate" asp-route-Id="@item.Id" class="btn btn-danger text-white">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </td>
                             <td>
                                 <a asp-action="Report" asp-controller="Permission" asp-route-id="@item.Id" class="btn btn-success text-white">
                                     <i class="fas fa-file-alt"></i> عرض النموذج

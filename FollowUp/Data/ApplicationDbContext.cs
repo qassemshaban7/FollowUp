@@ -21,6 +21,7 @@ namespace FollowUp.Data
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Activation> Activations { get; set; }
         public DbSet<Permission> Permissions { get; set; } 
+        public DbSet<config> configs { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -76,6 +77,8 @@ namespace FollowUp.Data
                 UserFullName = "الادمن",
                 UserName = "Admin",
                 NormalizedUserName = "ADMIN",
+                Email = "Admin@gmail.com",
+                DepartmentId = 5504,
             };
 
             PasswordHasher<ApplicationUser> ph = new PasswordHasher<ApplicationUser>();
@@ -95,6 +98,41 @@ namespace FollowUp.Data
                 Id = 5504,
             });
 
+            builder.Entity<config>().HasData(new config
+            {
+                Name = "مشعل مرزوق العتيبي",
+                Id = 1,
+            });
+            builder.Entity<config>().HasData(new config
+            {
+                Name = "حسين عبده الشاعري",
+                Id = 2,
+            });
+            builder.Entity<config>().HasData(new config
+            {
+                Name = "المملكة العربية السعودية       المؤسسة العامة للتدريب التقني والمهني         الكلية التقنية للاتصالات والمعلومات بجدة        إدارة الرقابة ",
+                Id = 3,
+            });
+            builder.Entity<config>().HasData(new config
+            {
+                Name = "KINGDOM OF SAUDI ARABIA        Technical and Vocational Training Corporation      Technical College of Telecommunications & Info – Jeddah ",
+                Id = 4,
+            });
+            builder.Entity<config>().HasData(new config
+            {
+                Name = "شعار.jpg",
+                Id = 5,
+            });
+            builder.Entity<config>().HasData(new config
+            {
+                Name = "الكلية التقنية للاتصالات والمعلومات بجدة",
+                Id = 6,
+            });
+            builder.Entity<config>().HasData(new config
+            {
+                Name = "logo-1.png",
+                Id = 7,
+            });
             base.OnModelCreating(builder);
         }
     }

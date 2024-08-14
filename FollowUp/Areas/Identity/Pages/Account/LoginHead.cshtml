@@ -46,8 +46,18 @@
     <div class="row no-gutters flex-row-reverse ht-100v">
         <div class="col-md-6 bg-gray-200 d-flex align-items-center justify-content-center">
             <div class="login-wrapper wd-250 wd-xl-350 mg-y-30">
+                @using FollowUp.Data
+                @inject ApplicationDbContext _context
+
+                @{
+                    var logoPG = _context.configs
+                    .Where(x => x.Id == 7)
+                    .Select(x => x.Name)
+                    .FirstOrDefault();
+                }
+
                 <div class=" d-flex justify-content-center mb-2">
-                    <img src="~/img/logo-1.png" class="img-thumbnail" />
+                    <img src="~/img/basiclogo/@logoPG" class="img-thumbnail" />
                 </div>
                 
                 <h3 class="tx-inverse tx-center">تسجيل الدخول</h3>

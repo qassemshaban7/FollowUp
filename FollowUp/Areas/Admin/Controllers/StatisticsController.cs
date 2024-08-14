@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FollowUp.Areas.Admin.Controllers
 {
@@ -32,14 +34,11 @@ namespace FollowUp.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
-        
+
         [HttpGet]
-        public async Task<IActionResult> Statistics(DateOnly? date)
+        public async Task<IActionResult> Statistics(DateOnly? startDate, DateOnly? endDate)
         {
-            HijriCalendar hijriCalendar = new HijriCalendar();
-
-
-            if (date == null)
+            if (!startDate.HasValue || !endDate.HasValue)
             {
                 ViewBag.PresentStatistics = 0;
                 ViewBag.LateStatistics = 0;
@@ -47,39 +46,46 @@ namespace FollowUp.Areas.Admin.Controllers
                 ViewBag.TotalTables = 0;
                 return View();
             }
-            ViewData["SelectedDate"] = date.Value.ToString("yyyy-MM-dd");
+
+            ViewData["SelectedStartDate"] = startDate.Value.ToString("yyyy-MM-dd");
+            ViewData["SelectedEndDate"] = endDate.Value.ToString("yyyy-MM-dd");
 
             try
             {
-                DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
-                int day = hijriCalendar.GetDayOfMonth(dateTime);
-                int month = hijriCalendar.GetMonth(dateTime);
-                int year = hijriCalendar.GetYear(dateTime);
+                DateTime startDateTime = startDate.Value.ToDateTime(new TimeOnly(0, 0));
+                DateTime endDateTime = endDate.Value.ToDateTime(new TimeOnly(23, 59));
 
-                CultureInfo arabicCulture = new CultureInfo("ar-SA");
-                string dayNameInArabic = arabicCulture.DateTimeFormat.GetDayName(dateTime.DayOfWeek);
+                var attendances = await _context.Attendances
+                    .Where(x => x.Date >= startDateTime && x.Date <= endDateTime)
+                    .ToListAsync();
 
-                var Absent = await _context.Attendances
-                    .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "غائب")
-                    .CountAsync();
-                
-                var Late = await _context.Attendances
-                    .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "متأخر")
-                    .CountAsync();
+                var Absent = attendances.Count(x => x.Value == "غائب");
+                var Late = attendances.Count(x => x.Value == "متأخر");
 
-                var Tables = await _context.Tables
-                    .Where(r => r.Activation.Status == "نشط" && r.Day == dayNameInArabic)
-                    .CountAsync();
-                ViewBag.TotalTables = Tables;
+                var days = Enumerable.Range(0, (endDateTime - startDateTime).Days + 1)
+                    .Select(offset => startDateTime.AddDays(offset))
+                    .Select(date => DaysinArabic(date.DayOfWeek))
+                    .ToList();
 
-                var PresentStatistics = Tables - (Absent + Late);
-                ViewBag.PresentStatistics = PresentStatistics;
+                var dayCounts = days.GroupBy(day => day)
+                                    .ToDictionary(group => group.Key, group => group.Count());
 
-                var LateStatistics = Late;
-                ViewBag.LateStatistics = LateStatistics;
+                var tables = await _context.Tables
+                    .Where(t => t.Activation.Status == "نشط")
+                    .ToListAsync();
 
-                var AbsentStatistics = Absent;
-                ViewBag.AbsentStatistics = AbsentStatistics;
+                var totalCount = 0;
+
+                foreach (var day in dayCounts)
+                {
+                    var countForDay = tables.Count(t => t.Day == day.Key);
+                    totalCount += countForDay * day.Value;
+                }
+
+                ViewBag.TotalTables = totalCount;
+                ViewBag.PresentStatistics = totalCount - (Absent + Late);
+                ViewBag.LateStatistics = Late;
+                ViewBag.AbsentStatistics = Absent;
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -91,23 +97,34 @@ namespace FollowUp.Areas.Admin.Controllers
             return View();
         }
 
+        private string DaysinArabic(DayOfWeek dayOfWeek)
+        {
+            return dayOfWeek switch
+            {
+                DayOfWeek.Sunday => "الأحد",
+                DayOfWeek.Monday => "الاثنين",
+                DayOfWeek.Tuesday => "الثلاثاء",
+                DayOfWeek.Wednesday => "الأربعاء",
+                DayOfWeek.Thursday => "الخميس",
+                DayOfWeek.Friday => "الجمعة",
+                DayOfWeek.Saturday => "السبت",
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
         [HttpGet]
-        public async Task<IActionResult> Absent(DateOnly? date)
+        public async Task<IActionResult> Absent( DateOnly? date, DateOnly? date2)
         {
             if (!date.HasValue)
             {
                 return View(new List<Attendance>());
             }
-            HijriCalendar hijriCalendar = new HijriCalendar();
 
-            DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
-            int day = hijriCalendar.GetDayOfMonth(dateTime);
-            int month = hijriCalendar.GetMonth(dateTime);
-            int year = hijriCalendar.GetYear(dateTime);
+            DateTime startDateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
+            DateTime endDateTime = date2.Value.ToDateTime(new TimeOnly(23, 59));
 
-
-            var Absent = await _context.Attendances
-                .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "غائب")
+            var Absent = _context.Attendances
+                .Where(x => x.Date >= startDateTime && x.Date <= endDateTime && x.Value == "غائب")
                 .Include(a => a.Table)
                     .ThenInclude(t => t.Department)
                     .Include(a => a.Table)
@@ -115,27 +132,23 @@ namespace FollowUp.Areas.Admin.Controllers
                     .Include(a => a.Table)
                     .ThenInclude(b => b.Course)
                 .Include(a => a.ApplicationUser)
-                .ToListAsync();
+                .ToList();
 
             return View(Absent);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Late(DateOnly? date)
+        public async Task<IActionResult> Late( DateOnly? date, DateOnly? date2)
         {
             if (!date.HasValue)
             {
                 return View(new List<Attendance>());
             }
-            HijriCalendar hijriCalendar = new HijriCalendar();
+            DateTime startDateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
+            DateTime endDateTime = date2.Value.ToDateTime(new TimeOnly(23, 59));
 
-            DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
-            int day = hijriCalendar.GetDayOfMonth(dateTime);
-            int month = hijriCalendar.GetMonth(dateTime);
-            int year = hijriCalendar.GetYear(dateTime);
-
-            var Late = await _context.Attendances
-                .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "متأخر")
+            var Late = _context.Attendances
+                .Where(x => x.Date >= startDateTime && x.Date <= endDateTime && x.Value == "متأخر")
                 .Include(a => a.Table)
                     .ThenInclude(t => t.Department)
                     .Include(a => a.Table)
@@ -143,7 +156,7 @@ namespace FollowUp.Areas.Admin.Controllers
                     .Include(a => a.Table)
                     .ThenInclude(b => b.Course)
                 .Include(a => a.ApplicationUser)
-                .ToListAsync();
+                .ToList();
 
             return View(Late);
         }
@@ -291,7 +304,6 @@ namespace FollowUp.Areas.Admin.Controllers
                                join role in _context.Roles
                                on userRole.RoleId equals role.Id
                                where role.Name == StaticDetails.Admin
-                               && x.UserName != "Admin"
                                select x)
                                .Include(f => f.Department)
                                .ToListAsync();
@@ -465,6 +477,168 @@ namespace FollowUp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> config()
+        {
+            if (HttpContext.Session.GetString("created") != null)
+            {
+                ViewBag.created = true;
+                HttpContext.Session.Remove("created");
+            }
+            if (HttpContext.Session.GetString("updated") != null)
+            {
+                ViewBag.updated = true;
+                HttpContext.Session.Remove("updated");
+            }
+            if (HttpContext.Session.GetString("deleted") != null)
+            {
+                ViewBag.deleted = true;
+                HttpContext.Session.Remove("deleted");
+            }
+
+            var users = await _context.configs.OrderBy( f => f.Id).ToListAsync();
+            return View(users);
+        }
+
+        public async Task<IActionResult> EditConfig(int id)
+        {
+            var department = await _context.configs
+                  .FirstOrDefaultAsync(d => d.Id == id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            return View(department);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditConfig(int id, string Name)
+        {
+            var user = await _context.configs
+                    .FirstOrDefaultAsync(d => d.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.Name = Name;
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+            HttpContext.Session.SetString("updated", "true");
+            return RedirectToAction(nameof(config));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditLogo(int id, IFormFile Name)
+        {
+            var user = await _context.configs
+                    .FirstOrDefaultAsync(d => d.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            string oldImageFileName = user.Name;
+            string Oldd = user.Name;
+
+
+            if ( Name != null)
+            {
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "img/logo");
+
+                string[] allowedExtensions = { ".png", ".jpg", ".jpeg" };
+                if (!allowedExtensions.Contains(Path.GetExtension( Name.FileName).ToLower()))
+                {
+                    TempData["ErrorMessage"] = "Only .png and .jpg and .jpeg images are allowed!";
+                    return RedirectToAction("Create");
+                }
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Name.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                await using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await Name.CopyToAsync(fileStream);
+                }
+
+                if (!string.IsNullOrEmpty(oldImageFileName))
+                {
+                    string oldFilePath = Path.Combine(uploadsFolder, oldImageFileName);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+                user.Name = uniqueFileName;
+            }
+            else
+            {
+                user.Name = Oldd;
+            }
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+            HttpContext.Session.SetString("updated", "true");
+            return RedirectToAction(nameof(config));
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditHomePageLogo(int id, IFormFile Name)
+        {
+            var user = await _context.configs
+                    .FirstOrDefaultAsync(d => d.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            string oldImageFileName = user.Name;
+            string Oldd = user.Name;
+
+
+            if (Name != null)
+            {
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "img/basiclogo");
+
+                string[] allowedExtensions = { ".png", ".jpg", ".jpeg" };
+                if (!allowedExtensions.Contains(Path.GetExtension(Name.FileName).ToLower()))
+                {
+                    TempData["ErrorMessage"] = "Only .png and .jpg and .jpeg images are allowed!";
+                    return RedirectToAction("Create");
+                }
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Name.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                await using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await Name.CopyToAsync(fileStream);
+                }
+
+                if (!string.IsNullOrEmpty(oldImageFileName))
+                {
+                    string oldFilePath = Path.Combine(uploadsFolder, oldImageFileName);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+                user.Name = uniqueFileName;
+            }
+            else
+            {
+                user.Name = Oldd;
+            }
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+            HttpContext.Session.SetString("updated", "true");
+            return RedirectToAction(nameof(config));
+        }
         //[HttpGet("startbackgroundTasktoAddAttendance")]
         //public IActionResult StartBackgroundTaskToAddAttendance()
         //{

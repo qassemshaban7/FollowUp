@@ -24,11 +24,9 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Statistics(DateOnly? date)
+        public async Task<IActionResult> Statistics(DateOnly? startDate, DateOnly? endDate)
         {
-            HijriCalendar hijriCalendar = new HijriCalendar();
-
-            if (date == null)
+            if (!startDate.HasValue || !endDate.HasValue)
             {
                 ViewBag.PresentStatistics = 0;
                 ViewBag.LateStatistics = 0;
@@ -36,39 +34,50 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
                 ViewBag.TotalTables = 0;
                 return View();
             }
-            ViewData["SelectedDate"] = date.Value.ToString("yyyy-MM-dd");
+
+            ViewData["SelectedStartDate"] = startDate.Value.ToString("yyyy-MM-dd");
+            ViewData["SelectedEndDate"] = endDate.Value.ToString("yyyy-MM-dd");
 
             try
             {
-                DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
-                int day = hijriCalendar.GetDayOfMonth(dateTime);
-                int month = hijriCalendar.GetMonth(dateTime);
-                int year = hijriCalendar.GetYear(dateTime);
 
-                CultureInfo arabicCulture = new CultureInfo("ar-SA");
-                string dayNameInArabic = arabicCulture.DateTimeFormat.GetDayName(dateTime.DayOfWeek);
+                string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var Super = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
 
-                var Absent = await _context.Attendances
-                    .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "غائب")
-                    .CountAsync();
-                
-                var Late = await _context.Attendances
-                    .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "متأخر")
-                    .CountAsync();
+                DateTime startDateTime = startDate.Value.ToDateTime(new TimeOnly(0, 0));
+                DateTime endDateTime = endDate.Value.ToDateTime(new TimeOnly(23, 59));
 
-                var Tables = await _context.Tables
-                    .Where(r => r.Activation.Status == "نشط" && r.Day == dayNameInArabic)
-                    .CountAsync();
-                ViewBag.TotalTables = Tables;
+                var attendances = await _context.Attendances
+                    .Where(x => x.Date >= startDateTime && x.Date <= endDateTime && x.ApplicationUser.Department.Name == Super.Department.Name)
+                    .ToListAsync();
 
-                var PresentStatistics = Tables - (Absent + Late);
-                ViewBag.PresentStatistics = PresentStatistics;
+                var Absent = attendances.Count(x => x.Value == "غائب");
+                var Late = attendances.Count(x => x.Value == "متأخر");
 
-                var LateStatistics = Late;
-                ViewBag.LateStatistics = LateStatistics;
+                var days = Enumerable.Range(0, (endDateTime - startDateTime).Days + 1)
+                    .Select(offset => startDateTime.AddDays(offset))
+                    .Select(date => DaysinArabic(date.DayOfWeek))
+                    .ToList();
 
-                var AbsentStatistics = Absent;
-                ViewBag.AbsentStatistics = AbsentStatistics;
+                var dayCounts = days.GroupBy(day => day)
+                                    .ToDictionary(group => group.Key, group => group.Count());
+
+                var tables = await _context.Tables
+                    .Where(t => t.Activation.Status == "نشط" && t.ApplicationUser.Department.Name == Super.Department.Name)
+                    .ToListAsync();
+
+                var totalCount = 0;
+
+                foreach (var day in dayCounts)
+                {
+                    var countForDay = tables.Count(t => t.Day == day.Key);
+                    totalCount += countForDay * day.Value;
+                }
+
+                ViewBag.TotalTables = totalCount;
+                ViewBag.PresentStatistics = totalCount - (Absent + Late);
+                ViewBag.LateStatistics = Late;
+                ViewBag.AbsentStatistics = Absent;
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -80,23 +89,38 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
             return View();
         }
 
+        private string DaysinArabic(DayOfWeek dayOfWeek)
+        {
+            return dayOfWeek switch
+            {
+                DayOfWeek.Sunday => "الأحد",
+                DayOfWeek.Monday => "الاثنين",
+                DayOfWeek.Tuesday => "الثلاثاء",
+                DayOfWeek.Wednesday => "الأربعاء",
+                DayOfWeek.Thursday => "الخميس",
+                DayOfWeek.Friday => "الجمعة",
+                DayOfWeek.Saturday => "السبت",
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+
         [HttpGet]
-        public async Task<IActionResult> Absent(DateOnly? date)
+        public async Task<IActionResult> Absent(DateOnly? date, DateOnly? date2)
         {
             if (!date.HasValue)
             {
                 return View(new List<Attendance>());
             }
-            HijriCalendar hijriCalendar = new HijriCalendar();
 
-            DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
-            int day = hijriCalendar.GetDayOfMonth(dateTime);
-            int month = hijriCalendar.GetMonth(dateTime);
-            int year = hijriCalendar.GetYear(dateTime);
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var Super = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
 
+            DateTime startDateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
+            DateTime endDateTime = date2.Value.ToDateTime(new TimeOnly(23, 59));
 
-            var Absent = await _context.Attendances
-                .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "غائب")
+            var Absent = _context.Attendances
+                .Where(x => x.Date >= startDateTime && x.ApplicationUser.Department.Name == Super.Department.Name && x.Date <= endDateTime && x.Value == "غائب")
                 .Include(a => a.Table)
                     .ThenInclude(t => t.Department)
                     .Include(a => a.Table)
@@ -104,27 +128,27 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
                     .Include(a => a.Table)
                     .ThenInclude(b => b.Course)
                 .Include(a => a.ApplicationUser)
-                .ToListAsync();
+                .ToList();
 
             return View(Absent);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Late(DateOnly? date)
+        public async Task<IActionResult> Late(DateOnly? date, DateOnly? date2)
         {
             if (!date.HasValue)
             {
                 return View(new List<Attendance>());
             }
-            HijriCalendar hijriCalendar = new HijriCalendar();
 
-            DateTime dateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
-            int day = hijriCalendar.GetDayOfMonth(dateTime);
-            int month = hijriCalendar.GetMonth(dateTime);
-            int year = hijriCalendar.GetYear(dateTime);
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var Super = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
 
-            var Late = await _context.Attendances
-                .Where(x => x.HijriDate == $"{day}/{month}/{year}" && x.Value == "متأخر")
+            DateTime startDateTime = date.Value.ToDateTime(new TimeOnly(0, 0));
+            DateTime endDateTime = date2.Value.ToDateTime(new TimeOnly(23, 59));
+
+            var Late = _context.Attendances
+                .Where(x => x.Date >= startDateTime && x.ApplicationUser.Department.Name == Super.Department.Name && x.Date <= endDateTime && x.Value == "متأخر")
                 .Include(a => a.Table)
                     .ThenInclude(t => t.Department)
                     .Include(a => a.Table)
@@ -132,7 +156,7 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
                     .Include(a => a.Table)
                     .ThenInclude(b => b.Course)
                 .Include(a => a.ApplicationUser)
-                .ToListAsync();
+                .ToList();
 
             return View(Late);
         }

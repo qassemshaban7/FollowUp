@@ -131,35 +131,19 @@
     </style>
 </head>
 <body>
-
-<div class="form-container">
-    <form method="get" asp-action="Statistics" asp-controller="Statistics">
-        <div class="form-group">
-            <label for="date" >التاريخ:</label>
-            <input type="date" id="date" name="date" required/>
-        </div>
-        <button type="submit">عرض الإحصائيات</button>
-    </form>
-</div>
-
-@*     <div class="form-container">
+    <div class="form-container">
         <form method="get" asp-action="Statistics" asp-controller="Statistics">
             <div class="form-group">
-                <label for="day">اليوم (اتركه فارغًا للبحث عن الشهر بالكامل):</label>
-                <input type="number" min="1" max="31" id="day" name="day" placeholder="أدخل اليوم" />
+                <label for="startDate">من تاريخ:</label>
+                <input type="date" id="startDate" name="startDate" required />
             </div>
             <div class="form-group">
-                <label for="month">الشهر:</label>
-                <input type="number" min="1" max="12" id="month" name="month" placeholder="أدخل الشهر" required />
-            </div>
-            <div class="form-group">
-                <label for="year">السنة:</label>
-                <input type="number" maxlength="4" id="year" name="year" placeholder="أدخل السنة" required />
+                <label for="endDate">إلى تاريخ:</label>
+                <input type="date" id="endDate" name="endDate" required />
             </div>
             <button type="submit">عرض الإحصائيات</button>
         </form>
-    </div> *@
-
+    </div>
     <div class="table-container">
         <table class="styled-table">
             <thead>
@@ -177,14 +161,16 @@
                     <td>
                         @ViewBag.AbsentStatistics
                         <form method="get" asp-action="Absent" asp-controller="Statistics">
-                            <input type="hidden" name="date" value="@ViewData["SelectedDate"]" />
+                            <input type="hidden" name="date" value="@ViewData["SelectedStartDate"]" />
+                            <input type="hidden" name="date2" value="@ViewData["SelectedEndDate"]" />
                             <button type="submit">عرض</button>
                         </form>
                     </td>
                     <td>
                         @ViewBag.LateStatistics
                         <form method="get" asp-action="Late" asp-controller="Statistics">
-                            <input type="hidden" name="date" value="@ViewData["SelectedDate"]" />
+                            <input type="hidden" name="date" value="@ViewData["SelectedStartDate"]" />
+                            <input type="hidden" name="date2" value="@ViewData["SelectedEndDate"]" />
                             <button type="submit">عرض</button>
                         </form>
                     </td>
@@ -192,6 +178,5 @@
             </tbody>
         </table>
     </div>
-
 </body>
 </html>

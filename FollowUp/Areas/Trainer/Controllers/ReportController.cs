@@ -62,6 +62,20 @@ namespace FollowUp.Areas.Trainer.Controllers
 
         public async Task<IActionResult> Report(int id)
         {
+            var manager = await _context.configs.Where(x => x.Id == 1).FirstOrDefaultAsync();
+            var manager2 = await _context.configs.Where(x => x.Id == 2).FirstOrDefaultAsync();
+            ViewBag.manager = manager;
+            ViewBag.manager2 = manager2;
+
+            var manager3 = await _context.configs.Where(x => x.Id == 3).FirstOrDefaultAsync();
+            ViewBag.manager3 = manager3;
+
+            var manager4 = await _context.configs.Where(x => x.Id == 4).FirstOrDefaultAsync();
+            ViewBag.manager4 = manager4;
+
+            var manager5 = await _context.configs.Where(x => x.Id == 5).FirstOrDefaultAsync();
+            ViewBag.manager5 = manager5;
+
             var Attendance = await _context.Attendances
                 .Include(a => a.Table)
                     .ThenInclude(t => t.Department)

@@ -99,16 +99,11 @@
     <div class="container">
         <div class="header">
             <div class="header-text-left">
-                <h2>المملكة العربية السعودية</h2>
-                <h3>المؤسسة العامة للتدريب التقني والمهني</h3>
-                <h4>الكلية التقنية للاتصالات والمعلومات بجدة</h4>
-                <h5>إدارة الرقابة</h5>
+                <h3>@ViewBag.manager3.Name</h3>
             </div>
-            <img src="~/img/config/شعار.jpg" alt="Logo">
+            <img src="~/img/logo/@ViewBag.manager5.Name" alt="Logo">
             <div class="header-text-right">
-                <h3>KINGDOM OF SAUDI ARABIA</h3>
-                <h5>Technical and Vocational Training Corporation</h5>
-                <h6>Technical College of Telecommunications & Info – Jeddah</h6>
+                <h5>@ViewBag.manager4.Name</h5>
             </div>
         </div>
         <hr />
@@ -159,12 +154,12 @@
                     <a asp-action="Index" class="btn btn-secondary">الرجوع</a>
                 </div>
             </form>
-
+@* 
             <p>مقدمه الموظف: حسين عبده الشاعري</p>
-            <p>يتم تعبئة النموذج من قبل الموظف</p>
+            <p>يتم تعبئة النموذج من قبل الموظف</p> *@
         </div>
 
-        <hr />
+@*         <hr />
 
         <div class="content">
             <p>سعادة مدير إدارة الرقابة المحترم</p>
@@ -177,8 +172,8 @@
             <p>م. عبدالله أحمد السهيمي</p>
         </div>
 
-        <hr />
-
+        <hr /> *@
+@* 
         <div class="content">
             <p>سعادة مدير الشؤون الإدارية المحترم</p>
             <p>السلام عليكم ورحمة الله وبركاته ، وبعد :</p>
@@ -186,7 +181,7 @@
             <p>حفظ في ملف الموظف.</p>
             <p>مدير إدارة الرقابة</p>
             <p>أ. مشعل مرزوق العتيبي</p>
-        </div>
+        </div> *@
 
         <hr />
 

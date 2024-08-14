@@ -212,6 +212,15 @@ namespace FollowUp.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<TimeSpan>("FromTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("ToTime")
+                        .HasColumnType("time");
+
                     b.Property<string>("TrainerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -294,6 +303,60 @@ namespace FollowUp.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Tables");
+                });
+
+            modelBuilder.Entity("FollowUp.Models.config", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("configs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "مشعل مرزوق العتيبي"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "حسين عبده الشاعري"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "المملكة العربية السعودية       المؤسسة العامة للتدريب التقني والمهني         الكلية التقنية للاتصالات والمعلومات بجدة        إدارة الرقابة "
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "KINGDOM OF SAUDI ARABIA        Technical and Vocational Training Corporation      Technical College of Telecommunications & Info – Jeddah "
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "شعار.jpg"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "الكلية التقنية للاتصالات والمعلومات بجدة"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "logo-1.png"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -595,15 +658,17 @@ namespace FollowUp.Migrations
                         {
                             Id = "ecc07b18-f55e-4f6b-95bd-0e84f556135f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "81c5657d-1465-4880-a9ef-ff05d88115ec",
+                            ConcurrencyStamp = "19639102-d264-4502-a26b-3fdd996c955b",
+                            Email = "Admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIYGCbvr8ZpE9YLJLWIAfZ5m7J7CHyhoJWUJBNspVxgdCyMPmxgyqIQOQ+POzYnzWw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJfT8UL6LgkN3WlI/X1kt9OTK1xoxcOizcqd58qQ1BMF4u66c2AVqu9pUz2BWxTfeA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6277491f-a7cd-45a2-9d92-811d8894f57c",
+                            SecurityStamp = "20308df7-ae8e-4798-abbe-7826d4d798d2",
                             TwoFactorEnabled = false,
                             UserName = "Admin",
+                            DepartmentId = 5504,
                             UserFullName = "الادمن"
                         });
                 });

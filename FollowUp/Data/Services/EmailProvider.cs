@@ -1,9 +1,8 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MimeKit;
-using MimeKit.Text;
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace FollowUp.Data.Services
 {
@@ -18,7 +17,7 @@ namespace FollowUp.Data.Services
             _config = config;
         }
 
-        public async Task<int> SendMail( int attendId, int tableId, string UserId, string Value, int? minut)
+        public async Task<int> SendMail(int attendId, int tableId, string UserId, string Value, int? minut)
         {
             var attendance = await _context.Attendances.FindAsync(attendId);
 
@@ -30,71 +29,61 @@ namespace FollowUp.Data.Services
                 .Include(y => y.Course)
                 .FirstOrDefaultAsync(x => x.Id == tableId);
 
+            string subject;
+            string templatePath;
+
             if (Value == "غائب")
             {
-                var mimeMessage = new MimeMessage();
-                mimeMessage.From.Add(MailboxAddress.Parse(_config["stmp:Email"]));
-                mimeMessage.To.Add(MailboxAddress.Parse(user.Email));
-                mimeMessage.Subject = "تقرير عدم حضور";
-
-                string templatePath = Directory.GetCurrentDirectory() + "/wwwroot/Email.html";
-                string htmlTemplate = System.IO.File.ReadAllText(templatePath);
-
-                htmlTemplate = htmlTemplate.Replace("MessEMf", user.UserFullName);
-                htmlTemplate = htmlTemplate.Replace("MessEMg", table.Course.Name);
-                htmlTemplate = htmlTemplate.Replace("MessEMa", table.Day);
-                htmlTemplate = htmlTemplate.Replace("MessEMb", attendance.HijriDate);
-                htmlTemplate = htmlTemplate.Replace("MessEMc", attendance.Value);
-                htmlTemplate = htmlTemplate.Replace("MessEMd", table.ContactHours.ToString());
-                htmlTemplate = htmlTemplate.Replace("MessEMe", table.Time);
-
-                var builder = new BodyBuilder();
-                builder.HtmlBody = htmlTemplate;
-                mimeMessage.Body = builder.ToMessageBody();
-
-                using var client = new SmtpClient();
-                await client.ConnectAsync(_config["stmp:Host"],
-                    int.Parse(_config["stmp:Port"]),
-                    SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync(_config["stmp:Email"], _config["stmp:Pass"]);
-                await client.SendAsync(mimeMessage);
-                await client.DisconnectAsync(true);
-
-                return 0;
+                subject = "تقرير عدم حضور";
+                templatePath = Directory.GetCurrentDirectory() + "/wwwroot/Email.html";
             }
             else
             {
-                var mimeMessage = new MimeMessage();
-                mimeMessage.From.Add(MailboxAddress.Parse(_config["stmp:Email"]));
-                mimeMessage.To.Add(MailboxAddress.Parse(user.Email));
-                mimeMessage.Subject = "تقرير تأخير";
-
-                string templatePath = Directory.GetCurrentDirectory() + "/wwwroot/Email2.html";
-                string htmlTemplate = System.IO.File.ReadAllText(templatePath);
-
-                htmlTemplate = htmlTemplate.Replace("MessEMf", user.UserFullName);
-                htmlTemplate = htmlTemplate.Replace("MessEMg", table.Course.Name);
-                htmlTemplate = htmlTemplate.Replace("MessEMa", table.Day);
-                htmlTemplate = htmlTemplate.Replace("MessEMb", attendance.HijriDate);
-                htmlTemplate = htmlTemplate.Replace("MessEMc", attendance.Value);
-                htmlTemplate = htmlTemplate.Replace("MessEMt", attendance.Minutes.ToString());
-                htmlTemplate = htmlTemplate.Replace("MessEMd", table.ContactHours.ToString());
-                htmlTemplate = htmlTemplate.Replace("MessEMe", table.Time);
-
-                var builder = new BodyBuilder();
-                builder.HtmlBody = htmlTemplate;
-                mimeMessage.Body = builder.ToMessageBody();
-
-                using var client = new SmtpClient();
-                await client.ConnectAsync(_config["stmp:Host"],
-                    int.Parse(_config["stmp:Port"]),
-                    SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync(_config["stmp:Email"], _config["stmp:Pass"]);
-                await client.SendAsync(mimeMessage);
-                await client.DisconnectAsync(true);
-
-                return 0;
+                subject = "تقرير تأخير";
+                templatePath = Directory.GetCurrentDirectory() + "/wwwroot/Email2.html";
             }
+
+            string htmlTemplate = System.IO.File.ReadAllText(templatePath);
+
+            htmlTemplate = htmlTemplate.Replace("MessEMf", user.UserFullName);
+            htmlTemplate = htmlTemplate.Replace("MessEMg", table.Course.Name);
+            htmlTemplate = htmlTemplate.Replace("MessEMa", table.Day);
+            htmlTemplate = htmlTemplate.Replace("MessEMb", attendance.HijriDate);
+            htmlTemplate = htmlTemplate.Replace("MessEMc", attendance.Value);
+            htmlTemplate = htmlTemplate.Replace("MessEMd", table.ContactHours.ToString());
+            htmlTemplate = htmlTemplate.Replace("MessEMe", table.Time);
+            if (Value != "غائب")
+            {
+                htmlTemplate = htmlTemplate.Replace("MessEMt", attendance.Minutes.ToString());
+            }
+
+            var sender = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.UserName == "Admin");
+
+            var message = new MailMessage();
+            message.From = new MailAddress( sender.Email);
+            message.To.Add(new MailAddress(user.Email));
+            message.Subject = subject;
+            message.Body = htmlTemplate;
+            message.IsBodyHtml = true;
+
+            using (var smtp = new SmtpClient(_config["stmp:Host"], int.Parse(_config["stmp:Port"])))
+            {
+                smtp.Credentials = new NetworkCredential(sender.Email, sender.UserFullName);
+                smtp.EnableSsl = true;
+
+                try
+                {
+                    await smtp.SendMailAsync(message);
+                }
+                catch (SmtpException ex)
+                {
+                    Console.WriteLine($"Error sending email: {ex.Message}");
+                }
+            }
+
+            return 0;
         }
+
+
     }
 }

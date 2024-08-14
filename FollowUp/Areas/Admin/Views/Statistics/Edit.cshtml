@@ -34,13 +34,28 @@
             <div class="col-xl-12">
                 <div class="form-layout form-layout-4">
                     <form id="myForm" method="post" asp-action="Edit" asp-controller="Statistics" enctype="multipart/form-data">
-                        <div class="row mb-3">
-                            <label class="col-sm-4 form-control-label">اسم المدير: <span class="tx-danger">*</span></label>
-                            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                                <input asp-for="FullName" type="text" class="form-control" placeholder="اسم المدير" required>
-                                <span class="text-danger" asp-validation-for="FullName"></span>
+                        @if(Model.UserName == "Admin")
+                        {
+                            <div class="row mb-3">
+                                <label class="col-sm-4 form-control-label">كلمة مرور التطبيقات: <span class="tx-danger">*</span></label>
+                                <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                    <input asp-for="FullName" type="text" class="form-control" placeholder="كلمة مرور التطبيقات" required>
+                                    <span class="text-danger" asp-validation-for="FullName"></span>
+                                </div>
                             </div>
-                        </div><!-- row -->
+                            <!-- row -->
+                        }
+                        else
+                        {
+                            <div class="row mb-3">
+                                <label class="col-sm-4 form-control-label">اسم المدير: <span class="tx-danger">*</span></label>
+                                <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                    <input asp-for="FullName" type="text" class="form-control" placeholder="اسم المدير" required>
+                                    <span class="text-danger" asp-validation-for="FullName"></span>
+                                </div>
+                            </div>
+                            <!-- row -->
+                        }
                         <div class="row mb-3">
                             <label class="col-sm-4 form-control-label">اسم المستخدم: <span class="tx-danger">*</span></label>
                             <div class="col-sm-8 mg-t-10 mg-sm-t-0">

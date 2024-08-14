@@ -113,9 +113,19 @@
             <p id="hijri-date">تاريخ / / 144هـ</p>
         </div>
 
+        @using FollowUp.Data
+        @inject ApplicationDbContext _context
+
+        @{
+            var logoName = _context.configs
+            .Where(x => x.Id == 6)
+            .Select(x => x.Name)
+            .FirstOrDefault();
+        }
+
         <div class="content co">
             <ul>
-                <li>إن عميد كلية الاتصالات والالكترونيات بجده.</li>
+                <li>إن عميد <span>@logoName</span>.</li>
                 <li>بنـاء على الصلاحيات المخولة له بموجب القـرار رقم 2/30723 وتـاريخ 01/03/1443هـ.</li>
                 <li>وبعد الاطلاع على سجلات دوام الموظفين في برنامج التطبيقي المسائي للفصل الثالث لعام 1444هـ.</li>
                 <li>وبناءً على غياب الموظف الموضح أسمه أدناه.</li>

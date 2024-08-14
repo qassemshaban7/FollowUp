@@ -52,10 +52,18 @@ namespace FollowUp.Areas.Trainer.Controllers
             return View(Course);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Create(string? returnUrl = null)
         {
+            var manager3 = await _context.configs.Where(x => x.Id == 3).FirstOrDefaultAsync();
+            ViewBag.manager3 = manager3;
+
+            var manager4 = await _context.configs.Where(x => x.Id == 4).FirstOrDefaultAsync();
+            ViewBag.manager4 = manager4;
+
+            var manager5 = await _context.configs.Where(x => x.Id == 5).FirstOrDefaultAsync();
+            ViewBag.manager5 = manager5;
+
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
             ViewBag.user = user;
@@ -80,6 +88,7 @@ namespace FollowUp.Areas.Trainer.Controllers
                 department.TrainerId = user.Id;
                 department.ApplicationUser = user;
                 department.Value = Value;
+                department.Status = 1;
                 _context.Permissions.Add(department);
                 await _context.SaveChangesAsync();
                 HttpContext.Session.SetString("created", "true");
@@ -89,11 +98,19 @@ namespace FollowUp.Areas.Trainer.Controllers
             {
                 return View(department);
             }
-            return View(department);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
+            var manager3 = await _context.configs.Where(x => x.Id == 3).FirstOrDefaultAsync();
+            ViewBag.manager3 = manager3;
+
+            var manager4 = await _context.configs.Where(x => x.Id == 4).FirstOrDefaultAsync();
+            ViewBag.manager4 = manager4;
+
+            var manager5 = await _context.configs.Where(x => x.Id == 5).FirstOrDefaultAsync();
+            ViewBag.manager5 = manager5;
+
             if (id == null)
             {
                 return NotFound();
@@ -128,6 +145,7 @@ namespace FollowUp.Areas.Trainer.Controllers
                 department.Date = Date;
                 department.fromdate = fromdate;
                 department.to = to;
+                department.Status = 1;
                 _context.Permissions.Update(department);
                 await _context.SaveChangesAsync();
                 HttpContext.Session.SetString("updated", "true");
@@ -156,6 +174,20 @@ namespace FollowUp.Areas.Trainer.Controllers
         [HttpGet]
         public async Task<IActionResult> Report(int id)
         {
+            var manager = await _context.configs.Where(x => x.Id == 1).FirstOrDefaultAsync();
+            var manager2 = await _context.configs.Where(x => x.Id == 2).FirstOrDefaultAsync();
+            ViewBag.manager = manager;
+            ViewBag.manager2 = manager2;
+
+            var manager3 = await _context.configs.Where(x => x.Id == 3).FirstOrDefaultAsync();
+            ViewBag.manager3 = manager3;
+
+            var manager4 = await _context.configs.Where(x => x.Id == 4).FirstOrDefaultAsync();
+            ViewBag.manager4 = manager4;
+
+            var manager5 = await _context.configs.Where(x => x.Id == 5).FirstOrDefaultAsync();
+            ViewBag.manager5 = manager5;
+
             var repo = await _context.Permissions.Include(x => x.ApplicationUser).ThenInclude(v => v.Department).FirstOrDefaultAsync( c => c.Id == id);
             return View(repo);
         }

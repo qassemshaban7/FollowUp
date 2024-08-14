@@ -87,18 +87,38 @@
     </style>
 </head>
 <body>
+
+    @using FollowUp.Data
+    @inject ApplicationDbContext _context
+
+    @{
+        var logoName = _context.configs
+        .Where(x => x.Id == 6)
+        .Select(x => x.Name)
+        .FirstOrDefault();
+    }
+
     <div class="header">
-        <h1>تقرير المتابعة بكلية الاتصالات والالكترونيات بجده</h1>
+        <h1>تقرير المتابعة ب<span>@logoName</span></h1>
     </div>
     <div class="container">
         <h2>حدد طريقة الدخول</h2>
+
+        @{
+            var logoPG = _context.configs
+            .Where(x => x.Id == 7)
+            .Select(x => x.Name)
+            .FirstOrDefault();
+        }
+
         <div class="d-flex justify-content-center mb-2">
-            <img src="~/img/logo-1.png" class="img-thumbnail logo-img" />
+            <img src="~/img/basiclogo/@logoPG" class="img-thumbnail logo-img" />
         </div>
+
         <div class="options">
-            <a href="/Identity/Account/LoginAdmin" class="option" onclick="redirectToLoginPage()">
-                <img src="~/img/manager.png" alt="مدير النظام">
-                <span>مدير النظام</span>
+            <a href="/Identity/Account/LoginTrainer" class="option" onclick="redirectToLoginTrainerPage()">
+                <img src="~/img/مدرب.png" alt="مدرب">
+                <span>مدرب</span>
             </a>
             <a href="/Identity/Account/LoginHead" class="option" onclick="redirectToLoginHeadPage()">
                 <img src="~/img/head.webp" alt="رئيس قسم">
@@ -108,9 +128,9 @@
                 <img src="~/img/متابع1.jpg" alt="مشرف">
                 <span>مشرف</span>
             </a>
-            <a href="/Identity/Account/LoginTrainer" class="option" onclick="redirectToLoginTrainerPage()">
-                <img src="~/img/مدرب.png" alt="مدرب">
-                <span>مدرب</span>
+            <a href="/Identity/Account/LoginAdmin" class="option" onclick="redirectToLoginPage()">
+                <img src="~/img/manager.png" alt="مدير النظام">
+                <span>مدير النظام</span>
             </a>
         </div>
     </div>
