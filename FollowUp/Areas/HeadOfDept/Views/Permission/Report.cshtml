@@ -49,7 +49,7 @@
         }
 
             .header img {
-                width: 100px;
+                width: 100%;
                 height: auto;
             }
 
@@ -110,22 +110,16 @@
 <body>
     <div id="printArea" class="container">
         <div class="header">
-            <div class="header-text-left">
-                <h3>@ViewBag.manager3.Name</h3>
-            </div>
             <img src="~/img/logo/@ViewBag.manager5.Name" alt="Logo">
-            <div class="header-text-right">
-                <h5>@ViewBag.manager4.Name</h5>
-            </div>
         </div>
         <hr />
         <hr />
         <div class="header">
-            <h2 >نموذج استئذان موظف خلال فترة الدوام الرسمي</h2>
+            <h2 >نموذج استئذان مدرب خلال فترة الدوام الرسمي</h2>
         </div>
         
         <div class="content">
-            <p>سعادة مدير <span>@Model.ApplicationUser.Department.Name</span> المحترم</p>
+            <p>سعادة رئيس قسم <span>@Model.ApplicationUser.Department.Name</span> المحترم</p>
             <p>السلام عليكم ورحمة الله وبركاته ، وبعد :</p>
             <p>
                 أتقدم لسعادتكم بطلبي هذا طالباً الاستئذان عن الدوام لليوم
@@ -136,8 +130,6 @@
             <p>
                 السبب: <span><h6 class="right">@Model.Value</h6></span>
             </p>
-            <p>مقدمه الموظف: @ViewBag.manager2.Name</p>
-            <p>يتم تعبئة النموذج من قبل الموظف</p>
         </div>
         <div class="signature">
             <div class="signature-row">
@@ -257,7 +249,7 @@
                         }
 
                             .header img {
-                                width: 100px;
+                                width: 100%;
                                 height: auto;
                             }
 

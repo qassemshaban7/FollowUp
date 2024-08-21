@@ -41,15 +41,24 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
                 ViewBag.updated = true;
                 HttpContext.Session.Remove("updated");
             }
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = _context.ApplicationUsers.Include(x => x.Department).FirstOrDefault(y => y.Id == userId);
 
-            var Course = await _context.Permissions
-                .Where(c => c.ApplicationUser.Department.Name == user.Department.Name)
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user1 = _context.ApplicationUsers.Include(x => x.Department).FirstOrDefault(y => y.Id == userId);
+
+            var Permissions = await (from permission in _context.Permissions
+                                     join user in _context.ApplicationUsers
+                                     on permission.TrainerId equals user.Id
+                                     join userRole in _context.UserRoles
+                                     on user.Id equals userRole.UserId
+                                     join role in _context.Roles
+                                     on userRole.RoleId equals role.Id
+                                     where role.Name == StaticDetails.Trainer &&
+                                           user.Department.Name == user1.Department.Name
+                                     select permission)
                 .Include(x => x.ApplicationUser)
                 .ToListAsync();
 
-            return View(Course);
+            return View(Permissions);
         }
 
         [HttpGet]

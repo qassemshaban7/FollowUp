@@ -68,7 +68,7 @@ namespace FollowUp.Data.Services
 
             using (var smtp = new SmtpClient(_config["stmp:Host"], int.Parse(_config["stmp:Port"])))
             {
-                smtp.Credentials = new NetworkCredential(sender.Email, sender.UserFullName);
+                smtp.Credentials = new NetworkCredential(sender.Email, sender.Specialty);
                 smtp.EnableSsl = true;
 
                 try

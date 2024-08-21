@@ -36,7 +36,9 @@ namespace FollowUp.Areas.Supervisor.Controllers
             {
                 return NotFound();
             }
+            var Permissions = await _context.Permissions.Where(c => c.TrainerId == userId).CountAsync();
 
+            ViewBag.Permissions = Permissions;
 
             var Tables = await _context.Tables.Where(r => r.Activation.Status == "نشط" && (r.TypeDivition == "نظري صباحي" || r.TypeDivition == "عملي صباحي") && r.ApplicationUser.Department.Name == user.Department.Name).CountAsync();
             ViewBag.Tables = Tables;

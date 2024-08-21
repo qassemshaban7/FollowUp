@@ -1,27 +1,29 @@
-﻿@model IEnumerable<ApplicationUser>
-
+﻿@model IEnumerable<Permission>
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Supervisor/Views/Shared/_Layout.cshtml";
 }
-
 
 @section head {
     <!-- BEGIN PAGE LEVEL STYLES -->
     <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/datatables.css">
     <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/dt-global_style.css">
-    <!-- END PAGE LEVEL STYLES -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 }
 
 <div class="br-pagetitle">
-    <i class="fas fa-user-cog fa-6x text-info"></i>
+    <i class="fas fa-file-alt fa-6x text-info"></i>
     <div class="row">
         <div class="col-lg-10 col-10">
-            <h3 class="text-info">قائمة مديرو النظام</h3>
+            <h3 class="text-info">نماذج الاستئذان</h3>
+        </div>
+        <div class="col-lg-2 col-7 mb-2">
+            <a asp-action="Create" asp-controller="Permission" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> ارسال نموذج استئذان
+            </a>
         </div>
     </div>
 </div>
-
 
 <div class="br-pagebody">
     <div class="br-section-wrapper">
@@ -29,11 +31,9 @@
             <table id="deptsTable" class="table display responsive nowrap">
                 <thead>
                     <tr>
-                        <th>صورة</th>
-                        <th>الاسم</th>
-                        <th>اسم المستخدم</th>
-                        <th>البريد الالكتروني</th>
-                        <th>التفاصيل</th>
+                        <th>التاريخ</th>
+                        <th>الحالة</th>
+                        <th>النموذج</th>
                         <th>تعديل</th>
                         <th>حذف</th>
                     </tr>
@@ -42,37 +42,42 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>@item.Date.ToString("yyyy-MM-dd")</td>
                             <td>
-                                @if (!string.IsNullOrEmpty(item.Image))
+                                @if (item.Status == 1)
                                 {
-                                    <a class="image-receipt" href="~/images/@item.Image">
-                                        <img src="~/images/@item.Image" alt="صورة شخصية" width="50" height="50" />
-                                    </a>
+                                    <span style="color: orange;">
+                                        <i class="fas fa-hourglass-half"></i> لم يتم الرد
+                                    </span>
+                                }
+                                else if (item.Status == 2)
+                                {
+                                    <span style="color: green;">
+                                        <i class="fas fa-check-circle"></i> تم قبول الإذن
+                                    </span>
                                 }
                                 else
                                 {
-                                    <span>لا توجد</span>
+                                    <span style="color: red;">
+                                        <i class="fas fa-times-circle"></i> تم رفض الإذن
+                                    </span>
                                 }
                             </td>
-                            <td>@item.UserFullName</td>
-                            <td>@item.UserName</td>
-                            <td>@item.Email</td>
                             <td>
-                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ModalUser_@item.Id">
-                                    عرض
-                                </button>
+                                <a asp-action="Report" asp-controller="Permission" asp-route-id="@item.Id" class="btn btn-success text-white">
+                                    <i class="fas fa-file-alt"></i> عرض النموذج
+                                </a>
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-controller="Statistics" asp-route-id="@item.Id" class="btn btn-primary text-white">
+                                <a asp-action="Edit" asp-controller="Permission" asp-route-id="@item.Id" class="btn btn-primary text-white">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </td>
                             <td>
-                                <a asp-action="Delete" asp-controller="Statistics" asp-route-id="@item.Id" class="btn btn-danger">
+                                <a asp-action="Delete" asp-controller="Permission" asp-route-id="@item.Id" class="btn btn-danger">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </td>
-
                         </tr>
                     }
                 </tbody>
@@ -80,58 +85,10 @@
         </div>
     </div>
 </div>
+
 <input type="hidden" id="created" data-value="@ViewBag.created" />
 <input type="hidden" id="updated" data-value="@ViewBag.updated" />
 <input type="hidden" id="deleted" data-value="@ViewBag.deleted" />
-
-@if (Model.Count() > 0)
-{
-    foreach (var item in Model)
-    {
-        <div class="modal fade" id="ModalUser_@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel"> تفاصيل المدير : @item.UserFullName</h5>
-
-                    </div>
-                    <div class="modal-body">
-                        <div class="row mb-2">
-                            <div class="col">
-                                <span>اسم المدير :</span> <span class="text-info">  @item.UserFullName</span>
-                            </div>
-                            <div class="col">
-                                <span>اسم المستخدم :</span> <span class="text-info">   @item.UserName</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row mb-2">
-                            <div class="col">
-                                <span>البريد الالكتروني :</span> <span class="text-info">  @item.Email</span>
-                            </div>
-                            <div class="col">
-                                <span>رقم الجوال:</span> <span class="text-info">   @item.PhoneNumber</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row mb-2">
-                            <div class="col">
-                                <span>القسم :</span> <span class="text-info"> @item.Department.Name </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">اغلاق</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    }
-}
 
 @section scripts {
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
@@ -147,7 +104,7 @@
             },
             "order": [[1, "desc"]],
             "stripeClasses": [],
-            "lengthMenu": [7, 10, 20, 50],
+            "lengthMenu": [7, 10, 20, 50, 100],
             "pageLength": 20,
             drawCallback: function () { $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered mb-5'); }
         });
@@ -198,7 +155,7 @@
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 }
-                toastr.success("تم تعديل بيانات المدير بنجاح");
+                toastr.success("تم التعديل بنجاح");
             }
 
             var deleted = $("#deleted").data("value");
@@ -220,7 +177,7 @@
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 }
-                toastr.success("تم حذف المدير بنجاح");
+                toastr.success("تم الحذف بنجاح");
             }
         });
     </script>

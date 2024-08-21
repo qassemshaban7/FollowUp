@@ -64,9 +64,18 @@ namespace FollowUp.Areas.HeadOfDept.Controllers
                 .Where(x => x.ApplicationUser.Department.Name == Tra.Department.Name).CountAsync();
             ViewBag.Report = Report;
 
-            var Permissions = await _context.Permissions
-                .Where(c => c.ApplicationUser.Department.Name == Tra.Department.Name)
-                .CountAsync();
+            var Permissions = await (from permission in _context.Permissions
+                                     join user in _context.ApplicationUsers
+                                     on permission.TrainerId equals user.Id
+                                     join userRole in _context.UserRoles
+                                     on user.Id equals userRole.UserId
+                                     join role in _context.Roles
+                                     on userRole.RoleId equals role.Id
+                                     where role.Name == StaticDetails.Trainer &&
+                                           user.Department.Name == Tra.Department.Name
+                                     select permission)
+                                    .CountAsync();
+
             ViewBag.Permissions = Permissions;
 
             return View();

@@ -351,10 +351,11 @@ namespace FollowUp.Areas.Admin.Controllers
                     (userRole, role) => role.Name)
                 .ToListAsync();
 
-            var editUserVM = new EditSupervisorVM
+            var editUserVM = new EditAdminVM
             {
                 Id = user.Id,
                 FullName = user.UserFullName,
+                pass = user.Specialty,
                 UserName = user.UserName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
@@ -368,7 +369,7 @@ namespace FollowUp.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, EditSupervisorVM editUserVM)
+        public async Task<IActionResult> Edit(string id, EditAdminVM editUserVM)
         {
             if (id != editUserVM.Id)
             {
@@ -385,6 +386,7 @@ namespace FollowUp.Areas.Admin.Controllers
                 }
 
                 user.UserFullName = editUserVM.FullName;
+                if(editUserVM.pass != null) user.Specialty = editUserVM.pass;
                 user.UserName = editUserVM.UserName;
                 user.Email = editUserVM.Email;
                 user.PhoneNumber = editUserVM.PhoneNumber;

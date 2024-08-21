@@ -31,6 +31,7 @@
             <table id="deptsTable" class="table display responsive nowrap">
                 <thead>
                     <tr>
+                        <th>الاسم</th>
                         <th>التاريخ</th>
                         <th> الحالة</th>
                         <th>قبول</th>
@@ -42,6 +43,7 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>@item.ApplicationUser.UserFullName</td>
                             <td>@item.Date.ToString("yyyy-MM-dd")</td>
                             <td>
                                 @if (item.Status == 1)

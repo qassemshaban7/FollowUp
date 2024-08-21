@@ -43,12 +43,12 @@
             margin-bottom: 20px;
             background-color: #fff;
             color: #000;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 8px;
         }
 
             .header img {
-                width: 100px;
+                width: 100%;
                 height: auto;
             }
 
@@ -222,13 +222,7 @@
 <body>
     <div id="printArea" class="container">
         <div class="header">
-            <div class="header-text-left">
-                <h3>@ViewBag.manager3.Name</h3>
-            </div>
-            <img src="~/img/logo/@ViewBag.manager5.Name" alt="Logo">
-            <div class="header-text-right">
-                <h5>@ViewBag.manager4.Name</h5>
-            </div>
+            <img class="head" src="~/img/logo/@ViewBag.manager5.Name" alt="Logo">
         </div>
         <hr />
         <hr />
@@ -632,7 +626,7 @@
                             border-radius: 8px;
                         }
                         .header img {
-                            width: 100px;
+                            width: 100%;
                             height: auto;
                         }
                         .header .header-text-right {

@@ -4,7 +4,7 @@
 
 @{
     ViewData["Title"] = "تعديل نموذج استئذان";
-    Layout = "~/Areas/Trainer/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Supervisor/Views/Shared/_Layout.cshtml";
 }
 
 <!DOCTYPE html>
@@ -103,11 +103,11 @@
         <hr />
         <hr />
         <div class="header">
-            <h2>نموذج استئذان مدرب خلال فترة الدوام الرسمي</h2>
+            <h2>نموذج استئذان موظف خلال فترة الدوام الرسمي</h2>
         </div>
         
         <div class="content">
-            <p>سعادة رئيس <span>قسم @Model.ApplicationUser.Department.Name</span> المحترم</p>
+            <p>سعادة مدير إداري المحترم</p>
             <p>السلام عليكم ورحمة الله وبركاته ، وبعد :</p>
             
             <form method="post" asp-action="Edit" asp-controller="Permission" enctype="multipart/form-data">

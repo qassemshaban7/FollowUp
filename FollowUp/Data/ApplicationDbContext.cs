@@ -110,16 +110,6 @@ namespace FollowUp.Data
             });
             builder.Entity<config>().HasData(new config
             {
-                Name = "المملكة العربية السعودية       المؤسسة العامة للتدريب التقني والمهني         الكلية التقنية للاتصالات والمعلومات بجدة        إدارة الرقابة ",
-                Id = 3,
-            });
-            builder.Entity<config>().HasData(new config
-            {
-                Name = "KINGDOM OF SAUDI ARABIA        Technical and Vocational Training Corporation      Technical College of Telecommunications & Info – Jeddah ",
-                Id = 4,
-            });
-            builder.Entity<config>().HasData(new config
-            {
                 Name = "شعار.jpg",
                 Id = 5,
             });

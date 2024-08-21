@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Images\" />
     <Folder Include="wwwroot\Signture\" />
     <Folder Include="wwwroot\TrainerFiles\" />
     <Folder Include="wwwroot\TabelsFiles\" />

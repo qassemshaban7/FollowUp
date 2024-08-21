@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using FollowUp.Models;
 
 namespace FollowUp.Areas.Admin.Controllers
 {
@@ -70,7 +71,20 @@ namespace FollowUp.Areas.Admin.Controllers
             var manager5 = await _context.configs.Where(x => x.Id == 5).FirstOrDefaultAsync();
             ViewBag.manager5 = manager5;
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var Tra = await _context.ApplicationUsers.Include(x => x.Department).FirstOrDefaultAsync(v => v.Id == userId);
+            ViewBag.Tra = Tra;
+
             var repo = await _context.Permissions.Include(x => x.ApplicationUser).ThenInclude(v => v.Department).FirstOrDefaultAsync(c => c.Id == id);
+
+            var isTrainer = await (from user in _context.ApplicationUsers
+                                   join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                   join role in _context.Roles on userRole.RoleId equals role.Id
+                                   where user.Id == repo.TrainerId && role.Name == StaticDetails.Trainer
+                                   select user).AnyAsync();
+
+            ViewBag.IsTrainer = isTrainer;
+
             return View(repo);
         }
 
